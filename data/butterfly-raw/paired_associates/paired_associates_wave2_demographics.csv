@@ -1,0 +1,12 @@
+﻿sub_id,response
+4,"{""P0_Q0"":null,""ethnicity"":[""White""],""age"":""21"",""gender"":""Male""}"
+14,"{""P0_Q0"":null,""ethnicity"":[""White""],""age"":""white"",""gender"":""Male""}"
+20,"{""P0_Q0"":null,""ethnicity"":[""Other""],""age"":""20"",""gender"":""Male""}"
+21,"{""P0_Q0"":null,""ethnicity"":[""White""],""age"":""20"",""gender"":""Male""}"
+24,"{""P0_Q0"":null,""ethnicity"":[""Asian""],""age"":""21"",""gender"":""Female""}"
+25,"{""P0_Q0"":null,""ethnicity"":[""East Asian""],""age"":""21"",""gender"":""Male""}"
+26,"{""P0_Q0"":null,""ethnicity"":[""Asian""],""age"":""20"",""gender"":""Female""}"
+27,"{""P0_Q0"":null,""ethnicity"":[""White""],""age"":""20"",""gender"":""Female""}"
+28,"{""P0_Q0"":null,""ethnicity"":[""Asian""],""age"":""28"",""gender"":""Female""}"
+29,"{""P0_Q0"":null,""ethnicity"":[""White"",""Hispanic/Latinx""],""age"":""31"",""gender"":""Male""}"
+30,"{""P0_Q0"":null,""ethnicity"":[""Mixed""],""age"":""25"",""gender"":""Male""}"
