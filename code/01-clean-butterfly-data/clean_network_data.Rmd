@@ -1,0 +1,238 @@
+---
+title: "Clean butterfly network data"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+# Introduction
+
+In our empirical studies, we required participants to learn about the same artificial social network (i.e., the "butterfly" network, so named because it resembles a butterfly with its wings extended). Here, we're going to clean/compute information about the network that we might find useful during later analysis.
+
+
+# Initialize
+
+Loading libraries and custom scripts...
+
+```{r setup}
+# For reproducibility...
+set.seed(sum(utf8ToInt("bullet with butterfly wings")))
+
+library(tidyverse)
+library(here)
+library(igraph)
+library(tidygraph)
+library(ggraph)
+
+source(here("code", "utils", "network_utils.R"))
+```
+
+Loading data...
+
+```{r load-data}
+walk_learn <- here("data", "butterfly-behavior", "walk_learn.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+pair_learn <- here("data", "butterfly-behavior", "pair_learn.csv") %>%
+  read_csv(show_col_types = FALSE)
+```
+
+
+# Build network
+
+Having a graph of the network is useful, as it means that we can easily extract out an "adjacency list" that can help us model how various learning strategies produce different kinds of network representations. The easiest way to build a network is with an edgelist and nodelist. Both studies use the exact same network structure, so we could in principle use either to do this.
+
+The following code is slightly overkill for what we want to do (i.e. assign stable numeric IDs to each node), as the nodes are already identified by a numeric ID in the paired associates study. But, should this change in the future (such that the nodes are alternatively identified by a text ID), this code is flexible enough to allow that without further modification.
+
+```{r edgelist-nodelist}
+# Recover edgelist from learning trials
+netrep_edgelist <- pair_learn %>%
+  filter(sub_id == 1) %>%
+  mutate(
+    from_sorted = if_else(from < to, from, to),
+    to_sorted = if_else(from < to, to, from)
+  ) %>%
+  select(
+    from = from_sorted,
+    to = to_sorted
+  ) %>%
+  distinct() %>%
+  arrange(from, to)
+
+# Use edgelist to create nodelist
+netrep_nodelist <- bind_rows(
+  netrep_edgelist %>% select(name = from),
+  netrep_edgelist %>% select(name = to)
+) %>%
+  distinct() %>%
+  arrange(name) %>%
+  mutate(node_id = row_number())
+```
+
+Now that we've got those lists in hand, we can now create a `tbl_graph` network representation...
+
+```{r create network}
+netrep_network <- tbl_graph(
+  nodes = netrep_nodelist,
+  edges = netrep_edgelist,
+  directed = FALSE
+)
+
+# Get adjlist from network
+netrep_adjlist <- netrep_network %>%
+  graph_to_adjlist()
+
+# Convert adjlist to adjacency matrix
+netrep_adjmat <- netrep_adjlist %>%
+  arrange(from, to) %>%
+  pivot_wider(names_from = to, values_from = edge) %>%
+  select(-from) %>%
+  as.matrix()
+
+# Plot what network looks like
+netrep_network %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name))
+```
+
+
+# Centrality
+
+We may be interested in knowing various centrality metrics. It is safe to ignore the warning message `'nobigint' is deprecated since igraph 1.3 and will be removed in igraph 1.4`.
+
+```{r calc-centrality}
+netrep_centrality <- netrep_network %>%
+  mutate(
+    Degree = centrality_degree(),
+    Between = centrality_betweenness(directed = FALSE),
+    Eigen = centrality_eigen(),
+    Closeness = centrality_closeness()
+  ) %>%
+  as_tibble()
+```
+
+
+# Features
+
+The network structure (nodes + edges) is the same for all participants, but different stimuli were shown to different participants. So, let's fill in the details of some social features (race + gender) that we might want to look at later.
+
+```{r feature-nodelist}
+walk_features <- bind_rows(
+  walk_learn %>% select(sub_id, name = from, face_id = from_face),
+  walk_learn %>% select(sub_id, name = to, face_id = to_face)
+) %>%
+  distinct() %>%
+  arrange(sub_id, name) %>%
+  left_join(netrep_nodelist, by = "name") %>%
+  mutate(
+    race = str_sub(face_id, 5, 5),
+    gender = str_sub(face_id, 6, 6)
+  ) %>%
+  mutate(
+    race_id = case_when(
+      race == "A" ~ 1,
+      race == "B" ~ 2,
+      race == "L" ~ 3,
+      race == "W" ~ 4
+    ),
+    race = case_when(
+      race == "A" ~ "asian",
+      race == "B" ~ "black",
+      race == "L" ~ "latinx",
+      race == "W" ~ "white"
+    )
+  ) %>%
+  mutate(
+    gender_id = case_when(
+      gender == "F" ~ 1,
+      gender == "M" ~ 2
+    ),
+    gender = case_when(
+      gender == "F" ~ "female",
+      gender == "M" ~ "male"
+    )
+  )
+
+pair_features <- bind_rows(
+  pair_learn %>% select(sub_id, name = from, face_id = from_face),
+  pair_learn %>% select(sub_id, name = to, face_id = to_face)
+) %>%
+  distinct() %>%
+  arrange(sub_id, name) %>%
+  left_join(netrep_nodelist, by = "name") %>%
+  mutate(
+    race = str_sub(face_id, 5, 5),
+    gender = str_sub(face_id, 6, 6)
+  ) %>%
+  mutate(
+    race_id = case_when(
+      race == "A" ~ 1,
+      race == "B" ~ 2,
+      race == "L" ~ 3,
+      race == "W" ~ 4
+    ),
+    race = case_when(
+      race == "A" ~ "asian",
+      race == "B" ~ "black",
+      race == "L" ~ "latinx",
+      race == "W" ~ "white"
+    )
+  ) %>%
+  mutate(
+    gender_id = case_when(
+      gender == "F" ~ 1,
+      gender == "M" ~ 2
+    ),
+    gender = case_when(
+      gender == "F" ~ "female",
+      gender == "M" ~ "male"
+    )
+  )
+```
+
+
+# Export
+
+```{r export-network}
+if (dir.exists(here("data", "butterfly-network")) == FALSE) {
+  dir.create(here("data", "butterfly-network"))
+}
+
+netrep_adjlist %>%
+  write_csv(here("data", "butterfly-network", "adjlist.csv"))
+
+netrep_adjmat %>%
+  write.table(
+    here("data", "butterfly-network", "adj_matrix.txt"),
+    row.names = FALSE,
+    col.names = FALSE
+  )
+
+netrep_edgelist %>%
+  write_csv(here("data", "butterfly-network", "edgelist.csv"))
+
+netrep_nodelist %>%
+  write_csv(here("data", "butterfly-network", "nodelist.csv"))
+
+netrep_centrality %>%
+  write_csv(here("data", "butterfly-network", "centrality.csv"))
+
+walk_features %>%
+  write_csv(here("data", "butterfly-network", "features_walk.csv"))
+
+pair_features %>%
+  write_csv(here("data", "butterfly-network", "features_pair.csv"))
+```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+

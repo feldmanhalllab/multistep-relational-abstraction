@@ -1,0 +1,405 @@
+---
+title: "Clean butterfly behavioral data"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+# Introduction
+
+Much of the empirical data in the multistep relational abstraction paper is re-analysis of datasets from other researchers. The major exceptions are two datasets collected by people in this lab, both of which used the same artificial social network (i.e., the "butterfly" network, so named because it resembles a butterfly with its wings extended). Here, we're going to clean those two behavioral datasets.
+
+
+# Initialize
+
+Loading libraries and custom scripts...
+
+```{r setup}
+library(tidyverse)
+library(here)
+```
+
+
+# Load & tidy data
+
+## Random walks
+
+This dataset was originally collected as pilot data for another set of (mostly unrelated) experiments, but we can reanalyze them and make them useful for answering our present set of questions.
+
+The datafile `randomwalks.csv` contains 27 complete datapoints. Of these, 19 subjects were recruited from Prolific and completed 837 steps of a random walk in the learning task. The remaining 8 are in-lab pilots. One of them is (probably) from an in-lab pilot before putting the task online, and completed 837 steps of a random walk. The remaining 7 were collected after the Prolific study, and completed *twice* as many steps (1674) in the random walks.
+
+The datafile `randomwalks2.csv` contains 33 complete datapoints. They are all in-lab subjects. In the first RandomWalks, subjects were allowed to take self-timed breaks between learning runs. In this second iteration, subjects were required to take a 10s break. We went back to having a 837-step random walk because doubling the number of steps didn't seem to lead to any appreciable increase in accuracy.
+
+We'll first load in the raw data and do some preliminary cleaning. Warning messages about parsing errors can be safely ignored.
+
+```{r walk-raw-data}
+walk_data <- bind_rows(
+  # RandomWalks
+  here("data", "butterfly-raw", "random_walks", "randomwalks.csv") %>%
+    read_csv(show_col_types = FALSE) %>%
+    mutate(study = "randomwalks"),
+  # RandomWalks2
+  here("data", "butterfly-raw", "random_walks", "randomwalks2.csv") %>%
+    read_csv(show_col_types = FALSE) %>%
+    mutate(study = "randomwalks2")
+) %>%
+  # Data from Prolific or in-lab?
+  mutate(
+    pid = if_else(str_detect(responses, "^\"$"), NA_character_, responses)
+  ) %>%
+  fill(pid, .direction = "down") %>%
+  mutate(data_source = if_else(str_length(pid) > 30, "prolific", "lab")) %>%
+  # Renumber anonymous subjects
+  rename(sub_id = run_id) %>%
+  group_by(study, sub_id) %>%
+  mutate(sub_id = cur_group_id()) %>%
+  ungroup() %>%
+  arrange(sub_id, trial_index)
+```
+
+This study also used text identifiers (e.g., "R1a") instead of numeric identifiers, so let's go ahead and create a crosswalk so that we can later work with numeric identifiers.
+
+```{r node-id-crosswalk}
+node_id_crosswalk <- walk_data %>%
+  filter(trial_purpose == "walk_trial") %>%
+  select(node_id_text = node_id) %>%
+  distinct() %>%
+  arrange(node_id_text) %>%
+  mutate(node_id = row_number())
+```
+
+## Paired associates
+
+In this study, note that data collection occurred in two "waves" as part of a larger-scale fMRI study. The first wave of data collection was intended to capitalize on some expiring grants. The second wave of data collection, several months later, collected the remaining subjects to reach the target sample size. Subjects from the first wave completed these tasks online using the `cognition.run` web service, and subjects from the second wave completed these tasks "locally" simply by running the jsPsych code in a browser. Due to this difference, data are formatted slightly differently in the two waves.
+
+Warning messages about parsing errors can be safely ignored.
+
+```{r pair-raw-data}
+pair_data <- here(
+  "data", "butterfly-raw", "paired_associates", "paired_associates_wave1.csv"
+) %>%
+  # Networked pairs, first wave
+  read_csv(show_col_types = FALSE) %>%
+  rename(sub_id = pid) %>%
+  # Fix column types as much as possible
+  mutate(
+    across(
+      where(is.character),
+      ~if_else(str_detect(.x, "^\\\"$|^null$"), NA_character_, .x)
+    )
+  ) %>%
+  type_convert(col_types = cols()) %>%
+  # Fix subject numbering (experimenter error)
+  mutate(sub_id = if_else(run_id == 11, 8, sub_id)) %>%
+  # Add data from the second-wave subjects
+  bind_rows(
+    here("data", "butterfly-raw", "paired_associates") %>%
+      fs::dir_ls(regexp = "paired_associates_pid_[[:digit:]]+\\.csv$") %>%
+      map_dfr(read_csv, show_col_types = FALSE, .id = "filename") %>%
+      mutate(
+        across(
+          where(is.character),
+          ~if_else(str_detect(.x, "^\\\"$|^null$"), NA_character_, .x)
+        )
+      ) %>%
+      type_convert(col_types = cols())
+  ) %>%
+  # Keep only what we want/need
+  select(
+    sub_id, trial_index, trial_type, trial_purpose,
+    rt, response,
+    from_id:friendship
+  ) %>%
+  # Make stimulus identifiers consistent
+  mutate(
+    across(
+      c(from_face, to_face),
+      ~str_remove(.x, "^stims/img/")
+    )
+  ) %>%
+  # Make pretty
+  arrange(sub_id, trial_index)
+```
+
+
+# Learning data
+
+The random walk learning task comes in the form of a sequence, so we'll convert that into pairwise observations where each trial encodes which node we are coming `from` and which node we are going `to`.
+
+```{r walk-learning}
+walk_learn <- walk_data %>%
+  filter(trial_purpose == "walk_trial") %>%
+  select(
+    study, data_source,
+    sub_id, trial_index,
+    walk_id, node_id, face_id
+  ) %>%
+  # Add numeric node IDs
+  rename(node_id_text = node_id) %>%
+  left_join(node_id_crosswalk, by = "node_id_text") %>%
+  select(-node_id_text) %>%
+  # In each run, a random walk stops at a random place
+  # The next random walk picks up in another random place
+  # So, need to make sure the SR isn't learning false relations
+  group_by(sub_id, walk_id) %>%
+  mutate(
+    to = lead(node_id),
+    to_face = lead(face_id)
+  ) %>%
+  rename(
+    from = node_id,
+    from_face = face_id
+  ) %>%
+  drop_na() %>%
+  type_convert(col_types = cols()) %>%
+  arrange(sub_id, walk_id, trial_index) %>%
+  # Renumber trials
+  group_by(sub_id) %>%
+  mutate(trial_index = row_number()) %>%
+  ungroup()
+```
+
+The paired associates learning task is already grouped into pairs.
+
+```{r pair-learning}
+pair_learn <- pair_data %>%
+  filter(trial_purpose == "learning_trial") %>%
+  select(
+    sub_id, trial_index,
+    from = from_id, to = to_id,
+    from_face, to_face
+  ) %>%
+  # Renumber trials
+  group_by(sub_id) %>%
+  mutate(trial_index = row_number()) %>%
+  ungroup()
+```
+
+
+# Memory data
+
+The cleaning processes for the two studies are mostly the same, but look slightly different mostly because they used different versions of jsPsych (random walks used 6.x, paired associates used 7.x).
+
+```{r walk-memory}
+walk_mem <- walk_data %>%
+  filter(str_detect(trial_purpose, "memory_")) %>%
+  select(
+    study, data_source,
+    sub_id, trial_index, trial_purpose,
+    from = from_id, to = to_id,
+    from_face = from_img, to_face = to_img,
+    friendship, key_press, rt
+  ) %>%
+  # Add numeric node IDs
+  left_join(node_id_crosswalk, by = c("from"="node_id_text")) %>%
+  left_join(node_id_crosswalk, by = c("to"="node_id_text")) %>%
+  mutate(
+    from = node_id.x,
+    to = node_id.y
+  ) %>%
+  select(-starts_with("node_id.")) %>%
+  # Convert javascript keycodes
+  mutate(
+    key_press = case_when(
+      key_press == "83" ~ "s",
+      key_press == "68" ~ "d",
+      key_press == "70" ~ "f",
+      key_press == "74" ~ "j",
+      key_press == "75" ~ "k",
+      key_press == "76" ~ "l"
+    ),
+    choice = case_when(
+      # Yes/no
+      key_press == "f" ~ 0,
+      key_press == "j" ~ 1,
+      # Confidence
+      key_press == "s" ~ 1,
+      key_press == "d" ~ 2,
+      key_press == "k" ~ 3,
+      key_press == "l" ~ 4
+    )
+  ) %>%
+  # Get rid of quotation marks on confidence trials
+  mutate(
+    across(
+      .cols = from_face:friendship,
+      .fns = ~if_else(str_detect(.x, "^\\\"$"), NA_character_, .x)
+    )
+  ) %>%
+  # Fill in from/to/friendship info on confidence trials
+  fill(from:friendship, .direction = "down") %>%
+  # Make choice/confidence part of the same row, rather than different rows
+  select(-c(trial_index, key_press)) %>%
+  pivot_wider(names_from = trial_purpose, values_from = c(choice, rt)) %>%
+  rename(
+    choice = choice_memory_resp,
+    confidence = choice_memory_conf,
+    rt_choice = rt_memory_resp,
+    rt_confidence = rt_memory_conf
+  ) %>%
+  # Convert edge from yes/no to Boolean
+  mutate(friendship = as.numeric(friendship == "yes")) %>%
+  rename(edge = friendship) %>%
+  # Fix data types
+  type_convert(col_types = cols()) %>%
+  # Sort
+  mutate(
+    from_sorted = if_else(from < to, from, to),
+    to_sorted = if_else(from < to, to, from)
+  ) %>%
+  mutate(
+    from = from_sorted,
+    to = to_sorted
+  ) %>%
+  select(-c(from_sorted, to_sorted))
+```
+
+On to paired associates...
+
+```{r pair-memory}
+pair_mem <- pair_data %>%
+  filter(str_detect(trial_purpose, "memory_")) %>%
+  select(
+    sub_id, trial_index, trial_purpose,
+    from = from_id, to = to_id,
+    from_face, to_face,
+    friendship, response, rt
+  ) %>%
+  # Convert keys into choices
+  mutate(
+    choice = case_when(
+      # Yes/no
+      response == "f" ~ 0,
+      response == "j" ~ 1,
+      # Confidence
+      response == "s" ~ 1,
+      response == "d" ~ 2,
+      response == "k" ~ 3,
+      response == "l" ~ 4
+    )
+  ) %>%
+  # Fill in from/to/friendship info on confidence trials
+  fill(from:friendship, .direction = "down") %>%
+  # Make choice/confidence part of the same row, rather than different rows
+  select(-c(trial_index, response)) %>%
+  pivot_wider(names_from = trial_purpose, values_from = c(choice, rt)) %>%
+  rename(
+    choice = choice_memory_resp,
+    confidence = choice_memory_conf,
+    rt_choice = rt_memory_resp,
+    rt_confidence = rt_memory_conf
+  ) %>%
+  # Convert edge from yes/no to Boolean
+  mutate(friendship = as.numeric(friendship)) %>%
+  rename(edge = friendship)
+```
+
+
+# Trust prediction data
+
+The trust prediction task was only a part of the paired associates study, and is straightforward to clean.
+
+```{r pair-trust}
+pair_trust <- pair_data %>%
+  filter(trial_purpose == "trust_game") %>%
+  select(sub_id, from = from_id, to = to_id, response, rt)
+```
+
+
+# Demographics
+
+Demographics are only available for the paired associates study. They were not collected for the 
+
+```{r pair-demographics}
+pair_demographics <- pair_data %>%
+  filter(trial_type == "survey") %>%
+  select(sub_id, response) %>%
+  # Wave 2 data
+  bind_rows(
+    here(
+      "data", "butterfly-raw", "paired_associates",
+      "paired_associates_wave2_demographics.csv"
+    ) %>%
+      read_csv(show_col_types = FALSE)
+  ) %>%
+  # Descend into regex hell
+  separate(
+    col = response,
+    into = c("response", "gender"),
+    sep = "(\\\"gender\\\")"
+  ) %>%
+  separate(
+    col = response,
+    into = c("response", "age"),
+    sep = "(\\\"age\\\")"
+  ) %>%
+  separate(
+    col = response,
+    into = c(NA, "ethnicity"),
+    sep = "(\\\"ethnicity\\\")"
+  ) %>%
+  # Clean up regex
+  mutate(
+    across(
+      c(ethnicity, age, gender),
+      ~str_remove_all(.x, "\\\"|\\[|\\]|,$|:|\\}")
+    )
+  ) %>%
+  # Fix error in subject response; correct age noted on MRI safety form
+  mutate(
+    age = if_else(sub_id == 14, "20", age),
+    age = as.numeric(age)
+  ) %>%
+  # Add data for a few subjects whose demographics are known, but not recorded
+  bind_rows(
+    tribble(
+      ~sub_id, ~ethnicity, ~age, ~gender,
+      1, "East Asian", 31, "Female",
+      3, "South Asian", 29, "Female",
+    )
+  ) %>%
+  arrange(sub_id)
+```
+
+
+# Export
+
+```{r export-behavior}
+if (dir.exists(here("data", "butterfly-behavior")) == FALSE) {
+  dir.create(here("data", "butterfly-behavior"))
+}
+
+# Learning
+walk_learn %>%
+  write_csv(here("data", "butterfly-behavior", "walk_learn.csv"))
+
+pair_learn %>%
+  write_csv(here("data", "butterfly-behavior", "pair_learn.csv"))
+
+# Memory
+walk_mem %>%
+  write_csv(here("data", "butterfly-behavior", "walk_mem.csv"))
+
+pair_mem %>%
+  write_csv(here("data", "butterfly-behavior", "pair_mem.csv"))
+
+# Trust
+pair_trust %>%
+  write_csv(here("data", "butterfly-behavior", "pair_trust.csv"))
+
+# Demographics
+pair_demographics %>%
+  write_csv(here("data", "butterfly-behavior", "pair_demographics.csv"))
+```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+
