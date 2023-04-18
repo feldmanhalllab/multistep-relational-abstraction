@@ -19,3 +19,12 @@ cd ~/Documents/GitHub/multistep-relational-abstraction/code/01-clean-butterfly-d
 source ./clean-butterfly-data.sh
 ```
 
+## Workflow 2: Simulate from butterfly network
+
+In an artificial social network designed to disentangle different schema-like representations of network structure, what do different strategies predict?
+
+```bash
+cd ~/Documents/GitHub/multistep-relational-abstraction/code/02-simulate-butterfly
+source ./simulate-butterfly.sh
+```
+

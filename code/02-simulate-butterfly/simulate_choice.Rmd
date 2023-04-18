@@ -1,0 +1,359 @@
+---
+title: "Simulate computational models"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: true
+---
+
+# Initialize
+
+Loading libraries and custom scripts...
+
+```{r setup}
+# For reproducibility...
+set.seed(sum(utf8ToInt("softmax saturation")))
+
+library(tidyverse)
+library(here)
+library(tidygraph)
+
+source(here("code", "utils", "network_utils.R"))
+source(here("code", "utils", "modeling_utils.R"))
+source(here("code", "utils", "representation_utils.R"))
+
+if (dir.exists(here("outputs", "02-simulate-butterfly")) == FALSE) {
+  dir.create(here("outputs", "02-simulate-butterfly"))
+}
+```
+
+# Simulations
+
+Before diving into model-fitting from empirical data, it'll help orient us to get a sense for how the Successor Representation (SR) model works in practice. There are some subtle mathematical details that can throw us for a loop if we overlook them.
+
+First, we'll simulate some learning data. This is done in the style of paired associates: on each trial, a pair of friends is shown. In each "run", each friendship is shown twice (e.g., A to B, then later B to A). There are a total of ten "runs" in the real study, but to get asymptotic representations, we'll provide 100 observations.
+
+```{r simulate-learning}
+learn_sim <- here("data", "butterfly-network", "adjlist.csv") %>%
+  read_csv(show_col_types = FALSE) %>%
+  filter(edge == 1) %>%
+  select(from, to) %>%
+  expand_grid(repetition = 1:100, .) %>%
+  group_by(repetition) %>%
+  slice_sample(prop = 1) %>%
+  ungroup() %>%
+  select(from, to)
+```
+
+From this, we can compute what the SR would look like if an agent had various values of $\gamma$ (gamma, i.e., the successor horizon that determines how many steps the agent peers into the future). Note that in our particular implementation, we take the raw SR values (which are discounted expected state occupancies, or more intuitively, the number of times one expects to visit a particular state, given a starting state), and we normalize them into transition probabilities. Once the SR is built, it must then be translated into a choice using a softmax (in this task, equivalently, logistic) function. We can put "weights" on the SR so that a particular SR value is more-or-less strongly translated into a judgment that two given people are friends.
+
+If we're not thinking about this too carefully, we might think to ourselves that the units on the weights are pretty much arbitrary, and so naively, we might guess that weights in the approximate range $[0, 10]$ should cover most of the interesting behaviors people exhibit. This kind of exposition of course signals to you that the naive view might not be totally correct, and so we'll also simulate what happens with weights in the range $[10, 100]$.
+
+```{r simulate-sr-and-choice}
+choice_sim <- expand_grid(
+  w_sr = c(seq(1, 10, 2), seq(10, 100, 20)),
+  sr_gamma = seq(0.1, 1, 0.2),
+  learn_sim
+) %>%
+  # Simulate SR
+  group_by(w_sr, sr_gamma) %>%
+  mutate(sim_id = cur_group_id()) %>%
+  group_by(sim_id, w_sr, sr_gamma) %>%
+  nest() %>%
+  mutate(
+    sr = map(
+      data,
+      ~build_rep_sr(
+        learning_data = .x,
+        this_alpha = 0.1,
+        this_gamma = sr_gamma
+      )
+    )
+  ) %>%
+  ungroup() %>%
+  unnest(sr) %>%
+  select(sim_id, everything(), -data) %>%
+  # Simulate choice
+  mutate(choice = logistic_standard(w_sr * sr_value))
+```
+
+# Visualizations
+
+First, let's see what the representation looks like when the weights $w \lt 10$. To our surprise, we can hardly see anything happening in the top-right corner, when $\gamma=0.9$ and $w=1$. Why is that? Imagine for a second that you have 100 pieces of candy, which you'd like to hand out equally to your friends. When you only hand out candy to your immediate friends, they get many pieces of candy. But now let's say that you want to hand out candy to your friends-of-friends, or friends-of-friends-of-friends, and so on. This now means that everyone's getting fewer pieces of candy, since you still only have 100 pieces to start out with.
+
+This is exactly what's happening in the SR. Transition probabilities must sum to 100%, and so as you increase $\gamma$, you make the representation longer-range. If you're having to distribute transition probabilities over a longer horizon (giving candy to friends-of-friends...), then everyone gets a lower-valued SR value. This exact thing would also happen with the raw SR counts, so there's really no getting around this problem.
+
+```{r plot-sr-sim-naive}
+#| fig.height=6,
+#| fig.width=6
+
+choice_sim %>%
+  filter(w_sr < 10) %>%
+  mutate(
+    w_sr = str_c("w=", w_sr),
+    sr_gamma = str_c("\u03B3=", sr_gamma),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  ggplot(aes(x=to, y=from, fill=choice)) +
+  theme_bw() +
+  facet_grid(
+    rows = vars(w_sr),
+    cols = vars(sr_gamma)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "bottom"
+  )
+
+ggsave(
+  filename = here(
+    "outputs", "02-simulate-butterfly", "sim_choice_rl_weights_small.pdf"
+  ),
+  width = 6, height = 6, units = "in",
+  device = cairo_pdf
+)
+```
+
+Let's take a look at what happens when we multiply these weights by a constant scaling factor of 10. These look a bit more compelling.
+
+```{r plot-sr-sim-scaled}
+#| fig.height=6,
+#| fig.width=6
+
+choice_sim %>%
+  filter(w_sr >= 10) %>%
+  mutate(
+    w_sr = str_c("w=", w_sr),
+    sr_gamma = str_c("\u03B3=", sr_gamma),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  ggplot(aes(x=to, y=from, fill=choice)) +
+  theme_bw() +
+  facet_grid(
+    rows = vars(w_sr),
+    cols = vars(sr_gamma)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = "bottom"
+  )
+
+ggsave(
+  filename = here(
+    "outputs", "02-simulate-butterfly", "sim_choice_rl_weights_big.pdf"
+  ),
+  width = 6, height = 6, units = "in",
+  device = cairo_pdf
+)
+```
+
+# Explanations
+
+Why exactly does this happen? Recall that we're ultimately passing all of these values through a choice function: the softmax. Although it psychologically feels like it shouldn't matter if we scale values by a constant multiplicative factor, this ends up being important for the math. To illustrate this point, here's a plot of a simple softmax being fed values ranging $[-10, 10]$, with blue lines at $\pm 1$ and red lines at $\pm 10$.
+
+```{r plot-softmax}
+tibble(x = seq(-10, 10, 0.1)) %>%
+  mutate(y = logistic_standard(x)) %>%
+  ggplot(aes(x=x, y=y)) +
+  geom_line(size = 1) +
+  geom_vline(xintercept = c(-1, 1), color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = c(-10, 10), color = "red", linetype = "dashed") +
+  NULL
+```
+
+In our case, we know that all of our SR values (before scaling) are going to be in the range $[0, 1]$, as we're working with transition probabilities. So, in order to translate these SR values into choices, we'd need to multiply them against some fairly large weights. This can get a little bit dicey in an unrestricted maximum-likelihood framework, especially if we're fitting individual subjects' data in a non-hierarchical framework, because the cost of having low bias is having a lot of variance. One way out of this problem is to regularize our estimates (i.e., pull parameter estimates closer to zero, and penalize the model likelihood to the extent that estimates deviate from zero). In other words, we're going to use ridge regression, which has the additional benefit of improving parameter estimation efficiency when predictors are (multi)collinear.
+
+Let's say that we want to put some soft boundaries on our weight estimates, so that we're not estimating models with excessively large parameter values. The simulation above suggests it's not totally out of the realm of belief that we might have some subjects with $w \approx 100$. We could get this by specifying a normal distribution with $\sigma = 40$. Then, applying $L_2$ regularization means that we add $\sum_i \lambda w_i^2$ to the likelihood, where $\lambda = \frac{1}{\sigma^2}$.
+
+```{r norm-dist-sd-40}
+tibble(x = rnorm(10000, sd=40)) %>%
+  ggplot(aes(x=x)) +
+  geom_histogram()
+```
+
+We could also multiply all of the representation values by a constant scaling factor so that the weights fall within a smaller range. This is an attractive option for a number of reasons. First, it means that the softmax is going to be a bit more "saturated" by default, which means that small differences in the SR values won't have such an explosive effect on the predicted choices, and which lets us test the "shape" of the representation without having to worry about the "magnitude" of what's being represented. Second, it also means that we can use a smaller $\sigma$ for $L_2$ regularization, which means that we can expect our estimates to be fairly well-behaved, and which prevents us from over-fitting the data. So to get the SR values to a point where they might (eventually) reach the equivalent of $w=100$, we'll scale everything by a factor of 10, and then regularize the weights so that we expect most of our estimates to fall within $[-10, 10]$. We can do this by specifying a normal distribution with $\sigma = 5$, as we can see below:
+
+```{r norm-dist-sd-5}
+tibble(x = rnorm(10000, sd=5)) %>%
+  ggplot(aes(x=x)) +
+  geom_histogram()
+```
+
+# Analytical SR
+
+So far, we've considered how the SR can be computed from experience using RL. But, there's also an analytic method for computing the SR, which captures what the "asymptotic" SR would look like after an infinite-step random walk. This could also be useful to us, if we wanted to assume that an asymptotic representation was learned (through some combination of RL and replay, for example), and we didn't want to tie ourselves so closely to a particular set of learning observations. What would this end up looking like?
+
+```{r simulate-analytical}
+adjlist <- here("data", "butterfly-network", "adjlist.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+t_df <- adjlist %>%
+  group_by(from) %>%
+  mutate(row_sum = sum(edge)) %>%
+  ungroup() %>%
+  mutate(trans_prob = edge/row_sum) %>%
+  select(from, to, trans_prob)
+
+t_mat <- t_df %>%
+  pivot_wider(names_from = to, values_from = trans_prob) %>%
+  select(-from) %>%
+  as.matrix()
+
+choice_sim_analytic <- expand_grid(
+  w_sr = c(seq(1, 10, 2), seq(10, 100, 20)),
+  sr_gamma = seq(0.1, 1, 0.2)
+) %>%
+  # Simulate SR
+  group_by(w_sr, sr_gamma) %>%
+  mutate(sim_id = cur_group_id()) %>%
+  group_by(sim_id, w_sr, sr_gamma) %>%
+  nest() %>%
+  mutate(
+    sr = map(
+      data,
+      ~build_successor_analytically(
+        transition_matrix = t_mat,
+        successor_horizon = sr_gamma
+      )
+    )
+  ) %>%
+  ungroup() %>%
+  unnest(sr) %>%
+  select(sim_id, everything(), -data) %>%
+  # Simulate choice
+  mutate(choice = logistic_standard(w_sr * value))
+```
+
+Once again, we can take a look at what happens when the SR values are unscaled...
+
+```{r plot-analytical-naive}
+#| fig.height=6,
+#| fig.width=6
+
+choice_sim_analytic %>%
+  # filter(from != to) %>%
+  filter(w_sr < 10) %>%
+  mutate(
+    w_sr = str_c("w=", w_sr),
+    sr_gamma = str_c("\u03B3=", sr_gamma),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  ggplot(aes(x=to, y=from, fill=choice)) +
+  theme_bw() +
+  facet_grid(
+    rows = vars(w_sr),
+    cols = vars(sr_gamma)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+ggsave(
+  filename = here(
+    "outputs", "02-simulate-butterfly", "sim_choice_analytical_weights_small.pdf"
+  ),
+  width = 6, height = 6, units = "in",
+  device = cairo_pdf
+)
+```
+
+This illuminates something important, which is that the analytic method, compared to RL methods, places a strong emphasis on the diagonal by default (i.e., having the prior that a state can transition to itself). Even if we remove the diagonal or replace it with zeros, note that this will still have an influence on the remaining values. Returning to the candy metaphor, let's say we have 100 pieces of candy to distribute. In the case of low gammas, we keep the vast majority of that candy for ourselves and distribute the rest to our friends. If we then remove ourselves from the picture, our friends still have less candy than in the counterfactual world where we distributed the candy to our friends without keeping any for ourselves.
+
+That is potentially a bit concerning, because if we use analytical SR values, their scaling might systematically covary with gamma. This means that (e.g.) if we wanted to estimate weights for an SR with $\gamma=0.1$, we'd need to estimate very large weights for no reason other than scaling.
+
+Alright, let's now see what happens when we scale the SR weights by 10.
+
+```{r plot-analytical-scaled}
+#| fig.height=6,
+#| fig.width=6
+
+choice_sim_analytic %>%
+  filter(w_sr >= 10) %>%
+  mutate(
+    w_sr = str_c("w=", w_sr),
+    sr_gamma = str_c("\u03B3=", sr_gamma),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  ggplot(aes(x=to, y=from, fill=choice)) +
+  theme_bw() +
+  facet_grid(
+    rows = vars(w_sr),
+    cols = vars(sr_gamma)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+ggsave(
+  filename = here(
+    "outputs", "02-simulate-butterfly", "sim_choice_analytical_weights_big.pdf"
+  ),
+  width = 6, height = 6, units = "in",
+  device = cairo_pdf
+)
+```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+

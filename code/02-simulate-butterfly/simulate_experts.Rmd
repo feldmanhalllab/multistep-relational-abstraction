@@ -1,0 +1,832 @@
+---
+title: "Simulate single-strategy models"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: true
+---
+
+For the "butterfly network", we want to define, visualize, and export the network representations predicted by various strategies/"experts" in a mixture-of-experts scheme.
+
+Note that all predicted representations are made symmetric around the diagonal by averaging corresponding off-diagonal cells.
+
+# Setup
+
+```{r setup}
+library(tidyverse)
+library(here)
+library(tidygraph)
+library(ggraph)
+library(patchwork)
+
+# Create directories for saving stuff
+if (!dir.exists(here("outputs"))) {
+  dir.create(here("outputs"))
+}
+
+if (!dir.exists(here("outputs", "02-simulate-butterfly"))) {
+  dir.create(here("outputs", "02-simulate-butterfly"))
+}
+
+# Pull in the SR modeling tools
+source(here("code", "utils", "network_utils.R"))
+source(here("code", "utils", "representation_utils.R"))
+
+gg <- list(
+  theme_bw(),
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 13),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.spacing = unit(0.75, "lines"),
+    legend.box.spacing = unit(0.5, "lines"),
+    legend.margin = margin(c(0, 0, 0, 0), unit = "lines")
+  )
+)
+
+plot_representation <- function(rep_df, relation_value, n_breaks = 3) {
+  plot_df <- rep_df %>%
+    filter(from != to) %>%
+    group_by(from, to) %>%
+    summarise(value = mean({{relation_value}}), .groups = "drop")
+  
+  plot_df %>%
+    # Plot
+    mutate(
+      across(c(from, to), factor),
+      from = fct_rev(from)
+    ) %>%
+    ggplot(aes(x=to, y=from, fill=value)) +
+    gg +
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_gradient2(
+      name = NULL,
+      low = "#b2182b",
+      mid = "white",
+      high = "#2166ac",
+      na.value = "white",
+      midpoint = 0,
+      n.breaks = n_breaks
+    ) +
+    theme(legend.position = "bottom")
+}
+
+make_symmetric <- function(df, relation_value_col_name) {
+  df %>%
+    mutate(
+      from_sorted = if_else(from < to, from, to),
+      to_sorted = if_else(from < to, to, from)
+    ) %>%
+    group_by(from_sorted, to_sorted) %>%
+    mutate({{relation_value_col_name}} := mean({{relation_value_col_name}})) %>%
+    ungroup() %>%
+    select(-c(from_sorted, to_sorted))
+}
+```
+
+Now let's load in the data needed to generate representations.
+
+```{r load-data}
+adjlist <- here("data", "butterfly-network", "adjlist.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+walk_learning <- here("data", "butterfly-behavior", "walk_learn.csv") %>%
+  read_csv(show_col_types = FALSE) %>%
+  select(sub_id, trial = trial_index, from, to)
+
+pair_learning <- here("data", "butterfly-behavior", "pair_learn.csv") %>%
+  read_csv(show_col_types = FALSE) %>%
+  select(sub_id, trial = trial_index, from, to)
+
+walk_features <- here("data", "butterfly-network", "features_walk.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+pair_features <- here("data", "butterfly-network", "features_pair.csv") %>%
+  read_csv(show_col_types = FALSE)
+```
+
+# True network structure
+
+```{r network-graph}
+g <- adjlist %>%
+  filter(from < to, edge == 1) %>%
+  select(-edge) %>%
+  tbl_graph(edges = ., directed = FALSE) %>%
+  mutate(name = row_number())
+
+plot_network_graph <- g %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("True Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+
+plot_network_graph
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "network-graph.pdf"),
+  plot = plot_network_graph,
+  width = 4, height = 3,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+```{r network-adjacency}
+plot_network_adj <- adjlist %>%
+  mutate(
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  ggplot(aes(x=to, y=from, fill=edge)) +
+  ggtitle("True Network Structure") +
+  gg +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+      name = NULL,
+      low = "#b2182b",
+      mid = "white",
+      high = "#2166ac",
+      na.value = "white",
+      midpoint = 0,
+      breaks = c(0, 0.5, 1)
+    ) +
+  theme(legend.position = "bottom")
+
+plot_network_adj
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "network-adjacency.pdf"),
+  plot = plot_network_adj,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Memorization
+
+In our study, a memorization strategy would asymptotically look like the true transition matrix.
+
+```{r memorize}
+memorize <- adjlist %>%
+  group_by(from) %>%
+  mutate(n_edges = sum(edge)) %>%
+  ungroup() %>%
+  mutate(memorize_value = edge/n_edges) %>%
+  select(from, to, memorize_value) %>%
+  make_symmetric(memorize_value)
+
+plot_mem <- plot_representation(memorize, memorize_value) +
+  ggtitle("Memorization")
+
+plot_mem
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "memorize.pdf"),
+  plot = plot_mem,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Triad completion
+
+Triad completion (in our implementation) is a fixed strategy, in which all friendships are memorized, and all friends-of-friends are inferred.
+
+```{r triad}
+triad <- adjlist %>%
+  build_rep_triad() %>%
+  select(from, to, triad_value) %>%
+  make_symmetric(triad_value)
+
+plot_triad <- plot_representation(triad, triad_value) +
+  ggtitle("Triad Completion")
+
+plot_triad
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "triad.pdf"),
+  plot = plot_triad,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Community structure
+
+```{r comm}
+comm <- adjlist %>%
+  build_rep_community() %>%
+  ungroup() %>%
+  select(from, to, comm_value) %>%
+  make_symmetric(comm_value)
+
+plot_comm <- plot_representation(comm, comm_value) +
+  ggtitle("Community Detection")
+
+plot_comm
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "community.pdf"),
+  plot = plot_comm,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Successor Representation
+
+To generate static versions of the SR at different gammas, we need to have some learning "observations." We can just use all of the actual learning observations from all of the subjects in our dataset, as this will produce a fairly stable estimate of what an "asymptotic" SR might look like. For our purposes, we'll also want to make the matrices symmetric around the diagonal, so we'll just average the off-diagonal values together.
+
+```{r sr}
+sr1 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.1) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma1_value = sr_value)
+
+sr2 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.2) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma2_value = sr_value)
+
+sr3 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.3) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma3_value = sr_value)
+
+sr4 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.4) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma4_value = sr_value)
+
+sr5 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.5) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma5_value = sr_value)
+
+sr6 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.6) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma6_value = sr_value)
+
+sr7 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.7) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma7_value = sr_value)
+
+sr8 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.8) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma8_value = sr_value)
+
+sr9 <- bind_rows(walk_learning, pair_learning) %>%
+  build_rep_sr(this_alpha = 0.1, this_gamma = 0.9) %>%
+  make_symmetric(sr_value) %>%
+  rename(sr_gamma9_value = sr_value)
+```
+
+```{r plot-sr}
+plot_sr1 <- plot_representation(sr1, sr_gamma1_value) +
+  ggtitle("\u03B3 = 0.1") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+
+plot_sr3 <- plot_representation(sr3, sr_gamma3_value, n_breaks = 4) +
+  ggtitle("\u03B3 = 0.3") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+
+plot_sr5 <- plot_representation(sr5, sr_gamma5_value) +
+  ggtitle("\u03B3 = 0.5") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+
+plot_sr7 <- plot_representation(sr7, sr_gamma7_value) +
+  ggtitle("\u03B3 = 0.7") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+
+plot_sr9 <- plot_representation(sr9, sr_gamma9_value, n_breaks = 4) +
+  ggtitle("\u03B3 = 0.9") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+
+plot_sr_gallery <- (plot_sr1 | plot_sr3 | plot_sr5 | plot_sr7 | plot_sr9) +
+  plot_annotation(
+    title = "Successor Representation",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 13))
+  )
+
+plot_sr_gallery
+
+ggsave(
+  filename = here(
+    "outputs", "02-simulate-butterfly", "successor-representation.pdf"
+  ),
+  plot = plot_sr_gallery,
+  width = 20, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Homophily
+
+People could be using the heuristic strategy that all people of the same race or gender are friends with each other. We'll start with random walks...
+
+```{r hom-walk}
+hom_walk <- expand_grid(
+  sub_id = unique(walk_features$sub_id),
+  from = unique(walk_features$node_id),
+  to = unique(walk_features$node_id)
+) %>%
+  join_nodelist(
+    nodelist = walk_features %>% select(sub_id, node_id, race_id, gender_id),
+    node_id_col = node_id,
+    join_by_vars = c("sub_id")
+  ) %>%
+  mutate(
+    hom_race_value = as.numeric(from_race_id == to_race_id),
+    hom_gender_value = as.numeric(from_gender_id == to_gender_id)
+  ) %>%
+  select(sub_id, from, to, hom_race_value, hom_gender_value) %>%
+  group_by(sub_id, from) %>%
+  mutate(
+    race_scaling = sum(hom_race_value),
+    gender_scaling = sum(hom_gender_value)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    hom_race_value = hom_race_value / race_scaling,
+    hom_gender_value = hom_gender_value / gender_scaling
+  ) %>%
+  select(sub_id, from, to, hom_race_value, hom_gender_value) %>%
+  make_symmetric(hom_race_value) %>%
+  make_symmetric(hom_gender_value)
+
+plot_representation(hom_walk, hom_race_value) +
+  ggtitle("Race Homophily (Group-Level)")
+
+plot_representation(hom_walk, hom_gender_value) +
+  ggtitle("Gender Homophily (Group-Level)")
+```
+
+And now paired associates...
+
+```{r hom-pair}
+hom_pair <- expand_grid(
+  sub_id = unique(pair_features$sub_id),
+  from = unique(pair_features$node_id),
+  to = unique(pair_features$node_id)
+) %>%
+  join_nodelist(
+    nodelist = pair_features %>% select(sub_id, node_id, race_id, gender_id),
+    node_id_col = node_id,
+    join_by_vars = c("sub_id")
+  ) %>%
+  mutate(
+    hom_race_value = as.numeric(from_race_id == to_race_id),
+    hom_gender_value = as.numeric(from_gender_id == to_gender_id)
+  ) %>%
+  select(sub_id, from, to, hom_race_value, hom_gender_value) %>%
+  group_by(sub_id, from) %>%
+  mutate(
+    race_scaling = sum(hom_race_value),
+    gender_scaling = sum(hom_gender_value)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    hom_race_value = hom_race_value / race_scaling,
+    hom_gender_value = hom_gender_value / gender_scaling
+  ) %>%
+  select(sub_id, from, to, hom_race_value, hom_gender_value) %>%
+  make_symmetric(hom_race_value) %>%
+  make_symmetric(hom_gender_value)
+
+plot_representation(hom_pair, hom_race_value) +
+  ggtitle("Race Homophily (Group-Level)")
+
+plot_representation(hom_pair, hom_gender_value) +
+  ggtitle("Gender Homophily (Group-Level)")
+```
+
+And for the sake of visualization, let's average over all subjects.
+
+```{r hom-avg}
+plot_race_hom <- bind_rows(hom_walk, hom_pair) %>%
+  plot_representation(hom_race_value, n_breaks = 4) +
+  ggtitle("Race Homophily (Group-Level)")
+
+plot_gender_hom <- bind_rows(hom_walk, hom_pair) %>%
+  plot_representation(hom_gender_value) +
+  ggtitle("Gender Homophily (Group-Level)")
+
+plot_race_hom
+plot_gender_hom
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "homophily-race.pdf"),
+  plot = plot_race_hom,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "homophily-gender.pdf"),
+  plot = plot_gender_hom,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Features
+
+People could also be learning the statistical relationships between features (e.g., learning the transition probability of Asian-to-Latinx friendships).
+
+We'll start with random walks...
+
+```{r feat-walk}
+walk_adjlist <- expand_grid(
+  sub_id = unique(walk_features$sub_id),
+  adjlist
+) %>%
+  join_nodelist(
+    nodelist = walk_features %>% select(sub_id, node_id, race_id, gender_id),
+    node_id_col = node_id,
+    join_by_vars = "sub_id"
+  )
+
+feat_race_walk_compressed <- walk_adjlist %>%
+  group_by(sub_id, from_race_id, to_race_id) %>%
+  summarise(edge = sum(edge), .groups = "drop") %>%
+  group_by(sub_id, from_race_id) %>%
+  mutate(race_scaling = sum(edge)) %>%
+  ungroup() %>%
+  mutate(feat_race_value = edge / race_scaling) %>%
+  select(sub_id, from_race_id, to_race_id, feat_race_value)
+
+feat_gender_walk_compressed <- walk_adjlist %>%
+  group_by(sub_id, from_gender_id, to_gender_id) %>%
+  summarise(edge = sum(edge), .groups = "drop") %>%
+  group_by(sub_id, from_gender_id) %>%
+  mutate(gender_scaling = sum(edge)) %>%
+  ungroup() %>%
+  mutate(feat_gender_value = edge / gender_scaling) %>%
+  select(sub_id, from_gender_id, to_gender_id, feat_gender_value)
+
+feat_walk <- walk_adjlist %>%
+  left_join(
+    feat_race_walk_compressed,
+    by = c("sub_id", "from_race_id", "to_race_id")
+  ) %>%
+  left_join(
+    feat_gender_walk_compressed,
+    by = c("sub_id", "from_gender_id", "to_gender_id")
+  ) %>%
+  make_symmetric(feat_race_value) %>%
+  make_symmetric(feat_gender_value)
+
+plot_representation(feat_walk, feat_race_value) +
+  ggtitle("Race Feature Map (Group-Level)")
+
+plot_representation(feat_walk, feat_gender_value) +
+  ggtitle("Gender Feature Map (Group-Level)")
+```
+
+And now paired associates...
+
+```{r feat-study3}
+pair_adjlist <- expand_grid(
+  sub_id = unique(pair_features$sub_id),
+  adjlist
+) %>%
+  join_nodelist(
+    nodelist = pair_features %>% select(sub_id, node_id, race_id, gender_id),
+    node_id_col = node_id,
+    join_by_vars = "sub_id"
+  )
+
+feat_race_pair_compressed <- pair_adjlist %>%
+  group_by(sub_id, from_race_id, to_race_id) %>%
+  summarise(edge = sum(edge), .groups = "drop") %>%
+  group_by(sub_id, from_race_id) %>%
+  mutate(race_scaling = sum(edge)) %>%
+  ungroup() %>%
+  mutate(feat_race_value = edge / race_scaling) %>%
+  select(sub_id, from_race_id, to_race_id, feat_race_value)
+
+feat_gender_pair_compressed <- pair_adjlist %>%
+  group_by(sub_id, from_gender_id, to_gender_id) %>%
+  summarise(edge = sum(edge), .groups = "drop") %>%
+  group_by(sub_id, from_gender_id) %>%
+  mutate(gender_scaling = sum(edge)) %>%
+  ungroup() %>%
+  mutate(feat_gender_value = edge / gender_scaling) %>%
+  select(sub_id, from_gender_id, to_gender_id, feat_gender_value)
+
+feat_pair <- pair_adjlist %>%
+  left_join(
+    feat_race_pair_compressed,
+    by = c("sub_id", "from_race_id", "to_race_id")
+  ) %>%
+  left_join(
+    feat_gender_pair_compressed,
+    by = c("sub_id", "from_gender_id", "to_gender_id")
+  ) %>%
+  make_symmetric(feat_race_value) %>%
+  make_symmetric(feat_gender_value)
+
+plot_representation(feat_pair, feat_race_value) +
+  ggtitle("Race Feature Map (Group-Level)")
+
+plot_representation(feat_pair, feat_gender_value) +
+  ggtitle("Gender Feature Map (Group-Level)")
+```
+
+And we'll average over all subjects again.
+
+```{r feat-avg}
+plot_race_feat <- bind_rows(feat_walk, feat_pair) %>%
+  plot_representation(feat_race_value, n_breaks = 4) +
+  ggtitle("Race Feature Map (Group-Level)")
+
+plot_gender_feat <- bind_rows(feat_walk, feat_pair) %>%
+  plot_representation(feat_gender_value) +
+  ggtitle("Gender Feature Map (Group-Level)")
+
+plot_race_feat
+plot_gender_feat
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "feature-race.pdf"),
+  plot = plot_race_feat,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+
+ggsave(
+  filename = here("outputs", "02-simulate-butterfly", "feature-gender.pdf"),
+  plot = plot_gender_feat,
+  width = 5, height = 5,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```
+
+# Small-world representation
+
+There's one more schema/phenomenon that we suspect would "fall out" of an SR. Small-world networks are characterized by a combination of dense clustering/grouping and relatively short paths between individuals. Since the SR is really good for detecting structure, we'd expect that an SR-learner would tend to represent a social network as being smaller-world than it actually is.
+
+The "small world quotient" we're using is most proximally taken from [Kilduff et al. 2008](https://www.sciencedirect.com/science/article/pii/S0749597808000071), which in turn takes it from [Watts & Strogatz 1998](https://www.nature.com/articles/30918).
+
+```{r func-small-world}
+calc_small_world_quotient <- function(graph) {
+  avg_edges_per_node <- mean(igraph::degree(graph))
+  n_nodes <- igraph::vcount(graph)
+  
+  graph_cluster_coeff <- igraph::transitivity(graph, type = "global")
+  rand_cluster_coeff <- avg_edges_per_node / n_nodes
+  
+  graph_path_length <- igraph::average.path.length(graph)
+  rand_path_length <- log(n_nodes) / log(avg_edges_per_node)
+  
+  return(
+    (graph_cluster_coeff / rand_cluster_coeff) /
+      (graph_path_length / rand_path_length)
+  )
+}
+```
+
+We'll first compute the "actual" small world quotient in the true network graph.
+
+```{r small-world-true}
+calc_small_world_quotient(g)
+```
+
+We'll then create the graph predicted by the triad schema, and compute its small world quotient.
+
+```{r small-world-triad}
+g_triad <- triad %>%
+  # 1/12 is chance level of observing two people together
+  mutate(edge = as.numeric(triad_value > 1/12)) %>%
+  filter(from < to, edge == 1) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE)
+
+ calc_small_world_quotient(g_triad)
+
+g_triad %>%
+  mutate(name = row_number()) %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("Triad Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+```
+
+And now with the community schema. Note that our particular implementation breaks down into two components...
+
+```{r small-world-comm}
+g_comm <- comm %>%
+  mutate(edge = as.numeric(comm_value > 1/12)) %>%
+  filter(from < to, edge == 1) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE)
+
+calc_small_world_quotient(g_comm)
+
+g_comm %>%
+  mutate(name = row_number()) %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("Community Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+```
+
+How about SRs at various scales? To keep things simple, I'll only report/visualize gammas when a step change results in a different predicted network. Low gammas produce predictions that are identical to the real network, so they aren't reported here.
+
+```{r small-world-sr4}
+g_sr4 <- sr4 %>%
+  mutate(edge = as.numeric(sr_gamma4_value > 1/12)) %>%
+  filter(from < to, edge == 1) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE)
+
+calc_small_world_quotient(g_sr4)
+
+g_sr4 %>%
+  mutate(name = row_number()) %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("SR \u03B3 = 0.4 Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+```
+
+```{r small-world-sr6}
+g_sr6 <- sr6 %>%
+  mutate(edge = as.numeric(sr_gamma6_value > 1/12)) %>%
+  filter(from < to, edge == 1) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE)
+
+calc_small_world_quotient(g_sr6)
+
+g_sr6 %>%
+  mutate(name = row_number()) %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("SR \u03B3 = 0.6 Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+```
+
+```{r small-world-sr7}
+g_sr7 <- sr7 %>%
+  mutate(edge = as.numeric(sr_gamma7_value > 1/12)) %>%
+  filter(from < to, edge == 1) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE)
+
+calc_small_world_quotient(g_sr7)
+
+g_sr7 %>%
+  mutate(name = row_number()) %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("SR \u03B3 = 0.7 Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+```
+
+```{r small-world-sr9}
+g_sr9 <- sr9 %>%
+  mutate(edge = as.numeric(sr_gamma9_value > 1/12)) %>%
+  filter(from < to, edge == 1) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE)
+
+calc_small_world_quotient(g_sr9)
+
+g_sr9 %>%
+  mutate(name = row_number()) %>%
+  ggraph(layout = "stress") +
+  geom_edge_link() +
+  geom_node_label(aes(label = name)) +
+  ggtitle("SR \u03B3 = 0.9 Network Structure") +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13)
+  )
+```
+
+# Export CSVs
+
+Some representations are derived from the structure of the network, and are therefore constant across studies and subjects. Others are subject-specific, as every subject observed a different set of stimuli. These will be saved into separate sets of files.
+
+```{r export-model-predictions}
+if (knitr::is_html_output()) {
+  if (!dir.exists(here("data", "butterfly-fixed-predictions"))) {
+    dir.create(here("data", "butterfly-fixed-predictions"))
+  }
+  
+  ### All representations derived from network structure
+  network_experts <- memorize %>%
+    left_join(triad, by = c("from", "to")) %>%
+    left_join(comm, by = c("from", "to")) %>%
+    left_join(sr1, by = c("from", "to")) %>%
+    left_join(sr2, by = c("from", "to")) %>%
+    left_join(sr3, by = c("from", "to")) %>%
+    left_join(sr4, by = c("from", "to")) %>%
+    left_join(sr5, by = c("from", "to")) %>%
+    left_join(sr6, by = c("from", "to")) %>%
+    left_join(sr7, by = c("from", "to")) %>%
+    left_join(sr8, by = c("from", "to")) %>%
+    left_join(sr9, by = c("from", "to"))
+  
+  network_experts %>%
+    write_csv(
+      here("data", "butterfly-fixed-predictions", "network_experts.csv")
+    )
+  
+  ### All representations derived from features
+  # Random walks
+  feature_experts_walk <- hom_walk %>%
+    left_join(
+      feat_walk %>%
+        select(sub_id, from, to, feat_race_value, feat_gender_value),
+      by = c("sub_id", "from", "to")
+    )
+  
+  feature_experts_walk %>%
+    write_csv(
+      here("data", "butterfly-fixed-predictions", "feature_experts_walk.csv")
+    )
+  
+  # Paired associates
+  feature_experts_pair <- hom_pair %>%
+    left_join(
+      feat_pair %>%
+        select(sub_id, from, to, feat_race_value, feat_gender_value),
+      by = c("sub_id", "from", "to")
+    )
+  
+  feature_experts_pair %>%
+    write_csv(
+      here("data", "butterfly-fixed-predictions", "feature_experts_pair.csv")
+    )
+}
+```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+
