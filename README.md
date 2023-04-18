@@ -4,11 +4,13 @@ This repository contains all the data and code needed to fully reproduce the ana
 
 Written by [Jae-Young Son](https://jaeyoungson.com/).
 
+
 ## Computing environment
 
 This code was written/run under R 4.2.1, and relies on the following libraries:
 - `tidyverse 1.3.2`
 - `here 1.0.1`
+
 
 ## Workflow 1: Clean data
 
@@ -19,6 +21,7 @@ cd ~/Documents/GitHub/multistep-relational-abstraction/code/01-clean-butterfly-d
 source ./clean-butterfly-data.sh
 ```
 
+
 ## Workflow 2: Simulate from butterfly network
 
 In an artificial social network designed to disentangle different schema-like representations of network structure, what do different strategies predict?
@@ -26,5 +29,15 @@ In an artificial social network designed to disentangle different schema-like re
 ```bash
 cd ~/Documents/GitHub/multistep-relational-abstraction/code/02-simulate-butterfly
 source ./simulate-butterfly.sh
+```
+
+
+## Workflow 3: Statistical models of butterfly network
+
+If our goal is to make group-level inferences about repesentation, we can use mixed-effects regression to capitalize on whatever representational structure might be common to all participants.
+
+```bash
+cd ~/Documents/GitHub/multistep-relational-abstraction/code/03-regress-butterfly
+source ./regress-butterfly.sh
 ```
 

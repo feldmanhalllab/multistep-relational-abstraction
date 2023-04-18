@@ -1,0 +1,831 @@
+---
+title: "Analyze butterfly memory data"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: true
+---
+
+# Setup
+
+```{r setup}
+# For reproducibility...
+set.seed(sum(utf8ToInt("perchance to dream")))
+
+library(tidyverse)
+library(here)
+library(lmerTest)
+library(broom.mixed)
+
+kable <- knitr::kable
+vif <- car::vif
+
+check_significance <- function(tidy_stats) {
+  tidy_stats %>%
+    mutate(
+      significance = case_when(
+        p.value < 0.001 ~ "***",
+        p.value < 0.01 ~ "**",
+        p.value < 0.05 ~ "*",
+        p.value < 0.1 ~ ".",
+        TRUE ~ ""
+      )
+    )
+}
+
+model_to_df <- function(model) {
+  if (ncol(coef(model)$sub_id) > 2) {
+    out <- tidy(model, conf.int = TRUE) %>%
+      left_join(
+        enframe(vif(model), name = "term", value = "vif"), by = "term"
+      ) %>%
+      bind_cols(glance(model) %>% select(loglik = logLik, aic = AIC, bic = BIC))
+  } else {
+    out <- bind_cols(
+      tidy(model, conf.int = TRUE),
+      glance(model) %>% select(loglik = logLik, aic = AIC, bic = BIC)
+    )
+  }
+  
+  return(out %>% check_significance())
+}
+
+gg <- list(
+  theme_bw(),
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 13),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.spacing = unit(0.75, "lines"),
+    legend.box.spacing = unit(0.5, "lines"),
+    legend.margin = margin(c(0, 0, 0, 0), unit = "lines")
+  )
+)
+```
+
+
+# Load data
+
+In one study, subjects completed a "random walks" learning task. In the other, subjects completed a "paired associates" learning task.
+
+```{r load-data}
+walk_data <- here("data", "butterfly-behavior", "walk_mem.csv") %>%
+  read_csv(show_col_types = FALSE) %>%
+  select(sub_id, from, to, edge, choice) %>%
+  # Add network experts (same for all subjects)
+  left_join(
+    read_csv(
+      here("data", "butterfly-fixed-predictions", "network_experts.csv"),
+      show_col_types = FALSE
+    )
+  ) %>%
+  # Add feature experts (different for each subject)
+  left_join(
+    read_csv(
+      here("data", "butterfly-fixed-predictions", "feature_experts_walk.csv"
+      ),
+      show_col_types = FALSE
+    )
+  )
+
+pair_data <- here("data", "butterfly-behavior", "pair_mem.csv") %>%
+  read_csv(show_col_types = FALSE) %>%
+  select(sub_id, from, to, edge, choice) %>%
+  # Add network experts (same for all subjects)
+  left_join(
+    read_csv(
+      here("data", "butterfly-fixed-predictions", "network_experts.csv"),
+      show_col_types = FALSE
+    )
+  ) %>%
+  # Add feature experts (different for each subject)
+  left_join(
+    read_csv(
+      here("data", "butterfly-fixed-predictions", "feature_experts_pair.csv"
+      ),
+      show_col_types = FALSE
+    )
+  )
+```
+
+
+# Memorization
+
+```{r memorization-only}
+walk_data %>%
+  glmer(
+    choice ~ memorize_value + (1 + memorize_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ memorize_value + (1 + memorize_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# Triad schema
+
+Based on how we've operationalized the triad schema, it already covers true friendships. So we'll first try a model that only includes the triad strategy.
+
+```{r triad-only}
+walk_data %>%
+  glmer(
+    choice ~ triad_value + (1 + triad_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ triad_value + (1 + triad_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+We might also be interested in seeing whether the triad schema holds up after controlling for memorization. Note that the random effects structure only includes a random slope for triads (not memorization) because the model otherwise fails to converge. Since triads and memorization are (unavoidably) correlated strategies, we'll check the variance inflation factor (VIF) to see whether we should be concerned about multicollinearity.
+
+```{r triad-mem}
+walk_data %>%
+  glmer(
+    choice ~ triad_value + memorize_value + (1 + triad_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ triad_value + memorize_value + (1 + triad_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# Community schema
+
+The community schema also includes true friendships, so we'll try a model that only includes that strategy.
+
+```{r comm-only}
+walk_data %>%
+  glmer(
+    choice ~ comm_value + (1 + comm_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ comm_value + (1 + comm_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+And now after controlling for memorization.
+
+```{r comm-mem}
+walk_data %>%
+  glmer(
+    choice ~ comm_value + memorize_value + (1 + comm_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ comm_value + memorize_value + (1 + comm_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# Successor Representation
+
+The SR has a parameter gamma ($\gamma$) that controls how many steps get integrated over. Zero is essentially pure memorization; as $\gamma$ approaches one, the SR integrates over a greater number of steps. Especially at lower values of $\gamma$, there's reason to suspect that multicollinearity with memorization will become an issue. So, we'll need to keep an eye out for this, and avoid interpreting estimates when VIF is excessively high.
+
+## Gamma = 0.1
+
+```{r sr-gamma1}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma1_value + (1 + sr_gamma1_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma1_value + (1 + sr_gamma1_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma1_value + memorize_value + (1 + sr_gamma1_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma1_value + memorize_value + (1 + sr_gamma1_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.2
+
+```{r sr-gamma2}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma2_value + (1 + sr_gamma2_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma2_value + (1 + sr_gamma2_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma2_value + memorize_value + (1 + sr_gamma2_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma2_value + memorize_value + (1 + sr_gamma2_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.3
+
+```{r sr-gamma3}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma3_value + (1 + sr_gamma3_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma3_value + (1 + sr_gamma3_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma3_value + memorize_value + (1 + sr_gamma3_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma3_value + memorize_value + (1 + sr_gamma3_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.4
+
+```{r sr-gamma4}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma4_value + (1 + sr_gamma4_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma4_value + (1 + sr_gamma4_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma4_value + memorize_value + (1 + sr_gamma4_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma4_value + memorize_value + (1 + sr_gamma4_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.5
+
+```{r sr-gamma5}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma5_value + (1 + sr_gamma5_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma5_value + (1 + sr_gamma5_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma5_value + memorize_value + (1 + sr_gamma5_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma5_value + memorize_value + (1 + sr_gamma5_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.6
+
+```{r sr-gamma6}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma6_value + (1 + sr_gamma6_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma6_value + (1 + sr_gamma6_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma6_value + memorize_value + (1 + sr_gamma6_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma6_value + memorize_value + (1 + sr_gamma6_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.7
+
+```{r sr-gamma7}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma7_value + (1 + sr_gamma7_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma7_value + (1 + sr_gamma7_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma7_value + memorize_value + (1 + sr_gamma7_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma7_value + memorize_value + (1 + sr_gamma7_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.8
+
+```{r sr-gamma8}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma8_value + (1 + sr_gamma8_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma8_value + (1 + sr_gamma8_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma8_value + memorize_value + (1 + sr_gamma8_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma8_value + memorize_value + (1 + sr_gamma8_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+## Gamma = 0.9
+
+```{r sr-gamma9}
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma9_value + (1 + sr_gamma9_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma9_value + (1 + sr_gamma9_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ sr_gamma9_value + memorize_value + (1 + sr_gamma9_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ sr_gamma9_value + memorize_value + (1 + sr_gamma9_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# Homophily
+
+In the random walks dataset, we are not able to estimate random slopes for race-based homophily, as it results in a singular fit.
+
+```{r race-hom}
+walk_data %>%
+  glmer(
+    choice ~ hom_race_value + (1 | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ hom_race_value + (1 + hom_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ hom_race_value + memorize_value + (1 | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ hom_race_value + memorize_value + (1 + hom_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+In the paired associates dataset, we are not able to estimate random slopes for gender-based homophily, as it results in a singular fit.
+
+```{r gender-hom}
+walk_data %>%
+  glmer(
+    choice ~ hom_gender_value + (1 + hom_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ hom_gender_value + (1 | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ hom_gender_value + memorize_value +
+      (1 + hom_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ hom_gender_value + memorize_value +
+      (1 | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# Feature relations
+
+```{r race-feat}
+walk_data %>%
+  glmer(
+    choice ~ feat_race_value + (1 + feat_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ feat_race_value + (1 + feat_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ feat_race_value + memorize_value + (1 + feat_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ feat_race_value + memorize_value + (1 + feat_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+```{r gender-feat}
+walk_data %>%
+  glmer(
+    choice ~ feat_gender_value + (1 + feat_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ feat_gender_value + (1 + feat_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+walk_data %>%
+  glmer(
+    choice ~ feat_gender_value + memorize_value +
+      (1 + feat_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ feat_gender_value + memorize_value +
+      (1 + feat_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# Strategy combinations
+
+We can try seeing if the SR might be outperformed by some combination of other strategies. We'll start with all of the "structural" (triad and community) strategies.
+
+```{r all-structural}
+walk_data %>%
+  glmer(
+    choice ~ triad_value + comm_value +
+      (1 + triad_value + comm_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ triad_value + comm_value +
+      (1 + triad_value + comm_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+How about both forms of homophily? In the paired associates dataset, we get a singular fit if we try to estimate random slopes for both race and gender homophily, driven by the negative correlation between the random intercept and gender homophily. We can try estimating the model without that random slope, just to see what happens.
+
+```{r all-hom}
+walk_data %>%
+  glmer(
+    choice ~ hom_race_value + hom_gender_value +
+      (1 + hom_race_value + hom_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ hom_race_value + hom_gender_value +
+      (1 + hom_race_value + hom_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+
+pair_data %>%
+  glmer(
+    choice ~ hom_race_value + hom_gender_value +
+      (1 + hom_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+And now both forms of learning about feature-based relations. In the paired associates dataset, we get a model convergence failure if we try to estimate random slopes for both race and gender, so we'll try estimating two variants with a single random-effects term.
+
+```{r all-feat}
+walk_data %>%
+  glmer(
+    choice ~ feat_race_value + feat_gender_value +
+      (1 + feat_race_value + feat_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ feat_race_value + feat_gender_value +
+      (1 + feat_race_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates, random slope of race")
+
+pair_data %>%
+  glmer(
+    choice ~ feat_race_value + feat_gender_value +
+      (1 + feat_gender_value | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates, random slope of gender")
+```
+
+And now we'll just go for broke: we'll try every single strategy (except memorization) in the same model. Here, we're only estimating a random intercept per subject, so it's likely that the degrees of freedom (i.e., used to compute p-values) are far too lenient.
+
+```{r everything-everywhere-all-at-once}
+walk_data %>%
+  glmer(
+    choice ~ triad_value + comm_value +
+      hom_race_value + hom_gender_value +
+      feat_race_value + feat_gender_value +
+      (1 | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Random walks")
+
+pair_data %>%
+  glmer(
+    choice ~ triad_value + comm_value +
+      hom_race_value + hom_gender_value +
+      feat_race_value + feat_gender_value +
+      (1 | sub_id),
+    family = binomial, data = .
+  ) %>%
+  model_to_df() %>%
+  kable(caption = "Paired associates")
+```
+
+
+# What's next?
+
+These statistical models give us a good sense for what cognitive strategies people might be using to shape mental representation of social network structure. They are limited, however, by a few important considerations.
+
+First, the purpose of mixed-effects models is to extract out what is "common" or "shared" across individuals; that which makes an individual unique is theoretically captured by the random effects, but these estimates are not independent due to shrinkage (i.e., partial pooling). This makes it harder to say things about individual differences (e.g., to associate individual differences with other variables of interest), and we *do* expect individual differences to play an important role in shaping people's cognition.
+
+Second, the statistical modeling framework forces us to consider only discrete variants of the SR when gamma is fixed to some pre-specified value. However, we know that different people are likely to integrate over a different number of connections, and so we'd like to be able to specify a computational model allowing us to estimate this as a free (fully continuous!) parameter. This would allow us to (e.g.) test whether the format of learning (random walks vs paired associates) has an effect on the number of connections people integrate over when representing the network.
+
+So to address these limitations, we'll next want to estimate some computational models that explicitly model the SR's gamma parameter, per subject.
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+
