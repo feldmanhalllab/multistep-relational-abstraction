@@ -1,0 +1,29 @@
+sub_id,ethnicity,age,gender
+1,East Asian,31,Female
+3,South Asian,29,Female
+4,White,21,Male
+5,Asian,19,Female
+6,"Asian,White",19,Female
+7,Hispanic/Latinx,22,Female
+8,White,30,Male
+9,White,19,Male
+10,White,20,Male
+11,White,20,Female
+12,East Asian,21,Female
+13,"White,Hispanic/Latinx",19,Female
+14,White,20,Male
+15,White,18,Male
+17,Mixed,21,Male
+18,White,25,Female
+19,White,20,Female
+20,Other,20,Male
+21,White,20,Male
+22,White,18,Female
+23,White,26,Male
+24,Asian,21,Female
+25,East Asian,21,Male
+26,Asian,20,Female
+27,White,20,Female
+28,Asian,28,Female
+29,"White,Hispanic/Latinx",31,Male
+30,Mixed,25,Male
