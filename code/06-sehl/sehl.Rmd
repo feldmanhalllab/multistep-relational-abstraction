@@ -1,0 +1,580 @@
+---
+title: "Simulate Sehl, Friedman, & Denison 2022"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: true
+---
+
+In Sehl, Friedman, & Denison 2022, the authors find that people are more likely to infer friendship between two individuals if they share many mutual friends. Here, we try testing whether we can use multistep relational abstraction (via the Successor Representation) to simulate behavior reproducing the pattern of results found in the Sehl paper.
+
+# Setup
+
+```{r setup}
+library(tidyverse)
+library(here)
+library(patchwork)
+
+knitting <- knitr::is_html_output()
+
+workflow_name <- "06-sehl"
+
+# Create directories for saving stuff
+if (knitting) {
+  if (!dir.exists(here("outputs", workflow_name))) {
+    dir.create(here("outputs", workflow_name))
+  }
+}
+
+gg <- list(
+  theme_bw(),
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 13),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.spacing = unit(0.75, "lines"),
+    legend.box.spacing = unit(0.5, "lines"),
+    legend.margin = margin(c(0, 0, 0, 0), unit = "lines")
+  )
+)
+
+source(here("code", "utils", "modeling_utils.R"))
+```
+
+# The empirical study
+
+Experiment 3 is the most useful for our purposes. Subjects observed that (e.g.) Sam and Dani have some number of friends, and some number of those friends are mutual friends. The total network size was always 24 individuals, and no other information was provided about other network members' friendships.
+
+In different (within-subject) conditions, Sam and Dani each had either 6 or 12 total friends. If they had 6 friends, 1, 3, or 5 were mutual friends. If they had 12 friends each, 2, 6, or 10 were mutual. Therefore, the ratios were kept constant at 1:6, 1:2, and 5:6.
+
+Below, we reproduce Figure 3 from the paper.
+
+```{r reproduce-empirical}
+sehl_exp3 <- here("data", "sehl", "Experiment 3 data.csv") %>%
+  read_csv(show_col_types = FALSE) %>%
+  arrange(subject) %>%
+  mutate(
+    n_friends = if_else(
+      total_group == "few", "Few Friends (6)", "Many Friends (12)"
+    ),
+    mutual_prop = case_when(
+      mutual == "low" ~ "Low (1:6)",
+      mutual == "half" ~ "Medium (1:2)",
+      mutual == "high" ~ "High (5:6)"
+    ),
+    mutual_prop = fct_relevel(mutual_prop, "Low (1:6)", "Medium (1:2)")
+  )
+
+plot_exp3 <- sehl_exp3 %>%
+  group_by(n_friends, mutual_prop) %>%
+  summarise(judgment = mean(response), .groups = "drop") %>%
+  ggplot(aes(x=mutual_prop, y=judgment, fill=n_friends)) +
+  gg +
+  ggtitle("Experiment 3 Behavior") +
+  geom_col(color = "black", position = position_dodge()) +
+  geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
+  scale_x_discrete(name = "Proportion of Mutual Friends") +
+  scale_y_continuous(name = "Friendship Inference") +
+  scale_fill_manual(
+    name = "# Total Friends:", values = c("#2c7bb6", "#fdae61")
+  ) +
+  theme(legend.position = "bottom")
+
+plot_exp3
+```
+
+# Simulate SRs
+
+First, we need to recreate the networks used in the study.
+
+```{r create-networks}
+sehl_blank <- expand_grid(from = 1:24, to = from)
+
+sehl_individual6_mutual1 <- sehl_blank %>%
+  mutate(
+    edge = case_when(
+      # 1 and 2's mutual friends
+      (from %in% 1:2) & (to %in% 3) ~ 1,
+      (to %in% 1:2) & (from %in% 3) ~ 1,
+      # 1's non-mutual friends
+      (from == 1) & (to %in% 4:8) ~ 1,
+      (to == 1) & (from %in% 4:8) ~ 1,
+      # 2's non-mutual friends
+      (from == 2) & (to %in% 9:13) ~ 1,
+      (to == 2) & (from %in% 9:13) ~ 1,
+      # Otherwise assume no friendship
+      TRUE ~ 0
+    ),
+    individual = 6, mutual = 1
+  )
+
+sehl_individual6_mutual3 <- sehl_blank %>%
+  mutate(
+    edge = case_when(
+      # 1 and 2's mutual friends
+      (from %in% 1:2) & (to %in% 3:5) ~ 1,
+      (to %in% 1:2) & (from %in% 3:5) ~ 1,
+      # 1's non-mutual friends
+      (from == 1) & (to %in% 6:8) ~ 1,
+      (to == 1) & (from %in% 6:8) ~ 1,
+      # 2's non-mutual friends
+      (from == 2) & (to %in% 9:11) ~ 1,
+      (to == 2) & (from %in% 9:11) ~ 1,
+      # Otherwise assume no friendship
+      TRUE ~ 0
+    ),
+    individual = 6, mutual = 3
+  )
+
+sehl_individual6_mutual5 <- sehl_blank %>%
+  mutate(
+    edge = case_when(
+      # 1 and 2's mutual friends
+      (from %in% 1:2) & (to %in% 3:7) ~ 1,
+      (to %in% 1:2) & (from %in% 3:7) ~ 1,
+      # 1's non-mutual friends
+      (from == 1) & (to %in% 8) ~ 1,
+      (to == 1) & (from %in% 8) ~ 1,
+      # 2's non-mutual friends
+      (from == 2) & (to %in% 9) ~ 1,
+      (to == 2) & (from %in% 9) ~ 1,
+      # Otherwise assume no friendship
+      TRUE ~ 0
+    ),
+    individual = 6, mutual = 5
+  )
+
+sehl_individual12_mutual2 <- sehl_blank %>%
+  mutate(
+    edge = case_when(
+      # 1 and 2's mutual friends
+      (from %in% 1:2) & (to %in% 3:4) ~ 1,
+      (to %in% 1:2) & (from %in% 3:4) ~ 1,
+      # 1's non-mutual friends
+      (from == 1) & (to %in% 5:14) ~ 1,
+      (to == 1) & (from %in% 5:14) ~ 1,
+      # 2's non-mutual friends
+      (from == 2) & (to %in% 15:24) ~ 1,
+      (to == 2) & (from %in% 15:24) ~ 1,
+      # Otherwise assume no friendship
+      TRUE ~ 0
+    ),
+    individual = 12, mutual = 2
+  )
+
+sehl_individual12_mutual6 <- sehl_blank %>%
+  mutate(
+    edge = case_when(
+      # 1 and 2's mutual friends
+      (from %in% 1:2) & (to %in% 3:8) ~ 1,
+      (to %in% 1:2) & (from %in% 3:8) ~ 1,
+      # 1's non-mutual friends
+      (from == 1) & (to %in% 9:14) ~ 1,
+      (to == 1) & (from %in% 9:14) ~ 1,
+      # 2's non-mutual friends
+      (from == 2) & (to %in% 15:20) ~ 1,
+      (to == 2) & (from %in% 15:20) ~ 1,
+      # Otherwise assume no friendship
+      TRUE ~ 0
+    ),
+    individual = 12, mutual = 6
+  )
+
+sehl_individual12_mutual10 <- sehl_blank %>%
+  mutate(
+    edge = case_when(
+      # 1 and 2's mutual friends
+      (from %in% 1:2) & (to %in% 3:12) ~ 1,
+      (to %in% 1:2) & (from %in% 3:12) ~ 1,
+      # 1's non-mutual friends
+      (from == 1) & (to %in% 13:14) ~ 1,
+      (to == 1) & (from %in% 13:14) ~ 1,
+      # 2's non-mutual friends
+      (from == 2) & (to %in% 15:16) ~ 1,
+      (to == 2) & (from %in% 15:16) ~ 1,
+      # Otherwise assume no friendship
+      TRUE ~ 0
+    ),
+    individual = 12, mutual = 10
+  )
+
+sehl_networks <- bind_rows(
+  sehl_individual6_mutual1,
+  sehl_individual6_mutual3,
+  sehl_individual6_mutual5,
+  sehl_individual12_mutual2,
+  sehl_individual12_mutual6,
+  sehl_individual12_mutual10
+)
+```
+
+Now we can use those to simulate SRs at a different gammas. Instead of training an SR via reinforcement learning, we're using an analytical version. We do this because subjects in this study did no learning; they simply observed a single "slice" through the network, then made judgments. The use of an analytical SR is more mechanistically descriptive of this kind of representation.
+
+```{r func-sim-sr}
+compute_sr <- function(df, sr_gamma) {
+  trans_matrix <- df %>%
+    select(from, to, edge) %>%
+    group_by(from) %>%
+    mutate(
+      edge = edge / sum(edge),
+      edge = if_else(is.nan(edge), 0, edge)
+    ) %>%
+    ungroup() %>%
+    pivot_wider(names_from = to, values_from = edge) %>%
+    select(-from) %>%
+    as.matrix()
+  
+  # 24 = number of nodes in network
+  sr <- solve(diag(24) - (sr_gamma * trans_matrix)) %>%
+    data.frame() %>%
+    mutate(from = row_number()) %>%
+    pivot_longer(-from, names_to = "to") %>%
+    mutate(
+      to = str_remove(to, "X"),
+      mutate(across(c(from, to), as.integer)),
+      # Normalize SR values
+      value = value / (1 / (1 - sr_gamma))
+    )
+  
+  return(sr)
+}
+```
+
+```{r build-sr-sim}
+sehl_sr_sim <- sehl_networks %>%
+  expand_grid(gamma = seq(0.1, 0.9, 0.1)) %>%
+  group_by(individual, mutual, gamma) %>%
+  nest() %>%
+  mutate(
+    simulated = map2(
+      .x = data,
+      .y = gamma,
+      .f = ~compute_sr(.x, .y)
+    )
+  ) %>%
+  ungroup() %>%
+  unnest(simulated) %>%
+  select(-data) %>%
+  # Most of SR is redundant, keep only informative info
+  filter(from == 1 & to %in% 2:3) %>%
+  mutate(
+    target = if_else(to == 2, "Unknown Inference", "Known Friend"),
+    mutual_prop = case_when(
+      mutual / individual == 1/6 ~ "Low (1:6)",
+      (mutual / individual == 3/6) & individual != 10 ~ "Medium (1:2)",
+      mutual / individual == 5/6 ~ "High (5:6)"
+    ),
+    mutual_prop = fct_relevel(mutual_prop, "Low (1:6)", "Medium (1:2)"),
+    n_friends = case_when(
+      individual == 6 ~ "Few Friends (6)",
+      individual == 10 ~ "Many Friends (10)",
+      individual == 12 ~ "Many Friends (12)"
+    )
+  )
+```
+
+# Visualize simulations
+
+First, let's try plotting the raw SR values. This visualization demonstrates two things. First, given the information made available to subjects in the Sehl et al study, the SR value between Sam and Dani only depends on the *proportion* of mutual friends. Second, the SR value for a *known* friend only depends on the total number of friends Sam and Dani each have.
+
+```{r plot-sr-sim-values}
+sehl_sr_sim %>%
+  mutate(gamma = str_c("\u03B3 = ", gamma)) %>%
+  ggplot(aes(x=mutual_prop, y=value, fill=target)) +
+  gg +
+  ggtitle("Experiment 3 SR") +
+  facet_grid(
+    rows = vars(gamma),
+    cols = vars(n_friends),
+    scales = "free_y"
+  ) +
+  geom_col(color = "black", position = position_dodge()) +
+  scale_x_discrete(
+    name = "Proportion of Mutual Friends",
+    labels = ~str_wrap(.x, width = 5)
+  ) +
+  scale_y_continuous(name = "SR Value") +
+  scale_fill_manual(name = "Target", values = c("grey90", "grey50")) +
+  theme(legend.position = "bottom")
+```
+
+How might this translate into behavior? It's a little bit tricky translating this into Likert scale ratings, so as a proxy, let's just try to model the probability of inferring friendship between Sam and Dani. We assume an agent does this by comparing the Sam-to-Dani SR value against the Sam-to-known-friend / Dani-to-known friend SR value (in this study setup, they're exactly the same), then making a binary "yes/no" judgment about whether Sam and Dani are friends. Mathematically, we'll model this using a softmax comparing the SR values.
+
+```{r plot-sr-sim-choices}
+sehl_sr_sim %>%
+  expand_grid(softmax_temp = c(1/10, 1/20)) %>%
+  select(softmax_temp, gamma, target, mutual_prop, n_friends, value) %>%
+  pivot_wider(names_from = target) %>%
+  rowwise() %>%
+  mutate(
+    p_infer = softmax(
+      option_values = c(`Unknown Inference`, `Known Friend`),
+      option_chosen = 1,
+      temperature = softmax_temp
+    ),
+    # Plot distance from indifference point
+    p_infer = p_infer - 0.5
+  ) %>%
+  ungroup() %>%
+  select(softmax_temp, gamma, mutual_prop, n_friends, p_infer) %>%
+  # Pretty plotting labels
+  mutate(
+    gamma = str_c("\u03B3 = ", gamma),
+    softmax_temp = str_c("\u03C4 = ", softmax_temp)
+  ) %>%
+  ggplot(aes(x=mutual_prop, y=p_infer, fill=n_friends)) +
+  gg +
+  ggtitle("Experiment 3 Simulated") +
+  facet_grid(
+    cols = vars(gamma),
+    rows = vars(softmax_temp)
+  ) +
+  geom_col(color = "black", position = position_dodge()) +
+  geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
+  scale_x_discrete(name = "Proportion of Mutual Friends") +
+  scale_y_continuous(
+    name = "p(Infer Friendship)",
+    # Trick to relabel axis so that true-0 is labeled as 0.5=50%
+    labels = ~scales::percent(.x + 0.5)
+  ) +
+  scale_fill_manual(
+    name = "# Total Friends", values = c("#2c7bb6", "#fdae61")
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Fit SR
+
+Let's try fitting the SR to subjects' data. We'll need an objective function...
+
+```{r def-obj-fun}
+obj_fun <- function(param_values, param_names, fit_data, network_data) {
+  # Assign variable names/values automatically
+  for (j in 1:length(param_names)) {
+    assign(param_names[j], param_values[j])
+  }
+  
+  # Bound SR gamma to [0, 1)
+  sr_gamma <- logistic_general(
+    x = sr_gamma,
+    lower_bound = 0,
+    # SR becomes undefined when gamma = 1
+    upper_bound = 0.99
+  )
+  
+  model_predictions <- network_data %>%
+    group_by(individual, mutual) %>%
+    nest() %>%
+    mutate(
+      simulated = map2(
+        .x = data,
+        .y = sr_gamma,
+        .f = ~compute_sr(.x, .y)
+      )
+    ) %>%
+    ungroup() %>%
+    unnest(simulated) %>%
+    select(-data) %>%
+    # Most of SR is redundant, keep only informative info
+    filter(from == 1 & to %in% 2:3) %>%
+    mutate(
+      target = if_else(to == 2, "Unknown Inference", "Known Friend"),
+      mutual_prop = case_when(
+        mutual / individual == 1/6 ~ "Low (1:6)",
+        (mutual / individual == 3/6) & individual != 10 ~ "Medium (1:2)",
+        mutual / individual == 5/6 ~ "High (5:6)"
+      ),
+      mutual_prop = fct_relevel(mutual_prop, "Low (1:6)", "Medium (1:2)"),
+      n_friends = case_when(
+        individual == 6 ~ "Few Friends (6)",
+        individual == 10 ~ "Many Friends (10)",
+        individual == 12 ~ "Many Friends (12)"
+      )
+    ) %>%
+    # Compute predicted probability of inferring friendship
+    select(target, mutual_prop, n_friends, value) %>%
+    pivot_wider(names_from = target) %>%
+    rowwise() %>%
+    mutate(
+      p_infer = softmax(
+        option_values = c(`Unknown Inference`, `Known Friend`),
+        option_chosen = 1,
+        temperature = softmax_tau
+      )
+    ) %>%
+    ungroup() %>%
+    select(mutual_prop, n_friends, p_infer)
+  
+  sum_neg_loglik <- fit_data %>%
+    left_join(model_predictions, by = c("n_friends", "mutual_prop")) %>%
+    mutate(
+      likelihood = if_else(choice == 1, p_infer, 1 - p_infer),
+      neg_ll = neg_loglik_logistic(likelihood)
+    ) %>%
+    summarise(neg_ll = sum(neg_ll)) %>%
+    deframe()
+  
+  return(sum_neg_loglik)
+}
+```
+
+It would take a long, long, long time to fit the model to each subject's data: the optimization requires a costly matrix inversion, and it would take a while to run this even using the cluster. Since we're primarily interested in knowing whether the model can replicate the group-level pattern, we'll average over all subjects' responses. To convert Likert scale responses into binary choices (for the sake of modeling), we'll take the likelihood judgments ("how likely is it that these two people are friends?") at face value: responses of -3 correspond to 0%, and responses of +3 correspond to 100%. We'll then create 100 trials per condition, with an appropriate number of "yes they're friends" responses based on the average likelihood rating in each condition.
+
+```{r fit-sr}
+fit_data <- sehl_exp3 %>%
+  mutate(
+    response = response + abs(min(response)),
+    p = response / max(response)
+  ) %>%
+  group_by(n_friends, mutual_prop) %>%
+  summarise(p = round(mean(p), 2) * 100, .groups = "drop") %>%
+  expand_grid(trial = 1:100) %>%
+  mutate(choice = as.numeric(trial <= p))
+
+# Set a random seed for reproducibility
+set.seed(sum(utf8ToInt("sehl")))
+
+# Run the optimizer a few times under different starting parameters
+for (j in 1:5) {
+  tryCatch(
+    expr = {
+      this_run <- run_optim(
+        max_iter_per_run = 1000,
+        objective_function = obj_fun,
+        param_guesses = runif(2, -1, 1),
+        param_names = c("sr_gamma", "softmax_tau"),
+        # Supply arguments to objective function
+        fit_data = fit_data,
+        network_data = sehl_networks
+      ) %>% mutate(optimizer_run = j)
+      
+      if (j == 1) {
+        out <- this_run
+      } else {
+        out <- bind_rows(out, this_run)
+      }
+    },
+    finally = {function(e) {warning(str_c("tryCatch error caught on run ", j))}}
+  )
+}
+
+params <- best_optim_run(out, "dataframe") %>%
+  mutate(
+    param_value = if_else(
+      param_name == "sr_gamma",
+      logistic_general(param_value, 0, 0.99),
+      param_value
+    )
+  ) %>%
+  select(param_name, param_value) %>%
+  pivot_wider(names_from = param_name, values_from = param_value)
+
+params
+```
+
+# Visualize for paper
+
+Alright, let's visualize the model's predictions and put together the figure for the paper.
+
+```{r plot-everything}
+sim_sr_values <- sehl_networks %>%
+  group_by(individual, mutual) %>%
+  nest() %>%
+  mutate(
+    simulated = map(
+      .x = data,
+      .f = ~compute_sr(.x, params$sr_gamma)
+    )
+  ) %>%
+  ungroup() %>%
+  unnest(simulated) %>%
+  select(-data) %>%
+  # Most of SR is redundant, keep only informative info
+  filter(from == 1 & to %in% 2:3) %>%
+  mutate(
+    target = if_else(to == 2, "Unknown Inference", "Known Friend"),
+    mutual_prop = case_when(
+      mutual / individual == 1/6 ~ "Low (1:6)",
+      (mutual / individual == 3/6) & individual != 10 ~ "Medium (1:2)",
+      mutual / individual == 5/6 ~ "High (5:6)"
+    ),
+    mutual_prop = fct_relevel(mutual_prop, "Low (1:6)", "Medium (1:2)"),
+    n_friends = case_when(
+      individual == 6 ~ "Few Friends (6)",
+      individual == 10 ~ "Many Friends (10)",
+      individual == 12 ~ "Many Friends (12)"
+    )
+  )
+
+plot_sr_values <- sim_sr_values %>%
+  # Plot
+  ggplot(aes(x=mutual_prop, y=value, fill=target)) +
+  gg +
+  ggtitle(str_c("Experiment 3 SR, \u03B3 = ", round(params$sr_gamma, 2))) +
+  facet_grid(cols = vars(n_friends)) +
+  geom_col(color = "black", position = position_dodge()) +
+  scale_x_discrete(
+    name = "Proportion of Mutual Friends",
+    labels = ~str_wrap(.x, width = 5)
+  ) +
+  scale_y_continuous(name = "SR Value") +
+  scale_fill_manual(name = "Target:", values = c("grey90", "grey50")) +
+  theme(legend.position = "bottom")
+
+plot_choice <- sim_sr_values %>%
+  select(target, mutual_prop, n_friends, value) %>%
+  pivot_wider(names_from = target) %>%
+  rowwise() %>%
+  mutate(
+    p_infer = softmax(
+      option_values = c(`Unknown Inference`, `Known Friend`),
+      option_chosen = 1,
+      temperature = params$softmax_tau
+    ),
+    # Plot distance from indifference point
+    p_infer = p_infer - 0.5
+  ) %>%
+  ungroup() %>%
+  select(mutual_prop, n_friends, p_infer) %>%
+  ggplot(aes(x=mutual_prop, y=p_infer, fill=n_friends)) +
+  gg +
+  ggtitle("Experiment 3 Simulated") +
+  geom_col(color = "black", position = position_dodge()) +
+  geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
+  scale_x_discrete(name = "Proportion of Mutual Friends") +
+  scale_y_continuous(
+    name = "p(Infer Friendship)",
+    # Trick to relabel axis so that true-0 is labeled as 0.5=50%
+    labels = ~scales::percent(.x + 0.5)
+  ) +
+  scale_fill_manual(
+    name = "# Total Friends:", values = c("#2c7bb6", "#fdae61")
+  ) +
+  theme(legend.position = "bottom")
+
+figure_for_paper <- (plot_exp3 | plot_sr_values | plot_choice) +
+  plot_annotation(
+    title = str_c(
+      "Inferring Relations from Mutual Friends ",
+      "(Sehl, Friedman, & Denison 2022)"
+    ),
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 15))
+  ) +
+  plot_layout(guides = "collect") &
+  theme(
+    legend.position = "bottom"
+  )
+
+figure_for_paper
+
+ggsave(
+  here("outputs", workflow_name, "sehl-2022.pdf"),
+  figure_for_paper,
+  width = 12, height = 4,
+  device = cairo_pdf, units = "in", dpi = 300
+)
+```

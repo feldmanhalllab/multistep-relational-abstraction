@@ -93,3 +93,13 @@ cd ~/Documents/GitHub/multistep-relational-abstraction/code/05-analyze-butterfly
 source ./analyze-butterfly-fits.sh
 ```
 
+
+## Workflow 6: Reanalyze Sehl et al dataset
+
+Test whether the SR can explain the data from Sehl, Friedman, & Denison 2022.
+
+```bash
+cd ~/Documents/GitHub/multistep-relational-abstraction/code/06-sehl
+source ./sehl.sh
+```
+
