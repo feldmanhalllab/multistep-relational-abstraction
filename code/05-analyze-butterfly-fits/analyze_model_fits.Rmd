@@ -1,0 +1,1079 @@
+---
+title: "Analyze butterfly computational model fits"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: true
+---
+
+# Setup
+
+```{r setup}
+workflow_name <- "05-analyze-butterfly-fits"
+
+library(tidyverse)
+library(here)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+library(patchwork)
+library(tidygraph)
+
+kable <- knitr::kable
+
+source(here("code", "utils", "modeling_utils.R"))
+source(here("code", "utils", "representation_utils.R"))
+
+knitting <- knitr::is_html_output()
+scaling_constant <- 10
+
+check_significance <- function(tidy_stats) {
+  tidy_stats %>%
+    mutate(
+      significance = case_when(
+        p.value < 0.001 ~ "***",
+        p.value < 0.01 ~ "**",
+        p.value < 0.05 ~ "*",
+        p.value < 0.1 ~ ".",
+        TRUE ~ ""
+      )
+    )
+}
+
+gg <- list(
+  theme_bw(),
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 13),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.spacing = unit(0.75, "lines"),
+    legend.box.spacing = unit(0.5, "lines"),
+    legend.margin = margin(c(0, 0, 0, 0), unit = "lines")
+  )
+)
+
+if (!dir.exists(here("outputs", workflow_name))) {
+  dir.create(here("outputs", workflow_name))
+}
+```
+
+# Load data
+
+We'll first load in all of the parameter fits. This will take a minute...
+
+```{r load-params}
+raw <- here("data", "butterfly-param-fits") %>%
+  fs::dir_ls(glob = "*.csv") %>%
+  map_dfr(
+    .f = ~read_csv(.x, show_col_types = FALSE),
+    .id = "filename"
+  ) %>%
+  mutate(
+    task = if_else(str_detect(filename, "trust"), "Trust", "Memory"),
+    study = case_when(
+      str_detect(filename, "walk") ~ "Random Walks",
+      str_detect(filename, "pair") ~ "Paired Associates"
+    ),
+    sub_id = str_extract(filename, "sub_[[:digit:]]+"),
+    sub_id = str_remove(sub_id, "sub_"),
+    model = case_when(
+      str_detect(filename, "-memorization-") & str_detect(filename, "-sr-") ~
+        "Mem. + SR",
+      str_detect(filename, "-memorization-") ~ "Mem.",
+      str_detect(filename, "-sr-") ~ "SR",
+    )
+  ) %>%
+  select(task, study, sub_id, model, everything(), -filename) %>%
+  type_convert(col_types = cols()) %>%
+  mutate(
+    param_value = if_else(
+      param_name == "sr_gamma",
+      logistic_general(param_value, 0, 0.99),
+      param_value
+    )
+  )
+```
+
+For each model/subject, we'll want to make sure that there's only a single "best" likelihood. The following code ought to return an empty table.
+
+```{r check-single-best-likelihood}
+raw %>%
+  select(task, study, sub_id, model, optim_value, optimizer_run) %>%
+  distinct() %>%
+  group_by(study, sub_id, model) %>%
+  slice_min(order_by = optim_value) %>%
+  tally() %>%
+  filter(n > 1) %>%
+  kable()
+```
+
+We'll now create a new dataframe containing only the best estimates for each model/subject.
+
+```{r best-fits-only}
+fits <- raw %>%
+  group_by(task, study, sub_id, model) %>%
+  slice_min(optim_value) %>%
+  ungroup() %>%
+  mutate(label = str_c(study, task, sep = ", ")) %>%
+  mutate(
+    label = fct_relevel(
+      label, "Random Walks, Memory", "Paired Associates, Memory"
+    )
+  ) %>%
+  arrange(task, study, sub_id, model) %>%
+  # Unexpectedly, the optimizer still tried to estimate params for subjects
+  # with missing data. So we need to get rid of those meaningless estimates
+  filter(!(study == "Paired Associates" & sub_id %in% c(2, 16)))
+```
+
+We'll want to make sure that in the Random Walks study, we always have 60 datapoints, and in the Paired Associates study, we always have 28 datapoints.
+
+```{r check-fits-completeness}
+fits %>%
+  select(task, study, sub_id, model) %>%
+  distinct() %>%
+  count(study, task, model) %>%
+  kable()
+```
+
+Finally, we'll want to load in some behavioral data and predicted representations. This will later help us create posterior predictive checks.
+
+```{r load-behavior}
+adjlist <- here("data", "butterfly-network", "adjlist.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+walk_learn <- here("data", "butterfly-behavior", "walk_learn.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+walk_mem <- here("data", "butterfly-behavior", "walk_mem.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+pair_learn <- here("data", "butterfly-behavior", "pair_learn.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+pair_mem <- here("data", "butterfly-behavior", "pair_mem.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+pair_trust <- here("data", "butterfly-behavior", "pair_trust.csv") %>%
+  read_csv(show_col_types = FALSE)
+
+memorization <- here(
+  "data", "butterfly-fixed-predictions", "network_experts.csv"
+) %>%
+  read_csv(show_col_types = FALSE) %>%
+  select(from, to, memorize_value)
+```
+
+# BICs
+
+We first want to get a sense for the models' goodness-of-fit. In the plots below, each subject's model BIC is a single datapoint. The red line is the overall mean, and the blue line is the overall median.
+
+For the memory data (both the random walks and paired associates studies), the BIC differences don't really point to a definitive "best" model. So we'll want to pay close attention to the posterior predictive checks, as we want to identify models that can do a good job of explaining schema-like representations in memory.
+
+*A priori*, we have good theoretical reasons to favor an SR-only model, as it does everything "all-in-one": it memorizes, it does triad completion, and it does community detection. And of course, it's the primary cognitive mechanism we have hypotheses about. From a statistical modeling perspective, we might also be curious to see whether our interpretation of the data would dramatically change if we'd looked at a model incorporating both memorization and the SR, which would also allow us to test whether use of the SR remains significant even after accounting for memorization.
+
+```{r compute-bic}
+model_bic <- fits %>%
+  select(label, task, study, sub_id, model, optim_value) %>%
+  distinct() %>%
+  mutate(
+    # Intercept/baseline
+    n_params = 1,
+    # Add param for each weight; SR gets extra for gamma
+    n_params = if_else(str_detect(model, "Mem"), n_params + 1, n_params),
+    n_params = if_else(str_detect(model, "SR"), n_params + 2, n_params),
+    # Number of trials in the memory/trust task
+    n_datapoints = if_else(study == "Random Walk", 13*12/2, 13*12), 
+    bic = calculate_bic(
+      n_params = n_params,
+      n_datapoints = n_datapoints,
+      neg_loglik = optim_value
+    )
+  )
+
+model_bic %>%
+  group_by(task, study, model) %>%
+  summarise(Mean = mean(bic), Median = median(bic), .groups = "drop") %>%
+  group_by(task, study) %>%
+  arrange(Median) %>%
+  kable()
+
+model_bic %>%
+  mutate(model = fct_relevel(model, "Mem.", "SR", "Mem. + SR")) %>%
+  ggplot(aes(x=model, y=bic)) +
+  gg +
+  ggtitle("Computational Model Goodness-of-Fit") +
+  facet_wrap(~label, scales = "free_y") +
+  geom_point(alpha = 0.25) +
+  geom_line(aes(group = sub_id), alpha = 0.5) +
+  stat_summary(geom = "crossbar", fun = mean, color = "red", width = 0.75) +
+  stat_summary(geom = "crossbar", fun = median, color = "blue", width = 0.75) +
+  scale_x_discrete(name = "Model", labels = ~str_wrap(.x, 8)) +
+  ylab("BIC")
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "bic.pdf"),
+    width = 8, height = 6, units = "in", dpi = 300
+  )
+}
+```
+
+# Exploratory data analysis
+
+## Parameter weights
+
+Let's take a look at what the parameter weights are. Even though we're most interested in the "full" model, we can just check to see whether the interpretations drastically change in any of the other models.
+
+Across the board, we can see that the SR is estimated to have a positive average weight whenever it's part of the mix. Race, as the other inferential strategy, also has a positive average weight whenever it's not competing with the SR.
+
+```{r exploratory-weights}
+#| fig.height=8,
+#| fig.width=8
+
+fits %>%
+  filter(param_name != "sr_gamma") %>%
+  mutate(
+    param_name = case_when(
+      param_name == "w_naught" ~ "Intercept",
+      param_name == "w_mem" ~ "Mem.",
+      param_name == "w_sr" ~ "SR",
+    )
+  ) %>%
+  mutate(model = fct_relevel(model, "Mem.", "SR", "Mem. + SR")) %>%
+  ggplot(aes(x=param_name, y=param_value)) +
+  gg +
+  ggtitle("Estimated Model Weights") +
+  facet_grid(
+    rows = vars(label),
+    cols = vars(model),
+    scales = "free"
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_point(alpha = 0.5, position = position_jitter(width = 0.1)) +
+  stat_summary(
+    mapping = aes(group = model),
+    geom = "crossbar", fun = mean, color = "red",
+    position = position_dodge(width = 0.8), width = 0.75,
+  ) +
+  xlab("Weight Parameter") +
+  ylab("Parameter Value (a.u.)") +
+  theme(legend.position = "bottom")
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "weights_all.pdf"),
+    width = 8, height = 8, units = "in", dpi = 300
+  )
+}
+```
+
+## SR gammas
+
+While we know that people (on average) seem to place a positive weight on the SR, we don't know what exactly that means yet. The model was allowed to estimate gammas anywhere in the range of [0, 1), so it's entirely possible that the model is estimating gammas (functionally) equal to 0, which is exactly the same as memorization. Obviously, an "SR" with a near-zero gamma isn't implementing any sort of multistep relational abstraction, even if it has a significantly non-zero weight.
+
+So, let's take a look at what our models are estimating.
+
+From this, we observe a few patterns:
+
+1. In the memory task, we're getting roughly comparable lookaheads (monotonically related to gamma) whether memorization is included in the model or not.
+2. In the Paired Associates dataset, we see that the lookahead is larger for the trust task than the memory task.
+
+```{r exploratory-gamma}
+fits %>%
+  filter(param_name == "sr_gamma") %>%
+  mutate(lookahead = 1 / (1-param_value)) %>%
+  group_by(task, study, model) %>%
+  summarise(
+    mean_lookahead = mean(lookahead),
+    median_lookahead = median(lookahead),
+    .groups = "drop"
+  ) %>%
+  kable()
+
+fits %>%
+  filter(param_name == "sr_gamma") %>%
+  mutate(
+    lookahead = 1 / (1-param_value),
+    model = fct_relevel(model, "SR", "Mem. + SR"),
+    label = str_c(study, " (", model, ")")
+  ) %>%
+  # Now plot
+  ggplot(aes(x=task, y=lookahead)) +
+  gg +
+  ggtitle("Computational Model Parameter Estimates") +
+  facet_wrap(~label, scales = "free_x") +
+  xlab("Task") +
+  scale_y_continuous(
+    name = "Lookahead (# Steps)",
+    sec.axis = sec_axis(
+      trans = ~ 1 - (1/.),
+      name = "Equivalent \u03B3",
+      breaks = c(0, 0.5, 0.7, 0.8, 0.9, 0.95)
+    )
+  ) +
+  coord_cartesian(ylim = c(0, 35)) +
+  geom_point(alpha = 0.5, position = position_jitter(width = 0.2, seed = 1)) +
+  stat_summary(
+    aes(group = task),
+    geom = "crossbar", fun = mean,
+    width = 0.5, color = "red",
+  )
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "gammas_all.pdf"),
+    width = 8, height = 8, units = "in", dpi = 300,
+    device = cairo_pdf
+  ) 
+}
+```
+
+# PPC
+
+When we use the estimated parameters to simulate behavior, how well can the model capture what's going on in participants' empirical/actual behavior? Since BIC doesn't give us a slam-dunk answer, we'll need to use the posterior predictive check (PPC) to help guide model selection. What we can clearly see below is that the SR uniquely predicts systematic "errors" people make, which resemble the schema-like representation we've previously considered in the simulation study. Moreover, it seems that memorization is not really contributing very much to overall representation when it is included in the model; the SR is really carrying the weight.
+
+## SR-only
+
+```{r ppc-sr-only}
+ppc_sr <- bind_rows(
+  walk_learn %>%
+    mutate(study = "Random Walks") %>%
+    select(study, sub_id, from, to),
+  pair_learn %>%
+    mutate(study = "Paired Associates") %>%
+    select(study, sub_id, from, to),
+) %>%
+  # Compute SR values
+  left_join(
+    fits %>%
+      filter(model == "SR") %>%
+      filter(param_name == "sr_gamma") %>%
+      select(study, task, sub_id, gamma = param_value),
+    by = c("study", "sub_id")
+  ) %>%
+  group_by(study, task, sub_id, gamma) %>%
+  nest() %>%
+  mutate(
+    sr = map2(
+      .x = data,
+      .y = gamma,
+      .f = ~build_rep_sr(
+        learning_data = .x,
+        this_alpha = 0.1,
+        this_gamma = .y
+      )
+    )
+  ) %>%
+  unnest(sr) %>%
+  select(-data) %>%
+  ungroup() %>%
+  # Convert model parameters into predicted behaviors
+  left_join(
+    fits %>%
+      filter(model == "SR") %>%
+      filter(param_name != "sr_gamma") %>%
+      select(study, task, sub_id, param_name, param_value),
+    by = c("study", "task", "sub_id")
+  ) %>%
+  pivot_wider(names_from = "param_name", values_from = "param_value") %>%
+  mutate(
+    predicted_intercept = w_naught * scaling_constant,
+    predicted_sr = w_sr * sr_value * scaling_constant,
+    predicted_overall = predicted_intercept + predicted_sr
+  ) %>%
+  mutate(
+    predicted_intercept = logistic_standard(predicted_intercept),
+    predicted_sr = logistic_standard(predicted_sr),
+    predicted_overall = logistic_standard(predicted_overall)
+  ) %>%
+  # Add subjects' behaviors
+  left_join(
+    bind_rows(
+      # Random Walks: only task is memory. Measurements assume A->B was the
+      # same as B->A, so need to flip from/to labels (for plotting)
+      walk_mem %>%
+        mutate(study = "Random Walks", task = "Memory") %>%
+        select(study, task, sub_id, from, to, choice),
+      walk_mem %>%
+        mutate(study = "Random Walks", task = "Memory") %>%
+        select(study, task, sub_id, from = to, to = from, choice),
+      # Paired Associates: memory and trust tasks
+      pair_mem %>%
+        mutate(study = "Paired Associates", task = "Memory") %>%
+        select(study, task, sub_id, from, to, choice),
+      pair_trust %>%
+        mutate(study = "Paired Associates", task = "Trust") %>%
+        select(study, task, sub_id, from, to, choice = response) %>%
+        mutate(choice = choice/10)
+    ),
+    by = c("study", "task", "sub_id", "from", "to")
+  )
+
+ppc_sr %>%
+  mutate(label = str_c(study, "\n(", task, ")")) %>%
+  select(label, from, to, choice, starts_with("predicted")) %>%
+  group_by(label, from, to) %>%
+  summarise(
+    choice = mean(choice),
+    across(starts_with("predicted"), mean),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(choice:predicted_overall) %>%
+  mutate(
+    label = fct_relevel(
+      label, "Random Walks\n(Memory)", "Paired Associates\n(Memory)"
+    ),
+    name = case_when(
+      name == "choice" ~ "Choice",
+      name == "predicted_overall" ~ "Overall Prediction",
+      name == "predicted_sr" ~ "SR",
+      name == "predicted_intercept" ~ "Intercept",
+    ),
+    name = fct_relevel(name, "Choice", "Overall Prediction", "SR"),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  filter(from != to) %>%
+  ggplot(aes(x=to, y=from, fill=value)) +
+  gg +
+  ggtitle("Posterior Predictive Check") +
+  facet_grid(
+    rows = vars(label),
+    cols = vars(name)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    na.value = "white",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "ppc_sr.pdf"),
+    width = 6, height = 6, units = "in", dpi = 300,
+    device = cairo_pdf
+  )
+}
+```
+
+## Memorization-only
+
+```{r ppc-mem-only}
+ppc_mem <- bind_rows(
+  # Subject's behaviors
+  # Random Walks: only task is memory. Measurements assume A->B was the
+  # same as B->A, so need to flip from/to labels (for plotting)
+  walk_mem %>%
+    mutate(study = "Random Walks", task = "Memory") %>%
+    select(study, task, sub_id, from, to, choice),
+  walk_mem %>%
+    mutate(study = "Random Walks", task = "Memory") %>%
+    select(study, task, sub_id, from = to, to = from, choice),
+  # Paired Associates: memory and trust tasks
+  pair_mem %>%
+    mutate(study = "Paired Associates", task = "Memory") %>%
+    select(study, task, sub_id, from, to, choice),
+  pair_trust %>%
+    mutate(study = "Paired Associates", task = "Trust") %>%
+    select(study, task, sub_id, from, to, choice = response) %>%
+    mutate(choice = choice/10)
+) %>%
+  # Add memorization (fixed strategy)
+  left_join(memorization, by = c("from", "to")) %>%
+  # Convert model parameters into predicted behaviors
+  left_join(
+    fits %>%
+      filter(model == "Mem.") %>%
+      filter(param_name != "sr_gamma") %>%
+      select(study, task, sub_id, param_name, param_value),
+    by = c("study", "task", "sub_id")
+  ) %>%
+  pivot_wider(names_from = "param_name", values_from = "param_value") %>%
+  mutate(
+    predicted_intercept = w_naught * scaling_constant,
+    predicted_mem = w_mem * memorize_value * scaling_constant,
+    predicted_overall = predicted_intercept + predicted_mem
+  ) %>%
+  mutate(
+    predicted_intercept = logistic_standard(predicted_intercept),
+    predicted_mem = logistic_standard(predicted_mem),
+    predicted_overall = logistic_standard(predicted_overall)
+  )
+
+ppc_mem %>%
+  mutate(label = str_c(study, "\n(", task, ")")) %>%
+  select(label, from, to, choice, starts_with("predicted")) %>%
+  group_by(label, from, to) %>%
+  summarise(
+    choice = mean(choice),
+    across(starts_with("predicted"), mean),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(choice:predicted_overall) %>%
+  mutate(
+    label = fct_relevel(
+      label, "Random Walks\n(Memory)", "Paired Associates\n(Memory)"
+    ),
+    name = case_when(
+      name == "choice" ~ "Choice",
+      name == "predicted_overall" ~ "Overall Prediction",
+      name == "predicted_mem" ~ "Memorization",
+      name == "predicted_intercept" ~ "Intercept",
+    ),
+    name = fct_relevel(name, "Choice", "Overall Prediction", "Memorization"),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  filter(from != to) %>%
+  ggplot(aes(x=to, y=from, fill=value)) +
+  gg +
+  ggtitle("Posterior Predictive Check") +
+  facet_grid(
+    rows = vars(label),
+    cols = vars(name)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    na.value = "white",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "ppc_memorization.pdf"),
+    width = 6, height = 6, units = "in", dpi = 300,
+    device = cairo_pdf
+  )
+}
+```
+
+## Memorization + SR
+
+```{r ppc-mem-sr}
+ppc_mem_sr <- bind_rows(
+  walk_learn %>%
+    mutate(study = "Random Walks") %>%
+    select(study, sub_id, from, to),
+  pair_learn %>%
+    mutate(study = "Paired Associates") %>%
+    select(study, sub_id, from, to),
+) %>%
+  # Compute SR values
+  left_join(
+    fits %>%
+      filter(model == "Mem. + SR") %>%
+      filter(param_name == "sr_gamma") %>%
+      select(study, task, sub_id, gamma = param_value),
+    by = c("study", "sub_id")
+  ) %>%
+  group_by(study, task, sub_id, gamma) %>%
+  nest() %>%
+  mutate(
+    sr = map2(
+      .x = data,
+      .y = gamma,
+      .f = ~build_rep_sr(
+        learning_data = .x,
+        this_alpha = 0.1,
+        this_gamma = .y
+      )
+    )
+  ) %>%
+  unnest(sr) %>%
+  select(-data) %>%
+  ungroup() %>%
+  # Add memorization (fixed strategy)
+  left_join(memorization, by = c("from", "to")) %>%
+  # Convert model parameters into predicted behaviors
+  left_join(
+    fits %>%
+      filter(model == "Mem. + SR") %>%
+      filter(param_name != "sr_gamma") %>%
+      select(study, task, sub_id, param_name, param_value),
+    by = c("study", "task", "sub_id")
+  ) %>%
+  pivot_wider(names_from = "param_name", values_from = "param_value") %>%
+  mutate(
+    predicted_intercept = w_naught * scaling_constant,
+    predicted_sr = w_sr * sr_value * scaling_constant,
+    predicted_mem = w_mem * memorize_value * scaling_constant,
+    predicted_overall = predicted_intercept + predicted_sr + predicted_mem
+  ) %>%
+  mutate(
+    predicted_intercept = logistic_standard(predicted_intercept),
+    predicted_sr = logistic_standard(predicted_sr),
+    predicted_mem = logistic_standard(predicted_mem),
+    predicted_overall = logistic_standard(predicted_overall)
+  ) %>%
+  # Add subjects' behaviors
+  left_join(
+    bind_rows(
+      # Random Walks: only task is memory. Measurements assume A->B was the
+      # same as B->A, so need to flip from/to labels (for plotting)
+      walk_mem %>%
+        mutate(study = "Random Walks", task = "Memory") %>%
+        select(study, task, sub_id, from, to, choice),
+      walk_mem %>%
+        mutate(study = "Random Walks", task = "Memory") %>%
+        select(study, task, sub_id, from = to, to = from, choice),
+      # Paired Associates: memory and trust tasks
+      pair_mem %>%
+        mutate(study = "Paired Associates", task = "Memory") %>%
+        select(study, task, sub_id, from, to, choice),
+      pair_trust %>%
+        mutate(study = "Paired Associates", task = "Trust") %>%
+        select(study, task, sub_id, from, to, choice = response) %>%
+        mutate(choice = choice/10)
+    ),
+    by = c("study", "task", "sub_id", "from", "to")
+  )
+
+ppc_mem_sr %>%
+  mutate(label = str_c(study, "\n(", task, ")")) %>%
+  select(label, from, to, choice, starts_with("predicted")) %>%
+  group_by(label, from, to) %>%
+  summarise(
+    choice = mean(choice),
+    across(starts_with("predicted"), mean),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(choice:predicted_overall) %>%
+  mutate(
+    label = fct_relevel(
+      label, "Random Walks\n(Memory)", "Paired Associates\n(Memory)"
+    ),
+    name = case_when(
+      name == "choice" ~ "Choice",
+      name == "predicted_overall" ~ "Overall Prediction",
+      name == "predicted_sr" ~ "SR",
+      name == "predicted_mem" ~ "Memorization",
+      name == "predicted_intercept" ~ "Intercept",
+    ),
+    name = fct_relevel(
+      name, "Choice", "Overall Prediction", "SR", "Memorization"
+    ),
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  filter(from != to) %>%
+  ggplot(aes(x=to, y=from, fill=value)) +
+  gg +
+  ggtitle("Posterior Predictive Check") +
+  facet_grid(
+    rows = vars(label),
+    cols = vars(name)
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = "p(Friends)",
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    na.value = "white",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "ppc_mem_sr.pdf"),
+    width = 8, height = 8, units = "in", dpi = 300,
+    device = cairo_pdf
+  )
+}
+```
+
+
+# Analysis: SR
+
+At this point, we've seen that the SR is at least as good as memorization (according to BIC), and that the SR uniquely captures group-level patterns of behavior that memorization is incapable of explaining (based on the PPC). We've also observed in the exploratory data analysis that the SR holds up even when pitting it against memorization. So far, we haven't yet done any formal statistical testing, so we'll now (finally) get to the business of analyzing the parameter estimates from the SR-only model.
+
+## Parameter weights
+
+First, we want to know whether the parameter weights are significantly different from zero.
+
+```{r test-vs-zero}
+param_stats <- fits %>%
+  filter(model == "SR") %>%
+  filter(param_name != "sr_gamma") %>%
+  select(task, study, sub_id, param_name, param_value) %>%
+  group_by(task, study, param_name) %>%
+  nest() %>%
+  mutate(test = map(data, ~t.test(.x$param_value) %>% tidy())) %>%
+  unnest(test) %>%
+  ungroup() %>%
+  select(-c(data, method, alternative)) %>%
+  check_significance()
+
+param_stats %>%
+  kable()
+```
+
+## Gammas
+
+We hypothesized that the format of learning might affect the number of steps integrated over in memory. In other words, are the gammas lower for the Paired Associates learning task, compared to the Random Walks learning task?
+
+We'll try the naive approach first, which is just to use the raw estimates of gamma. In this statistical test, we can see that gammas are not significantly lower on average.
+
+```{r test-gammas-1}
+fits %>%
+  filter(task == "Memory") %>%
+  filter(model == "SR") %>%
+  filter(param_name == "sr_gamma") %>%
+  select(study, gamma = param_value) %>%
+  t.test(gamma ~ study, data = .) %>%
+  tidy() %>%
+  rename(pair_mean = estimate1, walk_mean = estimate2) %>%
+  kable()
+```
+
+Why is that the "naive" approach? Gamma has a nonlinear relationship with the "lookahead horizon", or the number of steps the SR integrates over with each learning observation. The formula for lookahead is $L = \frac{1}{1-\gamma}$, such that $L = 1 = \frac{1}{1-0}$, $L = 2 = \frac{1}{1-0.5}$, and $L = 3 = \frac{1}{1-(2/3)}$. Therefore, there are exponential increases in the lookahead horizon as gamma approaches its theoretical limit of $1$.
+
+What does this mean for our analysis? It means that even small changes in gamma (e.g., for $\gamma \gt 0.5$) can correspond to fairly large changes in the lookahead, which is psychologically quite meaningful. So, let's redo this analysis after converting the gammas into lookahead horizons. Sure enough, this analysis provides evidence for our hypothesis.
+
+```{r test-gammas-2}
+fits %>%
+  filter(task == "Memory") %>%
+  filter(model == "SR") %>%
+  filter(param_name == "sr_gamma") %>%
+  select(study, gamma = param_value) %>%
+  mutate(lookahead = 1 / (1-gamma)) %>%
+  t.test(lookahead ~ study, data = .) %>%
+  tidy() %>%
+  rename(pair_mean = estimate1, walk_mean = estimate2) %>%
+  kable()
+```
+
+## Trust prediction
+
+The trust prediction task was only administered in the Paired Associates sample, and required subjects to guess how much money network members would trust each other in an economic game (ranging from $0-10).
+
+By using the trust prediction data to fit the SR parameters, we've already seen that the SR seems capable of explaining how people made their decisions. However, we'd also like to do a little more to explicitly test whether/how memory representation affects trust inferences. To do this, we'll use the predicted SR *from the memory task* to predict behavior in the trust task.
+
+As a sanity check, let's see if the estimated SR values are predictive of choices in the trust inference task.
+
+```{r trust-sr}
+pair_trust %>%
+  left_join(
+    ppc_sr %>%
+      filter(study == "Paired Associates", task == "Memory") %>%
+      select(sub_id, gamma, from, to, sr_value, memory = choice),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  lmer(
+    response ~ sr_value + (1 + sr_value | sub_id),
+    data = .
+  ) %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable()
+```
+
+Great. But does this effect merely reflect the fact that the SR values were estimated from memory choices? We can address this by adding those memory choices as an additional predictor.
+
+```{r trust-sr-mem}
+pair_trust %>%
+  left_join(
+    ppc_sr %>%
+      filter(study == "Paired Associates", task == "Memory") %>%
+      select(sub_id, gamma, from, to, sr_value, memory = choice),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  lmer(
+    response ~ sr_value + memory + (1 + sr_value + memory | sub_id),
+    data = .
+  ) %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable()
+```
+
+Unsurprisingly, if a subject remembers two network members as being friends, they're more likely to infer that the network members trust each other. Additionally, above and beyond that effect, we see that the SR values are still predictive of trust inferences.
+
+This is nice, but we still haven't asked any questions about individual differences. Gamma captures the number of steps an individual integrates over, when representing the network in memory. Are memory SR values more predictive of trust choices for people with certain values of gamma?
+
+```{r trust-gamma}
+pair_trust %>%
+  left_join(
+    ppc_sr %>%
+      filter(study == "Paired Associates", task == "Memory") %>%
+      select(sub_id, gamma, from, to, sr_value, memory = choice),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  lmer(
+    response ~ sr_value + memory + gamma +
+      sr_value:gamma + memory:gamma +
+      (1 + sr_value + memory | sub_id),
+    data = .
+  ) %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable()
+```
+
+This analysis suggests SR values are more strongly predictive of trust inferences for subjects with higher gamma values. This is not attributed to high-gamma subjects being more likely to infer trust (main effect of gamma is non-significant), and memory choices are comparably predictive for both low- and high-gamma subjects (interaction between memory and gamma is non-significant).
+
+Just to make sure we've got the right interpretation, let's try dichotomizing subjects into groups. From a theoretical standpoint, we know that triad-like inferences reliably begin to emerge around gamma=0.5, so that seems like a fairly conservative threshold for characterizing "low"- and "high"- gamma groups.
+
+```{r trust-gamma-discrete-1}
+pair_trust %>%
+  left_join(
+    ppc_sr %>%
+      filter(study == "Paired Associates", task == "Memory") %>%
+      select(sub_id, gamma, from, to, sr_value, memory = choice),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  mutate(
+    gamma_group = case_when(
+      between(gamma, 0, 0.5) ~ "Low Gamma",
+      between(gamma, 0, 1) ~ "High Gamma"
+    ),
+    # Make sure to set reference category
+    gamma_group = fct_relevel(gamma_group, "High Gamma")
+  ) %>%
+  lmer(
+    response ~ sr_value + memory + gamma_group +
+      sr_value:gamma_group + memory:gamma_group +
+      (1 + sr_value + memory | sub_id),
+    data = .
+  ) %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable()
+```
+
+The statistical analysis confirms that "high-gamma" subjects' memory SRs do a good job predicting trust inferences ("main effect" of SR value), significantly more than "low-gamma" subjects (interaction between SR value and gamma group).
+
+Let's try re-parameterizing the model, changing the reference group to "low-gamma."
+
+```{r trust-gamma-discrete-2}
+pair_trust %>%
+  left_join(
+    ppc_sr %>%
+      filter(study == "Paired Associates", task == "Memory") %>%
+      select(sub_id, gamma, from, to, sr_value, memory = choice),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  mutate(
+    gamma_group = case_when(
+      between(gamma, 0, 0.5) ~ "Low Gamma",
+      between(gamma, 0, 1) ~ "High Gamma"
+    ),
+    # Make sure to set reference category
+    gamma_group = fct_relevel(gamma_group, "Low Gamma")
+  ) %>%
+  lmer(
+    response ~ sr_value + memory + gamma_group +
+      sr_value:gamma_group + memory:gamma_group +
+      (1 + sr_value + memory | sub_id),
+    data = .
+  ) %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable()
+```
+
+We see that while use of the SR is still significant (main effect of SR), the effect magnitude is much lower.
+
+
+# Figures for the paper
+
+Alright, let's make some pretty plots for the paper.
+
+First up is the plot of gammas for the paper. We'll need to do a little bit of manual tweaking in Illustrator to get this to fully work. First, we'll draw a spaghetti plot so that we can see the model's estimates for each subject in both tasks.
+
+```{r gammas-for-paper-1}
+plot_gammas_for_paper <- fits %>%
+  filter(param_name == "sr_gamma") %>%
+  filter(model == "SR") %>%
+  select(Task = task, study, sub_id, Gamma = param_value, label) %>%
+  #
+  mutate(
+    Lookahead = 1/(1-Gamma),
+    study = fct_relevel(study, "Random Walks")
+  ) %>%
+  # Now plot
+  ggplot(aes(x=Task, y=Lookahead)) +
+  gg +
+  ggtitle("Computational Model Parameter Estimates") +
+  facet_wrap(~study, scales = "free_x") +
+  scale_y_continuous(
+    name = "Lookahead (# Steps)",
+    sec.axis = sec_axis(
+      trans = ~ 1 - (1/.),
+      name = "Equivalent \u03B3",
+      breaks = c(0, 0.5, 0.7, 0.8, 0.9, 0.95)
+    )
+  ) +
+  coord_cartesian(ylim = c(0, 35)) +
+  geom_line(aes(group = sub_id), alpha = 0.25) +
+  stat_summary(
+    aes(group = Task),
+    geom = "crossbar", fun = mean,
+    width = 0.5, color = "red",
+  )
+
+plot_gammas_for_paper
+```
+
+Obviously, this is an unsuitable plot for displaying the Random Walks data. So we'll need to add some datapoints also. First, we'll create the same plot, but with non-jittered points so that the lineplot actually works.
+
+```{r gammas-for-paper-2}
+plot_gammas_for_paper + geom_point(alpha = 0.5)
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "gammas_for_paper_2.pdf"),
+    plot = plot_gammas_for_paper + geom_point(alpha = 0.5),
+    width = 6, height = 5, units = "in", dpi = 300,
+    device = cairo_pdf
+  )
+}
+```
+
+Still a bad visualization of the Random Walks data. Let's add some jitter. We'll swap out the Paired Associates panel later in Illustrator.
+
+```{r gammas-for-paper-3}
+plot_gammas_for_paper +
+  geom_point(alpha = 0.5, position = position_jitter(width = 0.2, seed = 1))
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "gammas_for_paper_1.pdf"),
+    plot = plot_gammas_for_paper +
+      geom_point(
+        alpha = 0.5, position = position_jitter(width = 0.2, seed = 1)
+      ),
+    width = 6, height = 5, units = "in", dpi = 300,
+    device = cairo_pdf
+  )
+}
+```
+
+Now the computational model weights.
+
+```{r plot-weights}
+plot_weights_data <- fits %>%
+  filter(param_name != "sr_gamma") %>%
+  filter(model == "SR") %>%
+  mutate(
+    label = str_replace(label, ", ", " ("),
+    label = str_c(label, ")"),
+    label = fct_relevel(
+      label, "Random Walks (Memory)", "Paired Associates (Memory)"
+    ),
+    param_name = case_when(
+      param_name == "w_naught" ~ "Intercept",
+      param_name == "w_sr" ~ "SR",
+    )
+  )
+
+plot_weights_stats <- param_stats %>%
+  select(task, study, param_name, estimate, significance) %>%
+  mutate(
+    label = str_c(study, " (", task, ")"),
+    label = fct_relevel(
+      label, "Random Walks (Memory)", "Paired Associates (Memory)"
+    ),
+    param_name = case_when(
+      param_name == "w_naught" ~ "Intercept",
+      param_name == "w_sr" ~ "SR",
+    )
+  )
+
+plot_weights <- plot_weights_data %>%
+  mutate(param_name = fct_rev(param_name)) %>%
+  ggplot(aes(x=param_name, y=param_value)) +
+  gg +
+  ggtitle("Model Weights") +
+  facet_grid(cols = vars(label)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "blue") +
+  geom_point(alpha = 0.5, position = position_jitter(width = 0.1)) +
+  geom_crossbar(
+    aes(x = param_name, y = estimate, ymin = estimate, ymax = estimate),
+    inherit.aes = FALSE,
+    data = plot_weights_stats,
+    color = "red", width = 0.5,
+    show.legend = FALSE
+  ) +
+  geom_text(
+    aes(x = param_name, y = estimate, label = significance),
+    inherit.aes = FALSE,
+    data = plot_weights_stats,
+    size = 5, color = "red",
+    nudge_x = 0.3,
+    angle = 270, fontface = "bold"
+  ) +
+  xlab("Weight") +
+  ylab("Estimate (a.u.)") +
+  theme(legend.position = "bottom")
+
+plot_weights
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "weights_for_paper.pdf"),
+    plot_weights,
+    width = 6, height = 4, units = "in", dpi = 300
+  )
+}
+```
+
+
+# Save best parameter fits
+
+```{r save-fits}
+if (knitting) {
+  
+  if (!dir.exists(here("data", "butterfly-param-fits", "clean-fits"))) {
+    dir.create(here("data", "butterfly-param-fits", "clean-fits"))
+  }
+  
+  fits %>%
+    select(-label) %>%
+    write_csv(
+      here("data", "butterfly-param-fits", "clean-fits", "clean_param_fits.csv")
+    )
+}
+```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+

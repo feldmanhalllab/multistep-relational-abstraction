@@ -83,3 +83,13 @@ mkdir -m 775 slurm_out
 mv ./*.out ./slurm_out
 ```
 
+
+## Workflow 5: Analyze computational models of butterfly network
+
+Perform a random-effects analysis of the computational model estimates.
+
+```bash
+cd ~/Documents/GitHub/multistep-relational-abstraction/code/05-analyze-butterfly-fits
+source ./analyze-butterfly-fits.sh
+```
+
