@@ -578,3 +578,11 @@ ggsave(
   device = cairo_pdf, units = "in", dpi = 300
 )
 ```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+
