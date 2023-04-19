@@ -1,0 +1,1045 @@
+task,study,sub_id,model,param_name,param_value,optim_value,convergence,optimizer_run
+Memory,Paired Associates,1,Mem.,w_naught,0.00260691239576778,102.76093917843832,converged,9
+Memory,Paired Associates,1,Mem.,w_mem,0.31240627897913836,102.76093917843832,converged,9
+Memory,Paired Associates,1,Mem. + SR,w_naught,0.001944967845678,102.20382361279816,converged,10
+Memory,Paired Associates,1,Mem. + SR,w_mem,-1.6255766420972562,102.20382361279816,converged,10
+Memory,Paired Associates,1,Mem. + SR,w_sr,2.1117763182422915,102.20382361279816,converged,10
+Memory,Paired Associates,1,Mem. + SR,sr_gamma,4.5084541915258324e-7,102.20382361279816,converged,10
+Memory,Paired Associates,1,SR,w_naught,0.00209303618013524,102.59469825667388,converged,13
+Memory,Paired Associates,1,SR,w_sr,0.34683880567206865,102.59469825667388,converged,13
+Memory,Paired Associates,1,SR,sr_gamma,2.0319101353722004e-7,102.59469825667388,converged,13
+Memory,Paired Associates,3,Mem.,w_naught,-0.04856956777589882,101.91196363347608,converged,18
+Memory,Paired Associates,3,Mem.,w_mem,0.34093341176676045,101.91196363347608,converged,18
+Memory,Paired Associates,3,Mem. + SR,w_naught,-0.07086528482847042,100.11335879878348,converged,9
+Memory,Paired Associates,3,Mem. + SR,w_mem,-0.4746898585903052,100.11335879878348,converged,9
+Memory,Paired Associates,3,Mem. + SR,w_sr,1.5997893878083145,100.11335879878348,converged,9
+Memory,Paired Associates,3,Mem. + SR,sr_gamma,0.48108042763338443,100.11335879878348,converged,9
+Memory,Paired Associates,3,SR,w_naught,-0.06795166412753811,100.3381464735698,converged,23
+Memory,Paired Associates,3,SR,w_sr,1.551113283420776,100.3381464735698,converged,23
+Memory,Paired Associates,3,SR,sr_gamma,0.7919134136648983,100.3381464735698,converged,23
+Memory,Paired Associates,4,Mem.,w_naught,0.00342533179044794,84.73268401723234,converged,24
+Memory,Paired Associates,4,Mem.,w_mem,1.8663229916461823,84.73268401723234,converged,24
+Memory,Paired Associates,4,Mem. + SR,w_naught,-0.0568416142006547,73.8780676677587,converged,12
+Memory,Paired Associates,4,Mem. + SR,w_mem,0.37463127281812225,73.8780676677587,converged,12
+Memory,Paired Associates,4,Mem. + SR,w_sr,5.119054036912749,73.8780676677587,converged,12
+Memory,Paired Associates,4,Mem. + SR,sr_gamma,0.6704051883910502,73.8780676677587,converged,12
+Memory,Paired Associates,4,SR,w_naught,-0.05705018159496254,73.89508426517534,converged,19
+Memory,Paired Associates,4,SR,w_sr,5.123015758861269,73.89508426517534,converged,19
+Memory,Paired Associates,4,SR,sr_gamma,0.6614493166420194,73.89508426517534,converged,19
+Memory,Paired Associates,5,Mem.,w_naught,-0.08471699513610073,97.63339446052233,converged,22
+Memory,Paired Associates,5,Mem.,w_mem,0.29634497522421277,97.63339446052233,converged,22
+Memory,Paired Associates,5,Mem. + SR,w_naught,-0.10913433603013337,94.952341312073,converged,20
+Memory,Paired Associates,5,Mem. + SR,w_mem,-1.4970509729853163,94.952341312073,converged,20
+Memory,Paired Associates,5,Mem. + SR,w_sr,2.550654887868091,94.952341312073,converged,20
+Memory,Paired Associates,5,Mem. + SR,sr_gamma,0.24564589599827003,94.952341312073,converged,20
+Memory,Paired Associates,5,SR,w_naught,-0.10558088494749168,95.79726150605502,converged,15
+Memory,Paired Associates,5,SR,w_sr,1.6687448394786717,95.79726150605502,converged,15
+Memory,Paired Associates,5,SR,sr_gamma,0.8257870242874035,95.79726150605502,converged,15
+Memory,Paired Associates,6,Mem.,w_naught,-0.2930724727057552,37.79651788543158,converged,13
+Memory,Paired Associates,6,Mem.,w_mem,1.262444062576861,37.79651788543158,converged,13
+Memory,Paired Associates,6,Mem. + SR,w_naught,-0.3013086712923008,37.708350501562656,converged,11
+Memory,Paired Associates,6,Mem. + SR,w_mem,0.8411029642795973,37.708350501562656,converged,11
+Memory,Paired Associates,6,Mem. + SR,w_sr,0.6390750060374168,37.708350501562656,converged,11
+Memory,Paired Associates,6,Mem. + SR,sr_gamma,0.31768040483803234,37.708350501562656,converged,11
+Memory,Paired Associates,6,SR,w_naught,-0.3009286915904543,37.82587830876596,converged,12
+Memory,Paired Associates,6,SR,w_sr,1.5088181590548786,37.82587830876596,converged,12
+Memory,Paired Associates,6,SR,sr_gamma,0.10709952713782057,37.82587830876596,converged,12
+Memory,Paired Associates,7,Mem.,w_naught,-0.02111115894595497,102.97611779400908,converged,9
+Memory,Paired Associates,7,Mem.,w_mem,0.3413816799951712,102.97611779400908,converged,9
+Memory,Paired Associates,7,Mem. + SR,w_naught,-0.0481305960505785,100.55166869632008,converged,15
+Memory,Paired Associates,7,Mem. + SR,w_mem,-0.20993234163712393,100.55166869632008,converged,15
+Memory,Paired Associates,7,Mem. + SR,w_sr,2.4101466539065983,100.55166869632008,converged,15
+Memory,Paired Associates,7,Mem. + SR,sr_gamma,0.7945791199769184,100.55166869632008,converged,15
+Memory,Paired Associates,7,SR,w_naught,-0.04308820421460054,100.77634994451668,converged,25
+Memory,Paired Associates,7,SR,w_sr,2.251040399736956,100.77634994451668,converged,25
+Memory,Paired Associates,7,SR,sr_gamma,0.8571947932374665,100.77634994451668,converged,25
+Memory,Paired Associates,8,Mem.,w_naught,-0.17148088688584084,69.55814270185417,converged,7
+Memory,Paired Associates,8,Mem.,w_mem,0.7884088664668574,69.55814270185417,converged,7
+Memory,Paired Associates,8,Mem. + SR,w_naught,-0.18276083942725577,68.87806702325092,converged,19
+Memory,Paired Associates,8,Mem. + SR,w_mem,-0.7701479731961072,68.87806702325092,converged,19
+Memory,Paired Associates,8,Mem. + SR,w_sr,1.9362640345055968,68.87806702325092,converged,19
+Memory,Paired Associates,8,Mem. + SR,sr_gamma,0.1312822446566876,68.87806702325092,converged,19
+Memory,Paired Associates,8,SR,w_naught,-0.18439734804656904,68.95656451814584,converged,2
+Memory,Paired Associates,8,SR,w_sr,1.1658948458065583,68.95656451814584,converged,2
+Memory,Paired Associates,8,SR,sr_gamma,0.2824649900776213,68.95656451814584,converged,2
+Memory,Paired Associates,9,Mem.,w_naught,0.007548427681885,104.35916454569174,converged,8
+Memory,Paired Associates,9,Mem.,w_mem,0.23687535661573517,104.35916454569174,converged,8
+Memory,Paired Associates,9,Mem. + SR,w_naught,0.02435352656759865,103.38386325477744,converged,15
+Memory,Paired Associates,9,Mem. + SR,w_mem,0.5874619187501827,103.38386325477744,converged,15
+Memory,Paired Associates,9,Mem. + SR,w_sr,-1.5203231861487525,103.38386325477744,converged,15
+Memory,Paired Associates,9,Mem. + SR,sr_gamma,0.7971955318031917,103.38386325477744,converged,15
+Memory,Paired Associates,9,SR,w_naught,0.00786069005141772,104.4601995753056,converged,5
+Memory,Paired Associates,9,SR,w_sr,0.2514019771193641,104.4601995753056,converged,5
+Memory,Paired Associates,9,SR,sr_gamma,6.24007044453127e-8,104.4601995753056,converged,5
+Memory,Paired Associates,10,Mem.,w_naught,-0.03472066342739631,104.42551667296836,converged,24
+Memory,Paired Associates,10,Mem.,w_mem,0.26685188296134243,104.42551667296836,converged,24
+Memory,Paired Associates,10,Mem. + SR,w_naught,-0.060889134422668,102.1506542709464,converged,21
+Memory,Paired Associates,10,Mem. + SR,w_mem,-0.32912756121721265,102.1506542709464,converged,21
+Memory,Paired Associates,10,Mem. + SR,w_sr,1.9414246067218732,102.1506542709464,converged,21
+Memory,Paired Associates,10,Mem. + SR,sr_gamma,0.7118531630690441,102.1506542709464,converged,21
+Memory,Paired Associates,10,SR,w_naught,-0.05415583023373394,102.57583757634625,converged,4
+Memory,Paired Associates,10,SR,w_sr,1.8525296610458384,102.57583757634625,converged,4
+Memory,Paired Associates,10,SR,sr_gamma,0.8581295766936621,102.57583757634625,converged,4
+Memory,Paired Associates,11,Mem.,w_naught,-0.18928269053448504,54.33307222587096,converged,19
+Memory,Paired Associates,11,Mem.,w_mem,1.2870258100271796,54.33307222587096,converged,19
+Memory,Paired Associates,11,Mem. + SR,w_naught,-0.24785144821456084,50.486815531641696,converged,13
+Memory,Paired Associates,11,Mem. + SR,w_mem,0.19739320752031564,50.486815531641696,converged,13
+Memory,Paired Associates,11,Mem. + SR,w_sr,3.489829199264883,50.486815531641696,converged,13
+Memory,Paired Associates,11,Mem. + SR,sr_gamma,0.7118047037538059,50.486815531641696,converged,13
+Memory,Paired Associates,11,SR,w_naught,-0.25122140805807586,50.536240650711086,converged,16
+Memory,Paired Associates,11,SR,w_sr,3.493527439337135,50.536240650711086,converged,16
+Memory,Paired Associates,11,SR,sr_gamma,0.6551887133710859,50.536240650711086,converged,16
+Memory,Paired Associates,12,Mem.,w_naught,-0.11458426629558612,83.46054509409485,converged,20
+Memory,Paired Associates,12,Mem.,w_mem,0.6931322228740526,83.46054509409485,converged,20
+Memory,Paired Associates,12,Mem. + SR,w_naught,-0.13794684390483286,82.03156569903506,converged,6
+Memory,Paired Associates,12,Mem. + SR,w_mem,-0.07290809712033328,82.03156569903506,converged,6
+Memory,Paired Associates,12,Mem. + SR,w_sr,1.554360122772709,82.03156569903506,converged,6
+Memory,Paired Associates,12,Mem. + SR,sr_gamma,0.5049720276652419,82.03156569903506,converged,6
+Memory,Paired Associates,12,SR,w_naught,-0.1381491571096567,82.03263727997546,converged,17
+Memory,Paired Associates,12,SR,w_sr,1.5333250263809042,82.03263727997546,converged,17
+Memory,Paired Associates,12,SR,sr_gamma,0.5526910021311277,82.03263727997546,converged,17
+Memory,Paired Associates,13,Mem.,w_naught,-0.04758132932974419,103.01339501032324,converged,21
+Memory,Paired Associates,13,Mem.,w_mem,0.29246017845650163,103.01339501032324,converged,21
+Memory,Paired Associates,13,Mem. + SR,w_naught,-0.03168009002842158,102.09220426727506,converged,7
+Memory,Paired Associates,13,Mem. + SR,w_mem,0.7386406511059656,102.09220426727506,converged,7
+Memory,Paired Associates,13,Mem. + SR,w_sr,-1.185215891518172,102.09220426727506,converged,7
+Memory,Paired Associates,13,Mem. + SR,sr_gamma,0.6430546399038274,102.09220426727506,converged,7
+Memory,Paired Associates,13,SR,w_naught,-0.04755038585561371,103.05272213866591,converged,4
+Memory,Paired Associates,13,SR,w_sr,0.3160490680751587,103.05272213866591,converged,4
+Memory,Paired Associates,13,SR,sr_gamma,2.379401867955096e-7,103.05272213866591,converged,4
+Memory,Paired Associates,14,Mem.,w_naught,-0.071634184916966,98.46463335560335,converged,15
+Memory,Paired Associates,14,Mem.,w_mem,0.380925015707836,98.46463335560335,converged,15
+Memory,Paired Associates,14,Mem. + SR,w_naught,-0.05755754237123309,97.7991517824574,converged,12
+Memory,Paired Associates,14,Mem. + SR,w_mem,0.7015909784832142,97.7991517824574,converged,12
+Memory,Paired Associates,14,Mem. + SR,w_sr,-1.2143388862520526,97.7991517824574,converged,12
+Memory,Paired Associates,14,Mem. + SR,sr_gamma,0.7643089632623516,97.7991517824574,converged,12
+Memory,Paired Associates,14,SR,w_naught,-0.07199815970300091,98.35595238507116,converged,23
+Memory,Paired Associates,14,SR,w_sr,0.4169312971255667,98.35595238507116,converged,23
+Memory,Paired Associates,14,SR,sr_gamma,4.2829209769438937e-7,98.35595238507116,converged,23
+Memory,Paired Associates,15,Mem.,w_naught,0.05036237241711416,81.00184876156474,converged,17
+Memory,Paired Associates,15,Mem.,w_mem,1.7462921845180297,81.00184876156474,converged,17
+Memory,Paired Associates,15,Mem. + SR,w_naught,0.05877500921186725,80.79477188120103,converged,10
+Memory,Paired Associates,15,Mem. + SR,w_mem,1.9685222421528357,80.79477188120103,converged,10
+Memory,Paired Associates,15,Mem. + SR,w_sr,-0.6318957837940826,80.79477188120103,converged,10
+Memory,Paired Associates,15,Mem. + SR,sr_gamma,0.6623768255383339,80.79477188120103,converged,10
+Memory,Paired Associates,15,SR,w_naught,0.0503704974728107,81.01604844700742,converged,10
+Memory,Paired Associates,15,SR,w_sr,1.8194716165907003,81.01604844700742,converged,10
+Memory,Paired Associates,15,SR,sr_gamma,4.391561193907797e-8,81.01604844700742,converged,10
+Memory,Paired Associates,17,Mem.,w_naught,0.03107680392066029,104.7845605518608,converged,25
+Memory,Paired Associates,17,Mem.,w_mem,0.09780325041492086,104.7845605518608,converged,25
+Memory,Paired Associates,17,Mem. + SR,w_naught,0.03568732719398038,104.59897385375618,converged,22
+Memory,Paired Associates,17,Mem. + SR,w_mem,0.7798444828462485,104.59897385375618,converged,22
+Memory,Paired Associates,17,Mem. + SR,w_sr,-0.8515695522544895,104.59897385375618,converged,22
+Memory,Paired Associates,17,Mem. + SR,sr_gamma,0.13385753494926075,104.59897385375618,converged,22
+Memory,Paired Associates,17,SR,w_naught,0.03126322913429461,104.81003929939108,converged,3
+Memory,Paired Associates,17,SR,w_sr,0.10331389471025557,104.81003929939108,converged,3
+Memory,Paired Associates,17,SR,sr_gamma,5.480926150291789e-7,104.81003929939108,converged,3
+Memory,Paired Associates,18,Mem.,w_naught,0.03398567628147977,97.38776190376608,converged,20
+Memory,Paired Associates,18,Mem.,w_mem,0.35867336944562667,97.38776190376608,converged,20
+Memory,Paired Associates,18,Mem. + SR,w_naught,0.02466073742019153,96.6146875081036,converged,6
+Memory,Paired Associates,18,Mem. + SR,w_mem,-1.1836466408099475,96.6146875081036,converged,6
+Memory,Paired Associates,18,Mem. + SR,w_sr,1.915130221110645,96.6146875081036,converged,6
+Memory,Paired Associates,18,Mem. + SR,sr_gamma,0.12675802866636404,96.6146875081036,converged,6
+Memory,Paired Associates,18,SR,w_naught,0.02599799782152705,96.91722642000842,converged,11
+Memory,Paired Associates,18,SR,w_sr,0.6291251274055396,96.91722642000842,converged,11
+Memory,Paired Associates,18,SR,sr_gamma,0.3920434853312949,96.91722642000842,converged,11
+Memory,Paired Associates,19,Mem.,w_naught,-0.1390568793124442,80.44289595455575,converged,14
+Memory,Paired Associates,19,Mem.,w_mem,0.6260960631023182,80.44289595455575,converged,14
+Memory,Paired Associates,19,Mem. + SR,w_naught,-0.14076457436974787,79.28613416432049,converged,13
+Memory,Paired Associates,19,Mem. + SR,w_mem,-1.9494686202302784,79.28613416432049,converged,13
+Memory,Paired Associates,19,Mem. + SR,w_sr,2.807300955791825,79.28613416432049,converged,13
+Memory,Paired Associates,19,Mem. + SR,sr_gamma,3.1866783622315757e-7,79.28613416432049,converged,13
+Memory,Paired Associates,19,SR,w_naught,-0.14055300514311675,79.94407960142331,converged,4
+Memory,Paired Associates,19,SR,w_sr,0.6950550417414789,79.94407960142331,converged,4
+Memory,Paired Associates,19,SR,sr_gamma,0.006339248549713204,79.94407960142331,converged,4
+Memory,Paired Associates,20,Mem.,w_naught,0.01958384800597636,103.53215943497904,converged,19
+Memory,Paired Associates,20,Mem.,w_mem,0.218651572301645,103.53215943497904,converged,19
+Memory,Paired Associates,20,Mem. + SR,w_naught,0.02671855892885222,103.34530019602263,converged,11
+Memory,Paired Associates,20,Mem. + SR,w_mem,0.4186530301840725,103.34530019602263,converged,11
+Memory,Paired Associates,20,Mem. + SR,w_sr,-0.5070789702829297,103.34530019602263,converged,11
+Memory,Paired Associates,20,Mem. + SR,sr_gamma,0.6213619408765501,103.34530019602263,converged,11
+Memory,Paired Associates,20,SR,w_naught,0.01941556208913938,103.50591230438432,converged,9
+Memory,Paired Associates,20,SR,w_sr,0.23922445412803311,103.50591230438432,converged,9
+Memory,Paired Associates,20,SR,sr_gamma,1.825000356145172e-7,103.50591230438432,converged,9
+Memory,Paired Associates,21,Mem.,w_naught,-0.00682815674201765,102.83213599511626,converged,21
+Memory,Paired Associates,21,Mem.,w_mem,0.3321825861337345,102.83213599511626,converged,21
+Memory,Paired Associates,21,Mem. + SR,w_naught,-0.0150197919477304,102.54745210051564,converged,19
+Memory,Paired Associates,21,Mem. + SR,w_mem,-0.08189335699418385,102.54745210051564,converged,19
+Memory,Paired Associates,21,Mem. + SR,w_sr,0.6942276866488091,102.54745210051564,converged,19
+Memory,Paired Associates,21,Mem. + SR,sr_gamma,0.3816745355997108,102.54745210051564,converged,19
+Memory,Paired Associates,21,SR,w_naught,-0.01465901341215444,102.55208142788948,converged,23
+Memory,Paired Associates,21,SR,w_sr,0.6062760211838765,102.55208142788948,converged,23
+Memory,Paired Associates,21,SR,sr_gamma,0.4377815561280725,102.55208142788948,converged,23
+Memory,Paired Associates,22,Mem.,w_naught,-0.2304961417237544,37.270646485175014,converged,9
+Memory,Paired Associates,22,Mem.,w_mem,2.494593627989003,37.270646485175014,converged,9
+Memory,Paired Associates,22,Mem. + SR,w_naught,-0.3134156390224788,32.58890441201516,converged,15
+Memory,Paired Associates,22,Mem. + SR,w_mem,0.9558348715337498,32.58890441201516,converged,15
+Memory,Paired Associates,22,Mem. + SR,w_sr,4.139866404226293,32.58890441201516,converged,15
+Memory,Paired Associates,22,Mem. + SR,sr_gamma,0.6010343476870031,32.58890441201516,converged,15
+Memory,Paired Associates,22,SR,w_naught,-0.31637457184574375,32.76106097471392,converged,16
+Memory,Paired Associates,22,SR,w_sr,4.3964288260771784,32.76106097471392,converged,16
+Memory,Paired Associates,22,SR,sr_gamma,0.4893165498904432,32.76106097471392,converged,16
+Memory,Paired Associates,23,Mem.,w_naught,-0.17722982907906207,63.58415475567703,converged,16
+Memory,Paired Associates,23,Mem.,w_mem,0.9701618824757694,63.58415475567703,converged,16
+Memory,Paired Associates,23,Mem. + SR,w_naught,-0.22771425391465705,60.09546106986277,converged,23
+Memory,Paired Associates,23,Mem. + SR,w_mem,0.00406166179795525,60.09546106986277,converged,23
+Memory,Paired Associates,23,Mem. + SR,w_sr,2.998491903524622,60.09546106986277,converged,23
+Memory,Paired Associates,23,Mem. + SR,sr_gamma,0.6947047051421572,60.09546106986277,converged,23
+Memory,Paired Associates,23,SR,w_naught,-0.2277495929977604,60.095480652797114,converged,24
+Memory,Paired Associates,23,SR,w_sr,2.9955688614763325,60.095480652797114,converged,24
+Memory,Paired Associates,23,SR,sr_gamma,0.6929668274689033,60.095480652797114,converged,24
+Memory,Paired Associates,24,Mem.,w_naught,-0.0256051926265546,91.56282736209236,converged,13
+Memory,Paired Associates,24,Mem.,w_mem,0.7850619636138159,91.56282736209236,converged,13
+Memory,Paired Associates,24,Mem. + SR,w_naught,-0.04798033478566739,90.01899219951837,converged,9
+Memory,Paired Associates,24,Mem. + SR,w_mem,0.28985740802103954,90.01899219951837,converged,9
+Memory,Paired Associates,24,Mem. + SR,w_sr,1.9391076743814124,90.01899219951837,converged,9
+Memory,Paired Associates,24,Mem. + SR,sr_gamma,0.7763442260705425,90.01899219951837,converged,9
+Memory,Paired Associates,24,SR,w_naught,-0.0489089933680307,90.15755809634834,converged,4
+Memory,Paired Associates,24,SR,w_sr,1.7256298933936387,90.15755809634834,converged,4
+Memory,Paired Associates,24,SR,sr_gamma,0.5726701690982609,90.15755809634834,converged,4
+Memory,Paired Associates,25,Mem.,w_naught,-0.01114919751920929,102.31111309208558,converged,10
+Memory,Paired Associates,25,Mem.,w_mem,0.3577764847527622,102.31111309208558,converged,10
+Memory,Paired Associates,25,Mem. + SR,w_naught,-0.0118429754164933,101.6966913961924,converged,15
+Memory,Paired Associates,25,Mem. + SR,w_mem,-1.6623012411215006,101.6966913961924,converged,15
+Memory,Paired Associates,25,Mem. + SR,w_sr,2.2015656519832385,101.6966913961924,converged,15
+Memory,Paired Associates,25,Mem. + SR,sr_gamma,3.6924702013109786e-8,101.6966913961924,converged,15
+Memory,Paired Associates,25,SR,w_naught,-0.01170609307334339,102.10940941449104,converged,19
+Memory,Paired Associates,25,SR,w_sr,0.39657841876150896,102.10940941449104,converged,19
+Memory,Paired Associates,25,SR,sr_gamma,2.5414533213323647e-7,102.10940941449104,converged,19
+Memory,Paired Associates,26,Mem.,w_naught,-0.23004109915798837,50.73396445381026,converged,14
+Memory,Paired Associates,26,Mem.,w_mem,1.0900537474427003,50.73396445381026,converged,14
+Memory,Paired Associates,26,Mem. + SR,w_naught,-0.2659314646306473,49.312220355127515,converged,20
+Memory,Paired Associates,26,Mem. + SR,w_mem,0.46790019977820563,49.312220355127515,converged,20
+Memory,Paired Associates,26,Mem. + SR,w_sr,2.3854257336956346,49.312220355127515,converged,20
+Memory,Paired Associates,26,Mem. + SR,sr_gamma,0.7644947679617329,49.312220355127515,converged,20
+Memory,Paired Associates,26,SR,w_naught,-0.2721365526952001,49.6329906223979,converged,21
+Memory,Paired Associates,26,SR,w_sr,2.423285215206482,49.6329906223979,converged,21
+Memory,Paired Associates,26,SR,sr_gamma,0.5632369862075345,49.6329906223979,converged,21
+Memory,Paired Associates,27,Mem.,w_naught,-0.160867845374649,65.33721360270485,converged,18
+Memory,Paired Associates,27,Mem.,w_mem,1.037675596400729,65.33721360270485,converged,18
+Memory,Paired Associates,27,Mem. + SR,w_naught,-0.20105245985003475,62.75874112141557,converged,7
+Memory,Paired Associates,27,Mem. + SR,w_mem,0.1073330895040462,62.75874112141557,converged,7
+Memory,Paired Associates,27,Mem. + SR,w_sr,2.4156947944391343,62.75874112141557,converged,7
+Memory,Paired Associates,27,Mem. + SR,sr_gamma,0.6324953007453666,62.75874112141557,converged,7
+Memory,Paired Associates,27,SR,w_naught,-0.2012181983327855,62.76437903927786,converged,5
+Memory,Paired Associates,27,SR,w_sr,2.4052258858749513,62.76437903927786,converged,5
+Memory,Paired Associates,27,SR,sr_gamma,0.5805819478836313,62.76437903927786,converged,5
+Memory,Paired Associates,28,Mem.,w_naught,-0.35538467044185784,30.37001889402297,converged,11
+Memory,Paired Associates,28,Mem.,w_mem,1.3603651078631671,30.37001889402297,converged,11
+Memory,Paired Associates,28,Mem. + SR,w_naught,-0.35273375350152614,30.220266228290704,converged,10
+Memory,Paired Associates,28,Mem. + SR,w_mem,2.3450088642031788,30.220266228290704,converged,10
+Memory,Paired Associates,28,Mem. + SR,w_sr,-1.0614910205036865,30.220266228290704,converged,10
+Memory,Paired Associates,28,Mem. + SR,sr_gamma,9.631065150740631e-9,30.220266228290704,converged,10
+Memory,Paired Associates,28,SR,w_naught,-0.36079775613503456,31.047179663721263,converged,14
+Memory,Paired Associates,28,SR,w_sr,1.5959698272403489,31.047179663721263,converged,14
+Memory,Paired Associates,28,SR,sr_gamma,0.09801791812004775,31.047179663721263,converged,14
+Memory,Paired Associates,29,Mem.,w_naught,-0.17166243664920883,62.88090091360243,converged,9
+Memory,Paired Associates,29,Mem.,w_mem,1.0458775350950842,62.88090091360243,converged,9
+Memory,Paired Associates,29,Mem. + SR,w_naught,-0.17212376502268206,62.750626611789514,converged,4
+Memory,Paired Associates,29,Mem. + SR,w_mem,1.5577715680231393e-4,62.750626611789514,converged,4
+Memory,Paired Associates,29,Mem. + SR,w_sr,1.129138112569799,62.750626611789514,converged,4
+Memory,Paired Associates,29,Mem. + SR,sr_gamma,1.3033753466902404e-7,62.750626611789514,converged,4
+Memory,Paired Associates,29,SR,w_naught,-0.172117808653761,62.75062663625152,converged,11
+Memory,Paired Associates,29,SR,w_sr,1.129281108325257,62.75062663625152,converged,11
+Memory,Paired Associates,29,SR,sr_gamma,1.876663583554309e-7,62.75062663625152,converged,11
+Memory,Paired Associates,30,Mem.,w_naught,-0.16445127598504916,75.45512698906681,converged,4
+Memory,Paired Associates,30,Mem.,w_mem,0.602032893122828,75.45512698906681,converged,4
+Memory,Paired Associates,30,Mem. + SR,w_naught,-0.1363523626911054,73.28629676938094,converged,1
+Memory,Paired Associates,30,Mem. + SR,w_mem,1.3999946247636923,73.28629676938094,converged,1
+Memory,Paired Associates,30,Mem. + SR,w_sr,-2.457842008411621,73.28629676938094,converged,1
+Memory,Paired Associates,30,Mem. + SR,sr_gamma,0.7068133252043178,73.28629676938094,converged,1
+Memory,Paired Associates,30,SR,w_naught,-0.1656724939956845,75.10645022024383,converged,11
+Memory,Paired Associates,30,SR,w_sr,0.6616480154112796,75.10645022024383,converged,11
+Memory,Paired Associates,30,SR,sr_gamma,3.651555048549249e-8,75.10645022024383,converged,11
+Memory,Random Walks,1,Mem.,w_naught,0.01638681659793442,53.59113576584677,converged,3
+Memory,Random Walks,1,Mem.,w_mem,0.050814720689194653,53.59113576584677,converged,3
+Memory,Random Walks,1,Mem. + SR,w_naught,0.01668131569733298,52.321913763919135,converged,13
+Memory,Random Walks,1,Mem. + SR,w_mem,-0.8657506032571779,52.321913763919135,converged,13
+Memory,Random Walks,1,Mem. + SR,w_sr,0.9284704972224596,52.321913763919135,converged,13
+Memory,Random Walks,1,Mem. + SR,sr_gamma,0.008600641377178942,52.321913763919135,converged,13
+Memory,Random Walks,1,SR,w_naught,0.01210921283325793,53.36685790736224,converged,23
+Memory,Random Walks,1,SR,w_sr,0.10451528954707176,53.36685790736224,converged,23
+Memory,Random Walks,1,SR,sr_gamma,3.0376761488811693e-6,53.36685790736224,converged,23
+Memory,Random Walks,2,Mem.,w_naught,-0.11449594853602447,44.42181546942653,converged,16
+Memory,Random Walks,2,Mem.,w_mem,0.4798215529965091,44.42181546942653,converged,16
+Memory,Random Walks,2,Mem. + SR,w_naught,-0.11588824650798824,44.22895762240089,converged,21
+Memory,Random Walks,2,Mem. + SR,w_mem,0.14008009060835336,44.22895762240089,converged,21
+Memory,Random Walks,2,Mem. + SR,w_sr,0.37181016100872166,44.22895762240089,converged,21
+Memory,Random Walks,2,Mem. + SR,sr_gamma,0.08135476294529266,44.22895762240089,converged,21
+Memory,Random Walks,2,SR,w_naught,-0.11560527083914789,44.259036147165425,converged,7
+Memory,Random Walks,2,SR,w_sr,0.5183504467053472,44.259036147165425,converged,7
+Memory,Random Walks,2,SR,sr_gamma,0.08671306825016169,44.259036147165425,converged,7
+Memory,Random Walks,3,Mem.,w_naught,0.11461598849459076,42.04573234518264,converged,1
+Memory,Random Walks,3,Mem.,w_mem,0.073822082587257,42.04573234518264,converged,1
+Memory,Random Walks,3,Mem. + SR,w_naught,0.08380036609281519,40.299601039692305,converged,13
+Memory,Random Walks,3,Mem. + SR,w_mem,-0.7312524795722327,40.299601039692305,converged,13
+Memory,Random Walks,3,Mem. + SR,w_sr,1.4792192539903788,40.299601039692305,converged,13
+Memory,Random Walks,3,Mem. + SR,sr_gamma,0.5621950847551341,40.299601039692305,converged,13
+Memory,Random Walks,3,SR,w_naught,0.09435173423012189,41.44527634495903,converged,8
+Memory,Random Walks,3,SR,w_sr,0.42494355662767613,41.44527634495903,converged,8
+Memory,Random Walks,3,SR,sr_gamma,0.7127588888033876,41.44527634495903,converged,8
+Memory,Random Walks,4,Mem.,w_naught,0.03987137465567317,52.75776432050771,converged,10
+Memory,Random Walks,4,Mem.,w_mem,-0.04260228973944398,52.75776432050771,converged,10
+Memory,Random Walks,4,Mem. + SR,w_naught,0.05240611357498623,51.84298752135733,converged,11
+Memory,Random Walks,4,Mem. + SR,w_mem,0.6585089790114649,51.84298752135733,converged,11
+Memory,Random Walks,4,Mem. + SR,w_sr,-0.9176972798747316,51.84298752135733,converged,11
+Memory,Random Walks,4,Mem. + SR,sr_gamma,0.2637986962883195,51.84298752135733,converged,11
+Memory,Random Walks,4,SR,w_naught,0.04794695035180318,52.560755649830085,converged,21
+Memory,Random Walks,4,SR,w_sr,-0.1577622116798911,52.560755649830085,converged,21
+Memory,Random Walks,4,SR,sr_gamma,0.5026476147709501,52.560755649830085,converged,21
+Memory,Random Walks,5,Mem.,w_naught,0.00591903815926659,52.86151543445639,converged,16
+Memory,Random Walks,5,Mem.,w_mem,0.18477575866849433,52.86151543445639,converged,16
+Memory,Random Walks,5,Mem. + SR,w_naught,0.01506807002426639,51.643189322534454,converged,17
+Memory,Random Walks,5,Mem. + SR,w_mem,1.0260078217861512,51.643189322534454,converged,17
+Memory,Random Walks,5,Mem. + SR,w_sr,-0.9888452307357118,51.643189322534454,converged,17
+Memory,Random Walks,5,Mem. + SR,sr_gamma,0.20410507614994355,51.643189322534454,converged,17
+Memory,Random Walks,5,SR,w_naught,0.01140772418026763,53.32135841707813,converged,21
+Memory,Random Walks,5,SR,w_sr,0.11352207469030633,53.32135841707813,converged,21
+Memory,Random Walks,5,SR,sr_gamma,4.502377306277494e-7,53.32135841707813,converged,21
+Memory,Random Walks,6,Mem.,w_naught,0.0963426173426168,45.39896829413416,converged,8
+Memory,Random Walks,6,Mem.,w_mem,0.04335124829579712,45.39896829413416,converged,8
+Memory,Random Walks,6,Mem. + SR,w_naught,0.05783953033011973,43.924367863072064,converged,15
+Memory,Random Walks,6,Mem. + SR,w_mem,-0.4265631937149706,43.924367863072064,converged,15
+Memory,Random Walks,6,Mem. + SR,w_sr,1.2914572203089918,43.924367863072064,converged,15
+Memory,Random Walks,6,Mem. + SR,sr_gamma,0.8119857475194435,43.924367863072064,converged,15
+Memory,Random Walks,6,SR,w_naught,0.06633822227697049,44.618904964532575,converged,25
+Memory,Random Walks,6,SR,w_sr,1.0313925576002485,44.618904964532575,converged,25
+Memory,Random Walks,6,SR,sr_gamma,0.9469327148207207,44.618904964532575,converged,25
+Memory,Random Walks,7,Mem.,w_naught,-0.0753466950964346,46.764287581389766,converged,22
+Memory,Random Walks,7,Mem.,w_mem,0.5555989187483156,46.764287581389766,converged,22
+Memory,Random Walks,7,Mem. + SR,w_naught,-0.10581975219871516,45.82358973016545,converged,19
+Memory,Random Walks,7,Mem. + SR,w_mem,0.18436396656060963,45.82358973016545,converged,19
+Memory,Random Walks,7,Mem. + SR,w_sr,0.8840082811812199,45.82358973016545,converged,19
+Memory,Random Walks,7,Mem. + SR,sr_gamma,0.7213582860459152,45.82358973016545,converged,19
+Memory,Random Walks,7,SR,w_naught,-0.10894353817219408,45.952272826199355,converged,19
+Memory,Random Walks,7,SR,w_sr,1.123271514733568,45.952272826199355,converged,19
+Memory,Random Walks,7,SR,sr_gamma,0.6616211940400606,45.952272826199355,converged,19
+Memory,Random Walks,8,Mem.,w_naught,0.00947033930467104,48.16422022080906,converged,15
+Memory,Random Walks,8,Mem.,w_mem,0.5201343005995314,48.16422022080906,converged,15
+Memory,Random Walks,8,Mem. + SR,w_naught,0.02346028900340822,43.770976352093506,converged,11
+Memory,Random Walks,8,Mem. + SR,w_mem,3.4433944868987827,43.770976352093506,converged,11
+Memory,Random Walks,8,Mem. + SR,w_sr,-2.7064970806139197,43.770976352093506,converged,11
+Memory,Random Walks,8,Mem. + SR,sr_gamma,0.10159734027040308,43.770976352093506,converged,11
+Memory,Random Walks,8,SR,w_naught,0.01908592260366172,50.30647939186685,converged,14
+Memory,Random Walks,8,SR,w_sr,0.3248094809932034,50.30647939186685,converged,14
+Memory,Random Walks,8,SR,sr_gamma,2.2825255759237755e-10,50.30647939186685,converged,14
+Memory,Random Walks,9,Mem.,w_naught,0.06542625646819568,49.598891430155426,converged,1
+Memory,Random Walks,9,Mem.,w_mem,0.04774958330713202,49.598891430155426,converged,1
+Memory,Random Walks,9,Mem. + SR,w_naught,0.07442969617499738,49.35744490940031,converged,7
+Memory,Random Walks,9,Mem. + SR,w_mem,0.3632701766901096,49.35744490940031,converged,7
+Memory,Random Walks,9,Mem. + SR,w_sr,-0.4694256959877857,49.35744490940031,converged,7
+Memory,Random Walks,9,Mem. + SR,sr_gamma,0.40206558663547376,49.35744490940031,converged,7
+Memory,Random Walks,9,SR,w_naught,0.06710720141781584,49.63132710027598,converged,5
+Memory,Random Walks,9,SR,w_sr,0.02689020739524253,49.63132710027598,converged,5
+Memory,Random Walks,9,SR,sr_gamma,1.334692731443713e-5,49.63132710027598,converged,5
+Memory,Random Walks,10,Mem.,w_naught,0.09579094232010556,47.73857780547925,converged,4
+Memory,Random Walks,10,Mem.,w_mem,-0.22486990104147864,47.73857780547925,converged,4
+Memory,Random Walks,10,Mem. + SR,w_naught,0.09684371338073916,44.48123280920963,converged,16
+Memory,Random Walks,10,Mem. + SR,w_mem,-1.6503676843353987,44.48123280920963,converged,16
+Memory,Random Walks,10,Mem. + SR,w_sr,1.4117654507454758,44.48123280920963,converged,16
+Memory,Random Walks,10,Mem. + SR,sr_gamma,2.083790561584137e-8,44.48123280920963,converged,16
+Memory,Random Walks,10,SR,w_naught,0.1480391782549928,45.613372346738466,converged,5
+Memory,Random Walks,10,SR,w_sr,-2.1359095157508436,45.613372346738466,converged,5
+Memory,Random Walks,10,SR,sr_gamma,0.9541061665989725,45.613372346738466,converged,5
+Memory,Random Walks,11,Mem.,w_naught,0.01289750565119659,53.44029636770305,converged,7
+Memory,Random Walks,11,Mem.,w_mem,0.0940395321416438,53.44029636770305,converged,7
+Memory,Random Walks,11,Mem. + SR,w_naught,-0.01669904315104385,52.77859632433826,converged,12
+Memory,Random Walks,11,Mem. + SR,w_mem,-0.09715333571596532,52.77859632433826,converged,12
+Memory,Random Walks,11,Mem. + SR,w_sr,1.4842083907726216,52.77859632433826,converged,12
+Memory,Random Walks,11,Mem. + SR,sr_gamma,0.9550860227439791,52.77859632433826,converged,12
+Memory,Random Walks,11,SR,w_naught,-0.01172464606406862,52.86900044635694,converged,20
+Memory,Random Walks,11,SR,w_sr,1.243556355066458,52.86900044635694,converged,20
+Memory,Random Walks,11,SR,sr_gamma,0.9636086038872302,52.86900044635694,converged,20
+Memory,Random Walks,12,Mem.,w_naught,-0.08457500325645805,43.86153852154612,converged,13
+Memory,Random Walks,12,Mem.,w_mem,0.7200974050762601,43.86153852154612,converged,13
+Memory,Random Walks,12,Mem. + SR,w_naught,-0.1644580564452063,39.645407194276515,converged,10
+Memory,Random Walks,12,Mem. + SR,w_mem,0.20738826887961825,39.645407194276515,converged,10
+Memory,Random Walks,12,Mem. + SR,w_sr,2.6955837337652464,39.645407194276515,converged,10
+Memory,Random Walks,12,Mem. + SR,sr_gamma,0.9248982564698455,39.645407194276515,converged,10
+Memory,Random Walks,12,SR,w_naught,-0.17067089652238854,39.91217622154939,converged,12
+Memory,Random Walks,12,SR,w_sr,2.6709908539855345,39.91217622154939,converged,12
+Memory,Random Walks,12,SR,sr_gamma,0.8966058324804969,39.91217622154939,converged,12
+Memory,Random Walks,13,Mem.,w_naught,0.17178441566852398,33.48508042298109,converged,6
+Memory,Random Walks,13,Mem.,w_mem,-0.01572039056721106,33.48508042298109,converged,6
+Memory,Random Walks,13,Mem. + SR,w_naught,0.19879678489636385,33.12344145423668,converged,6
+Memory,Random Walks,13,Mem. + SR,w_mem,0.17381289046608195,33.12344145423668,converged,6
+Memory,Random Walks,13,Mem. + SR,w_sr,-0.819962281532004,33.12344145423668,converged,6
+Memory,Random Walks,13,Mem. + SR,sr_gamma,0.90560494986598,33.12344145423668,converged,6
+Memory,Random Walks,13,SR,w_naught,0.19180467750711855,33.28526650923438,converged,18
+Memory,Random Walks,13,SR,w_sr,-0.6295322286768759,33.28526650923438,converged,18
+Memory,Random Walks,13,SR,sr_gamma,0.9533233948699903,33.28526650923438,converged,18
+Memory,Random Walks,14,Mem.,w_naught,0.027698147205664658,49.08057292212271,converged,6
+Memory,Random Walks,14,Mem.,w_mem,0.3679680427233335,49.08057292212271,converged,6
+Memory,Random Walks,14,Mem. + SR,w_naught,0.00343806370706688,48.175905082678845,converged,15
+Memory,Random Walks,14,Mem. + SR,w_mem,-0.2145441697642535,48.175905082678845,converged,15
+Memory,Random Walks,14,Mem. + SR,w_sr,1.0269684683388292,48.175905082678845,converged,15
+Memory,Random Walks,14,Mem. + SR,sr_gamma,0.5319022050450037,48.175905082678845,converged,15
+Memory,Random Walks,14,SR,w_naught,0.00528883835477046,48.23981510875089,converged,13
+Memory,Random Walks,14,SR,w_sr,0.7683823322160758,48.23981510875089,converged,13
+Memory,Random Walks,14,SR,sr_gamma,0.6186927308873205,48.23981510875089,converged,13
+Memory,Random Walks,15,Mem.,w_naught,-0.06304620273022171,43.543000387416015,converged,19
+Memory,Random Walks,15,Mem.,w_mem,0.8693181127976363,43.543000387416015,converged,19
+Memory,Random Walks,15,Mem. + SR,w_naught,-0.3086956216361885,20.62300394590483,converged,1
+Memory,Random Walks,15,Mem. + SR,w_mem,-0.5872894515231502,20.62300394590483,converged,1
+Memory,Random Walks,15,Mem. + SR,w_sr,7.646066924910963,20.62300394590483,converged,1
+Memory,Random Walks,15,Mem. + SR,sr_gamma,0.8994429328333162,20.62300394590483,converged,1
+Memory,Random Walks,15,SR,w_naught,-0.28927610576603374,21.57232810691456,converged,2
+Memory,Random Walks,15,SR,w_sr,7.099736244224355,21.57232810691456,converged,2
+Memory,Random Walks,15,SR,sr_gamma,0.9137677355941921,21.57232810691456,converged,2
+Memory,Random Walks,16,Mem.,w_naught,-0.00945230200910732,53.2636565059806,converged,22
+Memory,Random Walks,16,Mem.,w_mem,0.17968308530933305,53.2636565059806,converged,22
+Memory,Random Walks,16,Mem. + SR,w_naught,-0.00959529466561239,53.219623610433224,converged,3
+Memory,Random Walks,16,Mem. + SR,w_mem,0.04229027477537682,53.219623610433224,converged,3
+Memory,Random Walks,16,Mem. + SR,w_sr,0.14124562685526132,53.219623610433224,converged,3
+Memory,Random Walks,16,Mem. + SR,sr_gamma,0.02313155788530385,53.219623610433224,converged,3
+Memory,Random Walks,16,SR,w_naught,-0.00936311205924884,53.223314356486746,converged,14
+Memory,Random Walks,16,SR,w_sr,0.181558742293594,53.223314356486746,converged,14
+Memory,Random Walks,16,SR,sr_gamma,0.02673847450417777,53.223314356486746,converged,14
+Memory,Random Walks,17,Mem.,w_naught,-0.00302174829597348,50.1818177009102,converged,3
+Memory,Random Walks,17,Mem.,w_mem,0.4111901027589263,50.1818177009102,converged,3
+Memory,Random Walks,17,Mem. + SR,w_naught,-0.03300943209343461,49.0865569962089,converged,25
+Memory,Random Walks,17,Mem. + SR,w_mem,-0.02788819345243318,49.0865569962089,converged,25
+Memory,Random Walks,17,Mem. + SR,w_sr,0.9664993661351866,49.0865569962089,converged,25
+Memory,Random Walks,17,Mem. + SR,sr_gamma,0.6772281078740372,49.0865569962089,converged,25
+Memory,Random Walks,17,SR,w_naught,-0.03276693003238906,49.08868298698703,converged,20
+Memory,Random Walks,17,SR,w_sr,0.9337801196835572,49.08868298698703,converged,20
+Memory,Random Walks,17,SR,sr_gamma,0.6897313245781976,49.08868298698703,converged,20
+Memory,Random Walks,18,Mem.,w_naught,-0.02283821388173501,53.39873391866319,converged,6
+Memory,Random Walks,18,Mem.,w_mem,0.15116117342794666,53.39873391866319,converged,6
+Memory,Random Walks,18,Mem. + SR,w_naught,-0.02263171921044659,53.21895771606634,converged,12
+Memory,Random Walks,18,Mem. + SR,w_mem,-0.11066806378994284,53.21895771606634,converged,12
+Memory,Random Walks,18,Mem. + SR,w_sr,0.26118567829805733,53.21895771606634,converged,12
+Memory,Random Walks,18,Mem. + SR,sr_gamma,9.640533115223094e-4,53.21895771606634,converged,12
+Memory,Random Walks,18,SR,w_naught,-0.0235676050993034,53.24784577555441,converged,12
+Memory,Random Walks,18,SR,w_sr,0.16121675275478492,53.24784577555441,converged,12
+Memory,Random Walks,18,SR,sr_gamma,2.378648461506368e-5,53.24784577555441,converged,12
+Memory,Random Walks,19,Mem.,w_naught,-0.1720357109331008,33.951712276350726,converged,8
+Memory,Random Walks,19,Mem.,w_mem,0.8448875138619809,33.951712276350726,converged,8
+Memory,Random Walks,19,Mem. + SR,w_naught,-0.21062220654098496,32.83557446754352,converged,11
+Memory,Random Walks,19,Mem. + SR,w_mem,0.22899944618792012,32.83557446754352,converged,11
+Memory,Random Walks,19,Mem. + SR,w_sr,1.1811330296711644,32.83557446754352,converged,11
+Memory,Random Walks,19,Mem. + SR,sr_gamma,0.5826718173592655,32.83557446754352,converged,11
+Memory,Random Walks,19,SR,w_naught,-0.20788077040893668,32.87750767509589,converged,15
+Memory,Random Walks,19,SR,w_sr,1.3861296636104878,32.87750767509589,converged,15
+Memory,Random Walks,19,SR,sr_gamma,0.46248295477176476,32.87750767509589,converged,15
+Memory,Random Walks,20,Mem.,w_naught,0.0915143895987537,48.16145526342774,converged,7
+Memory,Random Walks,20,Mem.,w_mem,-0.1810228063807906,48.16145526342774,converged,7
+Memory,Random Walks,20,Mem. + SR,w_naught,0.09933282080203336,48.07417925136529,converged,11
+Memory,Random Walks,20,Mem. + SR,w_mem,-0.03758955608679448,48.07417925136529,converged,11
+Memory,Random Walks,20,Mem. + SR,w_sr,-0.27645358010600574,48.07417925136529,converged,11
+Memory,Random Walks,20,Mem. + SR,sr_gamma,0.6078251541156827,48.07417925136529,converged,11
+Memory,Random Walks,20,SR,w_naught,0.10003021171698535,48.07845065258264,converged,12
+Memory,Random Walks,20,SR,w_sr,-0.32844547365746457,48.07845065258264,converged,12
+Memory,Random Walks,20,SR,sr_gamma,0.5832550846482621,48.07845065258264,converged,12
+Memory,Random Walks,21,Mem.,w_naught,-0.3349453315047982,9.14299355870284,converged,19
+Memory,Random Walks,21,Mem.,w_mem,2.590687473574772,9.14299355870284,converged,19
+Memory,Random Walks,21,Mem. + SR,w_naught,-0.3992283596021872,8.446069011376316,converged,16
+Memory,Random Walks,21,Mem. + SR,w_mem,1.7042259043743115,8.446069011376316,converged,16
+Memory,Random Walks,21,Mem. + SR,w_sr,1.8742841844151117,8.446069011376316,converged,16
+Memory,Random Walks,21,Mem. + SR,sr_gamma,0.5172707636122373,8.446069011376316,converged,16
+Memory,Random Walks,21,SR,w_naught,-0.38235279920871224,8.844568828505599,converged,14
+Memory,Random Walks,21,SR,w_sr,3.744390118693461,8.844568828505599,converged,14
+Memory,Random Walks,21,SR,sr_gamma,0.19527267049330985,8.844568828505599,converged,14
+Memory,Random Walks,22,Mem.,w_naught,-0.1838205777900068,33.75069880872714,converged,6
+Memory,Random Walks,22,Mem.,w_mem,0.770312427986648,33.75069880872714,converged,6
+Memory,Random Walks,22,Mem. + SR,w_naught,-0.19168030378928963,32.77101490134758,converged,17
+Memory,Random Walks,22,Mem. + SR,w_mem,0.04465944684771543,32.77101490134758,converged,17
+Memory,Random Walks,22,Mem. + SR,w_sr,0.9144829359631896,32.77101490134758,converged,17
+Memory,Random Walks,22,Mem. + SR,sr_gamma,0.17273395481683496,32.77101490134758,converged,17
+Memory,Random Walks,22,SR,w_naught,-0.19149464825579135,32.77427587417065,converged,17
+Memory,Random Walks,22,SR,w_sr,0.9645022610321936,32.77427587417065,converged,17
+Memory,Random Walks,22,SR,sr_gamma,0.16991736037726188,32.77427587417065,converged,17
+Memory,Random Walks,23,Mem.,w_naught,-0.3349653583533102,9.14299359723396,converged,8
+Memory,Random Walks,23,Mem.,w_mem,2.5911047116875663,9.14299359723396,converged,8
+Memory,Random Walks,23,Mem. + SR,w_naught,-0.45866672101645495,7.205818816654256,converged,24
+Memory,Random Walks,23,Mem. + SR,w_mem,1.3518050505735135,7.205818816654256,converged,24
+Memory,Random Walks,23,Mem. + SR,w_sr,3.052558817270286,7.205818816654256,converged,24
+Memory,Random Walks,23,Mem. + SR,sr_gamma,0.490338087391373,7.205818816654256,converged,24
+Memory,Random Walks,23,SR,w_naught,-0.44774197207506106,7.520981096247516,converged,8
+Memory,Random Walks,23,SR,w_sr,4.315385582198826,7.520981096247516,converged,8
+Memory,Random Walks,23,SR,sr_gamma,0.30878858996104375,7.520981096247516,converged,8
+Memory,Random Walks,24,Mem.,w_naught,-0.6444726523365432,0.6922258392776812,converged,14
+Memory,Random Walks,24,Mem.,w_mem,3.4865932689432633,0.6922258392776812,converged,14
+Memory,Random Walks,24,Mem. + SR,w_naught,-0.6663237932211763,0.5349124732785089,converged,7
+Memory,Random Walks,24,Mem. + SR,w_mem,2.685389765022505,0.5349124732785089,converged,7
+Memory,Random Walks,24,Mem. + SR,w_sr,1.3843898064782945,0.5349124732785089,converged,7
+Memory,Random Walks,24,Mem. + SR,sr_gamma,4.381890062417342e-6,0.5349124732785089,converged,7
+Memory,Random Walks,24,SR,w_naught,-0.5215356499591393,1.7162309413733532,converged,1
+Memory,Random Walks,24,SR,w_sr,4.957954580088188,1.7162309413733532,converged,1
+Memory,Random Walks,24,SR,sr_gamma,3.9072131474524413e-8,1.7162309413733532,converged,1
+Memory,Random Walks,25,Mem.,w_naught,0.06964251927416144,50.36033190947354,converged,25
+Memory,Random Walks,25,Mem.,w_mem,-0.2575343083014289,50.36033190947354,converged,25
+Memory,Random Walks,25,Mem. + SR,w_naught,0.06974427604059298,49.84035450045149,converged,18
+Memory,Random Walks,25,Mem. + SR,w_mem,0.5308178544989623,49.84035450045149,converged,18
+Memory,Random Walks,25,Mem. + SR,w_sr,-0.7928664144613017,49.84035450045149,converged,18
+Memory,Random Walks,25,Mem. + SR,sr_gamma,2.572369299021078e-6,49.84035450045149,converged,18
+Memory,Random Walks,25,SR,w_naught,0.07127706957816038,50.06511589940378,converged,18
+Memory,Random Walks,25,SR,w_sr,-0.2764660893368957,50.06511589940378,converged,18
+Memory,Random Walks,25,SR,sr_gamma,3.0203202977476607e-7,50.06511589940378,converged,18
+Memory,Random Walks,26,Mem.,w_naught,-0.6229883457697122,3.892169948687286,converged,21
+Memory,Random Walks,26,Mem.,w_mem,2.550532927036956,3.892169948687286,converged,21
+Memory,Random Walks,26,Mem. + SR,w_naught,-0.744055433084876,3.61364851402749,converged,8
+Memory,Random Walks,26,Mem. + SR,w_mem,1.9934405637666024,3.61364851402749,converged,8
+Memory,Random Walks,26,Mem. + SR,w_sr,1.6581822876371437,3.61364851402749,converged,8
+Memory,Random Walks,26,Mem. + SR,sr_gamma,0.7396707023252084,3.61364851402749,converged,8
+Memory,Random Walks,26,SR,w_naught,-0.5595640249897462,6.482494321047593,converged,19
+Memory,Random Walks,26,SR,w_sr,3.773298316357664,6.482494321047593,converged,19
+Memory,Random Walks,26,SR,sr_gamma,0.3935891534306815,6.482494321047593,converged,19
+Memory,Random Walks,27,Mem.,w_naught,-0.26196317314655415,18.886433753813897,converged,21
+Memory,Random Walks,27,Mem.,w_mem,1.4517176088059165,18.886433753813897,converged,21
+Memory,Random Walks,27,Mem. + SR,w_naught,-0.4185702989334959,14.297008570410204,converged,24
+Memory,Random Walks,27,Mem. + SR,w_mem,0.16712558819027357,14.297008570410204,converged,24
+Memory,Random Walks,27,Mem. + SR,w_sr,3.333508569230391,14.297008570410204,converged,24
+Memory,Random Walks,27,Mem. + SR,sr_gamma,0.6204021340101543,14.297008570410204,converged,24
+Memory,Random Walks,27,SR,w_naught,-0.4173048387056843,14.332230477866746,converged,1
+Memory,Random Walks,27,SR,w_sr,3.563464190243593,14.332230477866746,converged,1
+Memory,Random Walks,27,SR,sr_gamma,0.5798728405038523,14.332230477866746,converged,1
+Memory,Random Walks,28,Mem.,w_naught,-0.08949889151086149,48.47867821086415,converged,24
+Memory,Random Walks,28,Mem.,w_mem,0.22196532278128173,48.47867821086415,converged,24
+Memory,Random Walks,28,Mem. + SR,w_naught,-0.08905389312424,47.71148444797681,converged,10
+Memory,Random Walks,28,Mem. + SR,w_mem,-0.46342998271089697,47.71148444797681,converged,10
+Memory,Random Walks,28,Mem. + SR,w_sr,0.6859965463326362,47.71148444797681,converged,10
+Memory,Random Walks,28,Mem. + SR,sr_gamma,7.245166665320268e-8,47.71148444797681,converged,10
+Memory,Random Walks,28,SR,w_naught,-0.09216195264171062,48.02893775121716,converged,12
+Memory,Random Walks,28,SR,w_sr,0.2504486061855239,48.02893775121716,converged,12
+Memory,Random Walks,28,SR,sr_gamma,3.4749327152134864e-8,48.02893775121716,converged,12
+Memory,Random Walks,29,Mem.,w_naught,-0.28493396244463964,20.742284778842873,converged,23
+Memory,Random Walks,29,Mem.,w_mem,1.1476748353615254,20.742284778842873,converged,23
+Memory,Random Walks,29,Mem. + SR,w_naught,-0.42059050812557464,17.89337836882533,converged,13
+Memory,Random Walks,29,Mem. + SR,w_mem,0.6415598121353645,17.89337836882533,converged,13
+Memory,Random Walks,29,Mem. + SR,w_sr,3.4553795767199924,17.89337836882533,converged,13
+Memory,Random Walks,29,Mem. + SR,sr_gamma,0.9333568247104208,17.89337836882533,converged,13
+Memory,Random Walks,29,SR,w_naught,-0.4582478333980642,20.389288708946687,converged,17
+Memory,Random Walks,29,SR,w_sr,3.7748947268359254,20.389288708946687,converged,17
+Memory,Random Walks,29,SR,sr_gamma,0.865156533434791,20.389288708946687,converged,17
+Memory,Random Walks,30,Mem.,w_naught,0.1213979872762018,32.97159698984077,converged,24
+Memory,Random Walks,30,Mem.,w_mem,1.3985253762368954,32.97159698984077,converged,24
+Memory,Random Walks,30,Mem. + SR,w_naught,0.1195563300345856,32.92696061651376,converged,4
+Memory,Random Walks,30,Mem. + SR,w_mem,0.8619240832349939,32.92696061651376,converged,4
+Memory,Random Walks,30,Mem. + SR,w_sr,0.7557061845572562,32.92696061651376,converged,4
+Memory,Random Walks,30,Mem. + SR,sr_gamma,0.04817487168448965,32.92696061651376,converged,4
+Memory,Random Walks,30,SR,w_naught,0.1199305043170475,32.99195181864147,converged,18
+Memory,Random Walks,30,SR,w_sr,1.4983620629239087,32.99195181864147,converged,18
+Memory,Random Walks,30,SR,sr_gamma,0.022223372652755122,32.99195181864147,converged,18
+Memory,Random Walks,31,Mem.,w_naught,-0.01673228397407645,45.61425437634199,converged,7
+Memory,Random Walks,31,Mem.,w_mem,0.807792305825215,45.61425437634199,converged,7
+Memory,Random Walks,31,Mem. + SR,w_naught,-0.15214050120737904,29.25701430510693,converged,9
+Memory,Random Walks,31,Mem. + SR,w_mem,-1.2436505004302123,29.25701430510693,converged,9
+Memory,Random Walks,31,Mem. + SR,w_sr,5.229113805574974,29.25701430510693,converged,9
+Memory,Random Walks,31,Mem. + SR,sr_gamma,0.7031286181055482,29.25701430510693,converged,9
+Memory,Random Walks,31,SR,w_naught,-0.14616963789997223,31.011432124214004,converged,5
+Memory,Random Walks,31,SR,w_sr,4.0691242709976985,31.011432124214004,converged,5
+Memory,Random Walks,31,SR,sr_gamma,0.8094905664018829,31.011432124214004,converged,5
+Memory,Random Walks,32,Mem.,w_naught,-0.08552326826250017,41.319097486363496,converged,11
+Memory,Random Walks,32,Mem.,w_mem,0.9304677456179742,41.319097486363496,converged,11
+Memory,Random Walks,32,Mem. + SR,w_naught,-0.07572868897093174,40.94493839765472,converged,22
+Memory,Random Walks,32,Mem. + SR,w_mem,1.5728992729018354,40.94493839765472,converged,22
+Memory,Random Walks,32,Mem. + SR,w_sr,-0.7935099426439514,40.94493839765472,converged,22
+Memory,Random Walks,32,Mem. + SR,sr_gamma,0.28223204152501863,40.94493839765472,converged,22
+Memory,Random Walks,32,SR,w_naught,-0.07979425232086819,42.79508560699066,converged,2
+Memory,Random Walks,32,SR,w_sr,0.8735312126967132,42.79508560699066,converged,2
+Memory,Random Walks,32,SR,sr_gamma,5.093033750819592e-8,42.79508560699066,converged,2
+Memory,Random Walks,33,Mem.,w_naught,0.12391661056272908,43.03228243206453,converged,2
+Memory,Random Walks,33,Mem.,w_mem,-0.11679336580734812,43.03228243206453,converged,2
+Memory,Random Walks,33,Mem. + SR,w_naught,0.07640974172061424,41.066620215876725,converged,3
+Memory,Random Walks,33,Mem. + SR,w_mem,-0.5039163779505546,41.066620215876725,converged,3
+Memory,Random Walks,33,Mem. + SR,w_sr,2.017341151156371,41.066620215876725,converged,3
+Memory,Random Walks,33,Mem. + SR,sr_gamma,0.92614987202713,41.066620215876725,converged,3
+Memory,Random Walks,33,SR,w_naught,0.12756109155442563,42.771812083239595,converged,6
+Memory,Random Walks,33,SR,w_sr,-0.152170926956132,42.771812083239595,converged,6
+Memory,Random Walks,33,SR,sr_gamma,1.7996002093135597e-07,42.771812083239595,converged,6
+Memory,Random Walks,34,Mem.,w_naught,-0.05591178662008604,44.13762595676923,converged,18
+Memory,Random Walks,34,Mem.,w_mem,0.8499931578552673,44.13762595676923,converged,18
+Memory,Random Walks,34,Mem. + SR,w_naught,-0.26726792337188254,24.632063352298207,converged,19
+Memory,Random Walks,34,Mem. + SR,w_mem,-0.8671027834191993,24.632063352298207,converged,19
+Memory,Random Walks,34,Mem. + SR,w_sr,5.756143077945887,24.632063352298207,converged,19
+Memory,Random Walks,34,Mem. + SR,sr_gamma,0.8294279930726932,24.632063352298207,converged,19
+Memory,Random Walks,34,SR,w_naught,-0.24694037884398773,26.019566467516132,converged,12
+Memory,Random Walks,34,SR,w_sr,5.231718478926103,26.019566467516132,converged,12
+Memory,Random Walks,34,SR,sr_gamma,0.8825508742674347,26.019566467516132,converged,12
+Memory,Random Walks,35,Mem.,w_naught,-0.00870875992159872,46.37824647328274,converged,22
+Memory,Random Walks,35,Mem.,w_mem,0.7228339225248299,46.37824647328274,converged,22
+Memory,Random Walks,35,Mem. + SR,w_naught,-0.10281368836097066,40.08263105017096,converged,22
+Memory,Random Walks,35,Mem. + SR,w_mem,-2.585750735122885e-4,40.08263105017096,converged,22
+Memory,Random Walks,35,Mem. + SR,w_sr,3.5319566902126107,40.08263105017096,converged,22
+Memory,Random Walks,35,Mem. + SR,sr_gamma,0.9191330623414228,40.08263105017096,converged,22
+Memory,Random Walks,35,SR,w_naught,-0.10278951258220582,40.08263206277532,converged,22
+Memory,Random Walks,35,SR,w_sr,3.531350284160834,40.08263206277532,converged,22
+Memory,Random Walks,35,SR,sr_gamma,0.9191461981409919,40.08263206277532,converged,22
+Memory,Random Walks,36,Mem.,w_naught,-0.15118987244380674,34.70928498055195,converged,5
+Memory,Random Walks,36,Mem.,w_mem,0.949476754087976,34.70928498055195,converged,5
+Memory,Random Walks,36,Mem. + SR,w_naught,-0.17275358841452232,34.471949174239086,converged,2
+Memory,Random Walks,36,Mem. + SR,w_mem,0.8104675897885509,34.471949174239086,converged,2
+Memory,Random Walks,36,Mem. + SR,w_sr,1.0979949600189731,34.471949174239086,converged,2
+Memory,Random Walks,36,Mem. + SR,sr_gamma,0.9593052699737687,34.471949174239086,converged,2
+Memory,Random Walks,36,SR,w_naught,-0.14365257478368637,35.919586003584364,converged,20
+Memory,Random Walks,36,SR,w_sr,0.925832658193659,35.919586003584364,converged,20
+Memory,Random Walks,36,SR,sr_gamma,1.1062293572401228e-7,35.919586003584364,converged,20
+Memory,Random Walks,37,Mem.,w_naught,-0.0725014934131216,49.41233366916679,converged,13
+Memory,Random Walks,37,Mem.,w_mem,0.35641501850189367,49.41233366916679,converged,13
+Memory,Random Walks,37,Mem. + SR,w_naught,-0.1599633565864597,44.1976231125191,converged,9
+Memory,Random Walks,37,Mem. + SR,w_mem,-0.376319476281005,44.1976231125191,converged,9
+Memory,Random Walks,37,Mem. + SR,w_sr,2.2712706085849996,44.1976231125191,converged,9
+Memory,Random Walks,37,Mem. + SR,sr_gamma,0.8247274050317035,44.1976231125191,converged,9
+Memory,Random Walks,37,SR,w_naught,-0.15193905440033414,44.77382647852763,converged,24
+Memory,Random Walks,37,SR,w_sr,2.352958110806895,44.77382647852763,converged,24
+Memory,Random Walks,37,SR,sr_gamma,0.9223943627883161,44.77382647852763,converged,24
+Memory,Random Walks,38,Mem.,w_naught,0.10987532072494272,45.97439142489498,converged,6
+Memory,Random Walks,38,Mem.,w_mem,-0.2411384409481307,45.97439142489498,converged,6
+Memory,Random Walks,38,Mem. + SR,w_naught,0.12454043622321784,45.83540472220538,converged,21
+Memory,Random Walks,38,Mem. + SR,w_mem,-0.15097137806666686,45.83540472220538,converged,21
+Memory,Random Walks,38,Mem. + SR,w_sr,-0.7437637101079001,45.83540472220538,converged,21
+Memory,Random Walks,38,Mem. + SR,sr_gamma,0.9583780355879866,45.83540472220538,converged,21
+Memory,Random Walks,38,SR,w_naught,0.1100653777718802,45.87781832904227,converged,3
+Memory,Random Walks,38,SR,w_sr,-0.24276185916001256,45.87781832904227,converged,3
+Memory,Random Walks,38,SR,sr_gamma,2.867858903671394e-7,45.87781832904227,converged,3
+Memory,Random Walks,39,Mem.,w_naught,0.1139762077709807,40.34793250922622,converged,10
+Memory,Random Walks,39,Mem.,w_mem,0.1994262930294741,40.34793250922622,converged,10
+Memory,Random Walks,39,Mem. + SR,w_naught,0.12004213969988396,39.743026013369445,converged,24
+Memory,Random Walks,39,Mem. + SR,w_mem,1.179390009211783,39.743026013369445,converged,24
+Memory,Random Walks,39,Mem. + SR,w_sr,-1.0416430593900528,39.743026013369445,converged,24
+Memory,Random Walks,39,Mem. + SR,sr_gamma,0.12375097835274199,39.743026013369445,converged,24
+Memory,Random Walks,39,SR,w_naught,0.11754848145502148,40.58756045546991,converged,13
+Memory,Random Walks,39,SR,w_sr,0.14091888640978914,40.58756045546991,converged,13
+Memory,Random Walks,39,SR,sr_gamma,8.641108732883675e-7,40.58756045546991,converged,13
+Memory,Random Walks,40,Mem.,w_naught,0.00492468291535112,50.496674296494895,converged,11
+Memory,Random Walks,40,Mem.,w_mem,0.36778118873816024,50.496674296494895,converged,11
+Memory,Random Walks,40,Mem. + SR,w_naught,-0.03305864290043301,45.78303739081253,converged,3
+Memory,Random Walks,40,Mem. + SR,w_mem,-0.9263498867231488,45.78303739081253,converged,3
+Memory,Random Walks,40,Mem. + SR,w_sr,2.2105269354223585,45.78303739081253,converged,3
+Memory,Random Walks,40,Mem. + SR,sr_gamma,0.4277712560427881,45.78303739081253,converged,3
+Memory,Random Walks,40,SR,w_naught,-0.03587623159052917,47.316418467455,converged,21
+Memory,Random Walks,40,SR,w_sr,1.1502363140762095,47.316418467455,converged,21
+Memory,Random Walks,40,SR,sr_gamma,0.7333544056460695,47.316418467455,converged,21
+Memory,Random Walks,41,Mem.,w_naught,-0.16436957243432754,30.200152684313043,converged,2
+Memory,Random Walks,41,Mem.,w_mem,1.2518761213730607,30.200152684313043,converged,2
+Memory,Random Walks,41,Mem. + SR,w_naught,-0.3927620223732914,20.8151241767793,converged,22
+Memory,Random Walks,41,Mem. + SR,w_mem,0.2595413918679099,20.8151241767793,converged,22
+Memory,Random Walks,41,Mem. + SR,w_sr,4.951797950238953,20.8151241767793,converged,22
+Memory,Random Walks,41,Mem. + SR,sr_gamma,0.8939765179298877,20.8151241767793,converged,22
+Memory,Random Walks,41,SR,w_naught,-0.4073539539734531,21.02097777406607,converged,13
+Memory,Random Walks,41,SR,w_sr,5.01912591500072,21.02097777406607,converged,13
+Memory,Random Walks,41,SR,sr_gamma,0.8732044424895055,21.02097777406607,converged,13
+Memory,Random Walks,42,Mem.,w_naught,-0.00216203665973171,46.432506513318415,converged,9
+Memory,Random Walks,42,Mem.,w_mem,0.7052775335726738,46.432506513318415,converged,9
+Memory,Random Walks,42,Mem. + SR,w_naught,-0.09027182535815036,39.805654702994104,converged,17
+Memory,Random Walks,42,Mem. + SR,w_mem,-0.00758252396478335,39.805654702994104,converged,17
+Memory,Random Walks,42,Mem. + SR,w_sr,3.2252837740884104,39.805654702994104,converged,17
+Memory,Random Walks,42,Mem. + SR,sr_gamma,0.9060233779597864,39.805654702994104,converged,17
+Memory,Random Walks,42,SR,w_naught,-0.09012406700051556,39.80587875068158,converged,9
+Memory,Random Walks,42,SR,w_sr,3.2229237335657865,39.80587875068158,converged,9
+Memory,Random Walks,42,SR,sr_gamma,0.9066401240581285,39.80587875068158,converged,9
+Memory,Random Walks,43,Mem.,w_naught,-0.2378443296130748,23.74874059417936,converged,1
+Memory,Random Walks,43,Mem.,w_mem,1.1674584857746653,23.74874059417936,converged,1
+Memory,Random Walks,43,Mem. + SR,w_naught,-0.238001804506406,23.676364374156243,converged,10
+Memory,Random Walks,43,Mem. + SR,w_mem,0.8740414833175085,23.676364374156243,converged,10
+Memory,Random Walks,43,Mem. + SR,w_sr,0.3000924204109361,23.676364374156243,converged,10
+Memory,Random Walks,43,Mem. + SR,sr_gamma,2.3772383397506777e-7,23.676364374156243,converged,10
+Memory,Random Walks,43,SR,w_naught,-0.23345556055381927,24.273287823424067,converged,1
+Memory,Random Walks,43,SR,w_sr,1.2258240716808646,24.273287823424067,converged,1
+Memory,Random Walks,43,SR,sr_gamma,0.04026328988573573,24.273287823424067,converged,1
+Memory,Random Walks,44,Mem.,w_naught,-0.04890053800151055,44.661569655829055,converged,6
+Memory,Random Walks,44,Mem.,w_mem,0.8310595020972418,44.661569655829055,converged,6
+Memory,Random Walks,44,Mem. + SR,w_naught,-0.319149365120717,17.980966507822068,converged,4
+Memory,Random Walks,44,Mem. + SR,w_mem,-1.0226560070211344,17.980966507822068,converged,4
+Memory,Random Walks,44,Mem. + SR,w_sr,8.198942283162804,17.980966507822068,converged,4
+Memory,Random Walks,44,Mem. + SR,sr_gamma,0.8715285409626596,17.980966507822068,converged,4
+Memory,Random Walks,44,SR,w_naught,-0.2931660633542713,19.980528566575405,converged,15
+Memory,Random Walks,44,SR,w_sr,7.599847782965929,19.980528566575405,converged,15
+Memory,Random Walks,44,SR,sr_gamma,0.9068315640588467,19.980528566575405,converged,15
+Memory,Random Walks,45,Mem.,w_naught,0.03804363049098422,49.42753165903412,converged,22
+Memory,Random Walks,45,Mem.,w_mem,0.281829258497468,49.42753165903412,converged,22
+Memory,Random Walks,45,Mem. + SR,w_naught,0.04709983852996816,48.81569221596357,converged,7
+Memory,Random Walks,45,Mem. + SR,w_mem,0.9172657736735326,48.81569221596357,converged,7
+Memory,Random Walks,45,Mem. + SR,w_sr,-0.7778693730118655,48.81569221596357,converged,7
+Memory,Random Walks,45,Mem. + SR,sr_gamma,0.2516010451197816,48.81569221596357,converged,7
+Memory,Random Walks,45,SR,w_naught,0.0421662181227842,49.91138932401113,converged,10
+Memory,Random Walks,45,SR,w_sr,0.2178771665732898,49.91138932401113,converged,10
+Memory,Random Walks,45,SR,sr_gamma,6.484538082185191e-8,49.91138932401113,converged,10
+Memory,Random Walks,46,Mem.,w_naught,-0.01015207803271453,48.15362580762879,converged,8
+Memory,Random Walks,46,Mem.,w_mem,0.5717404479260653,48.15362580762879,converged,8
+Memory,Random Walks,46,Mem. + SR,w_naught,-0.01004541547980333,47.93554303293667,converged,13
+Memory,Random Walks,46,Mem. + SR,w_mem,0.2100691621227127,47.93554303293667,converged,13
+Memory,Random Walks,46,Mem. + SR,w_sr,0.38982658751962546,47.93554303293667,converged,13
+Memory,Random Walks,46,Mem. + SR,sr_gamma,8.030962268623056e-6,47.93554303293667,converged,13
+Memory,Random Walks,46,SR,w_naught,-0.00880954501477999,48.00671096298467,converged,2
+Memory,Random Walks,46,SR,w_sr,0.6021197403332432,48.00671096298467,converged,2
+Memory,Random Walks,46,SR,sr_gamma,6.82480838387955e-4,48.00671096298467,converged,2
+Memory,Random Walks,47,Mem.,w_naught,-0.1091214614472408,40.96278202169359,converged,20
+Memory,Random Walks,47,Mem.,w_mem,0.7855773702267848,40.96278202169359,converged,20
+Memory,Random Walks,47,Mem. + SR,w_naught,-0.2534403616006926,31.53128455886413,converged,10
+Memory,Random Walks,47,Mem. + SR,w_mem,0.08629123210219518,31.53128455886413,converged,10
+Memory,Random Walks,47,Mem. + SR,w_sr,4.859684203864583,31.53128455886413,converged,10
+Memory,Random Walks,47,Mem. + SR,sr_gamma,0.9356902066809801,31.53128455886413,converged,10
+Memory,Random Walks,47,SR,w_naught,-0.25796659451763804,31.580070297626303,converged,7
+Memory,Random Walks,47,SR,w_sr,4.8861217329762745,31.580070297626303,converged,7
+Memory,Random Walks,47,SR,sr_gamma,0.9306071512519034,31.580070297626303,converged,7
+Memory,Random Walks,48,Mem.,w_naught,-0.258939555207111,19.48274152562408,converged,21
+Memory,Random Walks,48,Mem.,w_mem,1.4109534149006258,19.48274152562408,converged,21
+Memory,Random Walks,48,Mem. + SR,w_naught,-0.4011253481133744,14.545186740083064,converged,4
+Memory,Random Walks,48,Mem. + SR,w_mem,-0.17799582629654326,14.545186740083064,converged,4
+Memory,Random Walks,48,Mem. + SR,w_sr,3.673038207422752,14.545186740083064,converged,4
+Memory,Random Walks,48,Mem. + SR,sr_gamma,0.5103611210637066,14.545186740083064,converged,4
+Memory,Random Walks,48,SR,w_naught,-0.4016084177987976,14.575775249765254,converged,7
+Memory,Random Walks,48,SR,w_sr,3.417668068215817,14.575775249765254,converged,7
+Memory,Random Walks,48,SR,sr_gamma,0.5494753731352964,14.575775249765254,converged,7
+Memory,Random Walks,49,Mem.,w_naught,-0.29389680075753455,12.274515745447395,converged,18
+Memory,Random Walks,49,Mem.,w_mem,2.476771772777808,12.274515745447395,converged,18
+Memory,Random Walks,49,Mem. + SR,w_naught,-0.3871014058488511,10.75048071765364,converged,10
+Memory,Random Walks,49,Mem. + SR,w_mem,1.39981026714478,10.75048071765364,converged,10
+Memory,Random Walks,49,Mem. + SR,w_sr,2.5702443126402565,10.75048071765364,converged,10
+Memory,Random Walks,49,Mem. + SR,sr_gamma,0.5617269235715391,10.75048071765364,converged,10
+Memory,Random Walks,49,SR,w_naught,-0.3667520222092133,11.352873866685094,converged,4
+Memory,Random Walks,49,SR,w_sr,4.1970720248701685,11.352873866685094,converged,4
+Memory,Random Walks,49,SR,sr_gamma,0.2765192132591759,11.352873866685094,converged,4
+Memory,Random Walks,50,Mem.,w_naught,-0.00871231549458794,46.378246608586274,converged,16
+Memory,Random Walks,50,Mem.,w_mem,0.7226418394512176,46.378246608586274,converged,16
+Memory,Random Walks,50,Mem. + SR,w_naught,-0.1140844006101308,37.93717758502462,converged,13
+Memory,Random Walks,50,Mem. + SR,w_mem,-0.12080805268954668,37.93717758502462,converged,13
+Memory,Random Walks,50,Mem. + SR,w_sr,3.926171755167836,37.93717758502462,converged,13
+Memory,Random Walks,50,Mem. + SR,sr_gamma,0.9076813305121332,37.93717758502462,converged,13
+Memory,Random Walks,50,SR,w_naught,-0.11152300564404448,37.98928832684815,converged,21
+Memory,Random Walks,50,SR,w_sr,3.86544101753319,37.98928832684815,converged,21
+Memory,Random Walks,50,SR,sr_gamma,0.9149412719820342,37.98928832684815,converged,21
+Memory,Random Walks,51,Mem.,w_naught,0.05251718554787019,48.630391009369056,converged,9
+Memory,Random Walks,51,Mem.,w_mem,0.23357125071665263,48.630391009369056,converged,9
+Memory,Random Walks,51,Mem. + SR,w_naught,0.02786600876825393,47.95277067826037,converged,3
+Memory,Random Walks,51,Mem. + SR,w_mem,-0.04126433721492127,47.95277067826037,converged,3
+Memory,Random Walks,51,Mem. + SR,w_sr,0.7646330669819827,47.95277067826037,converged,3
+Memory,Random Walks,51,Mem. + SR,sr_gamma,0.8064579279753846,47.95277067826037,converged,3
+Memory,Random Walks,51,SR,w_naught,0.02797091003155304,47.96006838959895,converged,6
+Memory,Random Walks,51,SR,w_sr,0.7355773946466606,47.96006838959895,converged,6
+Memory,Random Walks,51,SR,sr_gamma,0.8324142442714909,47.96006838959895,converged,6
+Memory,Random Walks,52,Mem.,w_naught,-0.0730668282469489,47.93466830713832,converged,23
+Memory,Random Walks,52,Mem.,w_mem,-0.10293295677388745,47.93466830713832,converged,23
+Memory,Random Walks,52,Mem. + SR,w_naught,-0.01468475345927967,45.304846713272966,converged,3
+Memory,Random Walks,52,Mem. + SR,w_mem,0.47886087221527424,45.304846713272966,converged,3
+Memory,Random Walks,52,Mem. + SR,w_sr,-1.8780227817476909,45.304846713272966,converged,3
+Memory,Random Walks,52,Mem. + SR,sr_gamma,0.8469097873604646,45.304846713272966,converged,3
+Memory,Random Walks,52,SR,w_naught,-0.02813718360959699,46.27843010128506,converged,13
+Memory,Random Walks,52,SR,w_sr,-1.5485640691479698,46.27843010128506,converged,13
+Memory,Random Walks,52,SR,sr_gamma,0.9421893949790862,46.27843010128506,converged,13
+Memory,Random Walks,53,Mem.,w_naught,-0.04356089722254148,44.41164902048049,converged,25
+Memory,Random Walks,53,Mem.,w_mem,0.8804165593993086,44.41164902048049,converged,25
+Memory,Random Walks,53,Mem. + SR,w_naught,-0.14860114789236506,35.141047121142265,converged,13
+Memory,Random Walks,53,Mem. + SR,w_mem,-0.06762092327262369,35.141047121142265,converged,13
+Memory,Random Walks,53,Mem. + SR,w_sr,3.1561426969575574,35.141047121142265,converged,13
+Memory,Random Walks,53,Mem. + SR,sr_gamma,0.840674047445011,35.141047121142265,converged,13
+Memory,Random Walks,53,SR,w_naught,-0.1483543624096217,35.15120041218528,converged,24
+Memory,Random Walks,53,SR,w_sr,3.1526491606027953,35.15120041218528,converged,24
+Memory,Random Walks,53,SR,sr_gamma,0.8522564593144141,35.15120041218528,converged,24
+Memory,Random Walks,54,Mem.,w_naught,-0.10825576608638073,39.196033769388336,converged,9
+Memory,Random Walks,54,Mem.,w_mem,0.9386626211703784,39.196033769388336,converged,9
+Memory,Random Walks,54,Mem. + SR,w_naught,-0.1528861881806422,37.844066312426534,converged,2
+Memory,Random Walks,54,Mem. + SR,w_mem,0.5800877888805119,37.844066312426534,converged,2
+Memory,Random Walks,54,Mem. + SR,w_sr,1.227195892900909,37.844066312426534,converged,2
+Memory,Random Walks,54,Mem. + SR,sr_gamma,0.8668753051911784,37.844066312426534,converged,2
+Memory,Random Walks,54,SR,w_naught,-0.1428303013571402,38.23822111919708,converged,9
+Memory,Random Walks,54,SR,w_sr,1.542124804112421,38.23822111919708,converged,9
+Memory,Random Walks,54,SR,sr_gamma,0.4750110335139675,38.23822111919708,converged,9
+Memory,Random Walks,55,Mem.,w_naught,-0.09139290415853173,47.71161436648001,converged,7
+Memory,Random Walks,55,Mem.,w_mem,0.3686934307974,47.71161436648001,converged,7
+Memory,Random Walks,55,Mem. + SR,w_naught,-0.15315074747139426,45.518643006840286,converged,2
+Memory,Random Walks,55,Mem. + SR,w_mem,-0.01903938404121331,45.518643006840286,converged,2
+Memory,Random Walks,55,Mem. + SR,w_sr,1.7934890366656586,45.518643006840286,converged,2
+Memory,Random Walks,55,Mem. + SR,sr_gamma,0.9046019758984792,45.518643006840286,converged,2
+Memory,Random Walks,55,SR,w_naught,-0.15235543395935344,45.5213173841273,converged,10
+Memory,Random Walks,55,SR,w_sr,1.7878946941405731,45.5213173841273,converged,10
+Memory,Random Walks,55,SR,sr_gamma,0.9087378708038579,45.5213173841273,converged,10
+Memory,Random Walks,56,Mem.,w_naught,-0.2939058225728175,12.274515741279783,converged,19
+Memory,Random Walks,56,Mem.,w_mem,2.4762250546860605,12.274515741279783,converged,19
+Memory,Random Walks,56,Mem. + SR,w_naught,-0.42589601944946026,10.36170071471673,converged,3
+Memory,Random Walks,56,Mem. + SR,w_mem,1.5096778948467326,10.36170071471673,converged,3
+Memory,Random Walks,56,Mem. + SR,w_sr,2.676740154064982,10.36170071471673,converged,3
+Memory,Random Walks,56,Mem. + SR,sr_gamma,0.7300890422200825,10.36170071471673,converged,3
+Memory,Random Walks,56,SR,w_naught,-0.3912714492802272,10.944999304333631,converged,25
+Memory,Random Walks,56,SR,w_sr,3.819823960992836,10.944999304333631,converged,25
+Memory,Random Walks,56,SR,sr_gamma,0.35688434823964355,10.944999304333631,converged,25
+Memory,Random Walks,57,Mem.,w_naught,-0.01538397742346726,50.1734962846692,converged,2
+Memory,Random Walks,57,Mem.,w_mem,0.4317694742872753,50.1734962846692,converged,2
+Memory,Random Walks,57,Mem. + SR,w_naught,-0.01513376600759524,49.57110056948335,converged,16
+Memory,Random Walks,57,Mem. + SR,w_mem,1.6040188145667054,49.57110056948335,converged,16
+Memory,Random Walks,57,Mem. + SR,w_sr,-1.1399481904065776,49.57110056948335,converged,16
+Memory,Random Walks,57,Mem. + SR,sr_gamma,1.7752788918882988e-9,49.57110056948335,converged,16
+Memory,Random Walks,57,SR,w_naught,-0.0267596724466636,50.26072466975097,converged,22
+Memory,Random Walks,57,SR,w_sr,0.6395300085950724,50.26072466975097,converged,22
+Memory,Random Walks,57,SR,sr_gamma,0.4638186338669763,50.26072466975097,converged,22
+Memory,Random Walks,58,Mem.,w_naught,-0.02776937377657817,48.297609072601304,converged,16
+Memory,Random Walks,58,Mem.,w_mem,0.5693397486800866,48.297609072601304,converged,16
+Memory,Random Walks,58,Mem. + SR,w_naught,-0.0280701643162522,47.121291090941625,converged,25
+Memory,Random Walks,58,Mem. + SR,w_mem,-0.23520951749043223,47.121291090941625,converged,25
+Memory,Random Walks,58,Mem. + SR,w_sr,0.9524170809273372,47.121291090941625,converged,25
+Memory,Random Walks,58,Mem. + SR,sr_gamma,1.2115105738104258e-7,47.121291090941625,converged,25
+Memory,Random Walks,58,SR,w_naught,-0.0293141633385349,47.21348756246018,converged,16
+Memory,Random Walks,58,SR,w_sr,0.68920502862859,47.21348756246018,converged,16
+Memory,Random Walks,58,SR,sr_gamma,7.065756752151775e-8,47.21348756246018,converged,16
+Memory,Random Walks,59,Mem.,w_naught,0.06676746898746926,47.43872522670016,converged,22
+Memory,Random Walks,59,Mem.,w_mem,0.19678669877569696,47.43872522670016,converged,22
+Memory,Random Walks,59,Mem. + SR,w_naught,0.0554841004086098,47.33790681306023,converged,4
+Memory,Random Walks,59,Mem. + SR,w_mem,0.11907138054057508,47.33790681306023,converged,4
+Memory,Random Walks,59,Mem. + SR,w_sr,0.5215124529068874,47.33790681306023,converged,4
+Memory,Random Walks,59,Mem. + SR,sr_gamma,0.948397957908037,47.33790681306023,converged,4
+Memory,Random Walks,59,SR,w_naught,0.05315835749008389,47.4331670920738,converged,8
+Memory,Random Walks,59,SR,w_sr,0.4930438005354952,47.4331670920738,converged,8
+Memory,Random Walks,59,SR,sr_gamma,0.8478206285602466,47.4331670920738,converged,8
+Memory,Random Walks,60,Mem.,w_naught,0.13019368747863327,39.511681312422944,converged,13
+Memory,Random Walks,60,Mem.,w_mem,0.06692277433076468,39.511681312422944,converged,13
+Memory,Random Walks,60,Mem. + SR,w_naught,0.12947593412981057,38.62878469964377,converged,23
+Memory,Random Walks,60,Mem. + SR,w_mem,1.027587080205678,38.62878469964377,converged,23
+Memory,Random Walks,60,Mem. + SR,w_sr,-0.8828475622705154,38.62878469964377,converged,23
+Memory,Random Walks,60,Mem. + SR,sr_gamma,2.137556655237283e-7,38.62878469964377,converged,23
+Memory,Random Walks,60,SR,w_naught,0.14844306568183574,39.48484902938404,converged,23
+Memory,Random Walks,60,SR,w_sr,-0.5645935385907994,39.48484902938404,converged,23
+Memory,Random Walks,60,SR,sr_gamma,0.9705849157266969,39.48484902938404,converged,23
+Trust,Paired Associates,1,Mem.,w_naught,0.01393666167940577,1204.6569021291682,converged,13
+Trust,Paired Associates,1,Mem.,w_mem,0.12924638949280798,1204.6569021291682,converged,13
+Trust,Paired Associates,1,Mem. + SR,w_naught,0.00380982617756287,1148.761469887986,converged,24
+Trust,Paired Associates,1,Mem. + SR,w_mem,-2.868930851765097,1148.761469887986,converged,24
+Trust,Paired Associates,1,Mem. + SR,w_sr,3.5007337848712248,1148.761469887986,converged,24
+Trust,Paired Associates,1,Mem. + SR,sr_gamma,0.06980602674797864,1148.761469887986,converged,24
+Trust,Paired Associates,1,SR,w_naught,0.00265509190727166,1174.7542304128372,converged,14
+Trust,Paired Associates,1,SR,w_sr,3.2911362083041324,1174.7542304128372,converged,14
+Trust,Paired Associates,1,SR,sr_gamma,0.962984722219904,1174.7542304128372,converged,14
+Trust,Paired Associates,3,Mem.,w_naught,-0.03031116681294178,1244.3087635588186,converged,7
+Trust,Paired Associates,3,Mem.,w_mem,0.16753787202152748,1244.3087635588186,converged,7
+Trust,Paired Associates,3,Mem. + SR,w_naught,-0.03590891835993615,1153.2306879797777,converged,10
+Trust,Paired Associates,3,Mem. + SR,w_mem,-4.450906390641965,1153.2306879797777,converged,10
+Trust,Paired Associates,3,Mem. + SR,w_sr,5.128010297351027,1153.2306879797777,converged,10
+Trust,Paired Associates,3,Mem. + SR,sr_gamma,0.019008487928819418,1153.2306879797777,converged,10
+Trust,Paired Associates,3,SR,w_naught,-0.04065728179020093,1224.7350758532684,converged,22
+Trust,Paired Associates,3,SR,w_sr,1.2382901648826454,1224.7350758532684,converged,22
+Trust,Paired Associates,3,SR,sr_gamma,0.8808386331221306,1224.7350758532684,converged,22
+Trust,Paired Associates,4,Mem.,w_naught,-0.02716097677603285,1182.2686672929103,converged,9
+Trust,Paired Associates,4,Mem.,w_mem,0.6831212095131032,1182.2686672929103,converged,9
+Trust,Paired Associates,4,Mem. + SR,w_naught,-0.08718299866087073,766.5450812980405,converged,5
+Trust,Paired Associates,4,Mem. + SR,w_mem,-0.4663711393036241,766.5450812980405,converged,5
+Trust,Paired Associates,4,Mem. + SR,w_sr,8.924414815121029,766.5450812980405,converged,5
+Trust,Paired Associates,4,Mem. + SR,sr_gamma,0.8934660836140363,766.5450812980405,converged,5
+Trust,Paired Associates,4,SR,w_naught,-0.08336269847125637,789.0888149192714,converged,4
+Trust,Paired Associates,4,SR,w_sr,10.756675625626,789.0888149192714,converged,4
+Trust,Paired Associates,4,SR,sr_gamma,0.9248855926967294,789.0888149192714,converged,4
+Trust,Paired Associates,5,Mem.,w_naught,0.0192980858554964,378.9529844778525,converged,13
+Trust,Paired Associates,5,Mem.,w_mem,0.00295982424983833,378.9529844778525,converged,13
+Trust,Paired Associates,5,Mem. + SR,w_naught,0.01585855471535951,371.5144553788766,converged,6
+Trust,Paired Associates,5,Mem. + SR,w_mem,-0.9637510818732776,371.5144553788766,converged,6
+Trust,Paired Associates,5,Mem. + SR,w_sr,1.1297122359423049,371.5144553788766,converged,6
+Trust,Paired Associates,5,Mem. + SR,sr_gamma,0.07062786892963525,371.5144553788766,converged,6
+Trust,Paired Associates,5,SR,w_naught,0.01623825683607628,377.3976628932776,converged,22
+Trust,Paired Associates,5,SR,w_sr,0.8991156986607486,377.3976628932776,converged,22
+Trust,Paired Associates,5,SR,sr_gamma,0.9798595404960034,377.3976628932776,converged,22
+Trust,Paired Associates,6,Mem.,w_naught,-0.10224145418607838,466.17810550255274,converged,25
+Trust,Paired Associates,6,Mem.,w_mem,0.18785486267554335,466.17810550255274,converged,25
+Trust,Paired Associates,6,Mem. + SR,w_naught,-0.10314836782114813,460.25134066730647,converged,19
+Trust,Paired Associates,6,Mem. + SR,w_mem,-1.100298728110606,460.25134066730647,converged,19
+Trust,Paired Associates,6,Mem. + SR,w_sr,1.4047296991695966,460.25134066730647,converged,19
+Trust,Paired Associates,6,Mem. + SR,sr_gamma,9.35041793013046e-10,460.25134066730647,converged,19
+Trust,Paired Associates,6,SR,w_naught,-0.1025899271622065,464.5712419699675,converged,13
+Trust,Paired Associates,6,SR,w_sr,0.2069283545889335,464.5712419699675,converged,13
+Trust,Paired Associates,6,SR,sr_gamma,2.339340426248199e-6,464.5712419699675,converged,13
+Trust,Paired Associates,7,Mem.,w_naught,0.01389169571095647,87.28457896779628,converged,24
+Trust,Paired Associates,7,Mem.,w_mem,0.1082614975228502,87.28457896779628,converged,24
+Trust,Paired Associates,7,Mem. + SR,w_naught,0.01148992117238115,86.39503618699442,converged,9
+Trust,Paired Associates,7,Mem. + SR,w_mem,0.06941691136116304,86.39503618699442,converged,9
+Trust,Paired Associates,7,Mem. + SR,w_sr,0.8640367161224888,86.39503618699442,converged,9
+Trust,Paired Associates,7,Mem. + SR,sr_gamma,0.9637442883687359,86.39503618699442,converged,9
+Trust,Paired Associates,7,SR,w_naught,0.01225995930127141,87.29259533713187,converged,25
+Trust,Paired Associates,7,SR,w_sr,0.16495495299380036,87.29259533713187,converged,25
+Trust,Paired Associates,7,SR,sr_gamma,0.3179122562022671,87.29259533713187,converged,25
+Trust,Paired Associates,8,Mem.,w_naught,-0.13018282520998806,683.7181918170892,converged,1
+Trust,Paired Associates,8,Mem.,w_mem,0.44363266427406733,683.7181918170892,converged,1
+Trust,Paired Associates,8,Mem. + SR,w_naught,-0.1471702362593275,647.644616738561,converged,11
+Trust,Paired Associates,8,Mem. + SR,w_mem,-0.7860824176004613,647.644616738561,converged,11
+Trust,Paired Associates,8,Mem. + SR,w_sr,1.7145707112717623,647.644616738561,converged,11
+Trust,Paired Associates,8,Mem. + SR,sr_gamma,0.23474073856073752,647.644616738561,converged,11
+Trust,Paired Associates,8,SR,w_naught,-0.1511131423892046,647.9455496923166,converged,22
+Trust,Paired Associates,8,SR,w_sr,1.3133814795382444,647.9455496923166,converged,22
+Trust,Paired Associates,8,SR,sr_gamma,0.681249674991984,647.9455496923166,converged,22
+Trust,Paired Associates,9,Mem.,w_naught,0.07541303216807688,98.20340893123604,converged,12
+Trust,Paired Associates,9,Mem.,w_mem,0.00380171146379007,98.20340893123604,converged,12
+Trust,Paired Associates,9,Mem. + SR,w_naught,0.07625384262289917,97.3445476727164,converged,24
+Trust,Paired Associates,9,Mem. + SR,w_mem,0.5565173508464081,97.3445476727164,converged,24
+Trust,Paired Associates,9,Mem. + SR,w_sr,-0.6174613548236185,97.3445476727164,converged,24
+Trust,Paired Associates,9,Mem. + SR,sr_gamma,0.02772042555917208,97.3445476727164,converged,24
+Trust,Paired Associates,9,SR,w_naught,0.07622632988846782,98.20334382556858,converged,13
+Trust,Paired Associates,9,SR,w_sr,-0.17576340184152234,98.20334382556858,converged,13
+Trust,Paired Associates,9,SR,sr_gamma,0.9846289444034709,98.20334382556858,converged,13
+Trust,Paired Associates,10,Mem.,w_naught,0.05379886715412446,408.15503491547435,converged,22
+Trust,Paired Associates,10,Mem.,w_mem,0.18581217401259564,408.15503491547435,converged,22
+Trust,Paired Associates,10,Mem. + SR,w_naught,0.04268239018949875,359.57167231487784,converged,15
+Trust,Paired Associates,10,Mem. + SR,w_mem,-2.821238030722388,359.57167231487784,converged,15
+Trust,Paired Associates,10,Mem. + SR,w_sr,3.5513979645270837,359.57167231487784,converged,15
+Trust,Paired Associates,10,Mem. + SR,sr_gamma,0.07756799036905211,359.57167231487784,converged,15
+Trust,Paired Associates,10,SR,w_naught,0.0413525310393667,381.7925553590135,converged,16
+Trust,Paired Associates,10,SR,w_sr,2.373930929668646,381.7925553590135,converged,16
+Trust,Paired Associates,10,SR,sr_gamma,0.931041683763094,381.7925553590135,converged,16
+Trust,Paired Associates,11,Mem.,w_naught,-0.11036308948475354,982.2142086771756,converged,3
+Trust,Paired Associates,11,Mem.,w_mem,0.7713787839185,982.2142086771756,converged,3
+Trust,Paired Associates,11,Mem. + SR,w_naught,-0.14189990322061927,914.2611847571824,converged,22
+Trust,Paired Associates,11,Mem. + SR,w_mem,0.07043986854947101,914.2611847571824,converged,22
+Trust,Paired Associates,11,Mem. + SR,w_sr,2.0188654327960784,914.2611847571824,converged,22
+Trust,Paired Associates,11,Mem. + SR,sr_gamma,0.6690638494058472,914.2611847571824,converged,22
+Trust,Paired Associates,11,SR,w_naught,-0.14169154993417316,914.3156949138224,converged,16
+Trust,Paired Associates,11,SR,w_sr,1.95388514996032,914.3156949138224,converged,16
+Trust,Paired Associates,11,SR,sr_gamma,0.615472016056017,914.3156949138224,converged,16
+Trust,Paired Associates,12,Mem.,w_naught,0.05256017078726728,753.6458600599337,converged,6
+Trust,Paired Associates,12,Mem.,w_mem,0.3615793966166136,753.6458600599337,converged,6
+Trust,Paired Associates,12,Mem. + SR,w_naught,0.04570035053764098,725.2920083806995,converged,25
+Trust,Paired Associates,12,Mem. + SR,w_mem,-7.261812737660303,725.2920083806995,converged,25
+Trust,Paired Associates,12,Mem. + SR,w_sr,8.506771813293257,725.2920083806995,converged,25
+Trust,Paired Associates,12,Mem. + SR,sr_gamma,0.02094565219520767,725.2920083806995,converged,25
+Trust,Paired Associates,12,SR,w_naught,0.04459533708095994,743.3109407868174,converged,23
+Trust,Paired Associates,12,SR,w_sr,0.6537227318132162,743.3109407868174,converged,23
+Trust,Paired Associates,12,SR,sr_gamma,0.44007735333077985,743.3109407868174,converged,23
+Trust,Paired Associates,13,Mem.,w_naught,-0.03709547128787549,809.3898307280766,converged,18
+Trust,Paired Associates,13,Mem.,w_mem,0.16785685219606167,809.3898307280766,converged,18
+Trust,Paired Associates,13,Mem. + SR,w_naught,-0.03556684825901496,803.1958886280504,converged,9
+Trust,Paired Associates,13,Mem. + SR,w_mem,1.5532793172381498,803.1958886280504,converged,9
+Trust,Paired Associates,13,Mem. + SR,w_sr,-1.5308777433067426,803.1958886280504,converged,9
+Trust,Paired Associates,13,Mem. + SR,sr_gamma,0.016939730634153004,803.1958886280504,converged,9
+Trust,Paired Associates,13,SR,w_naught,-0.03697796747646605,810.8758280630996,converged,16
+Trust,Paired Associates,13,SR,w_sr,0.18039859054722884,810.8758280630996,converged,16
+Trust,Paired Associates,13,SR,sr_gamma,7.290950692930866e-7,810.8758280630996,converged,16
+Trust,Paired Associates,14,Mem.,w_naught,0.03784155349256878,660.1136760506777,converged,17
+Trust,Paired Associates,14,Mem.,w_mem,0.2825568216229503,660.1136760506777,converged,17
+Trust,Paired Associates,14,Mem. + SR,w_naught,0.04101294826394724,658.7801090221434,converged,1
+Trust,Paired Associates,14,Mem. + SR,w_mem,0.3374237712287703,658.7801090221434,converged,1
+Trust,Paired Associates,14,Mem. + SR,w_sr,-0.7918724915777637,658.7801090221434,converged,1
+Trust,Paired Associates,14,Mem. + SR,sr_gamma,0.9451636943552744,658.7801090221434,converged,1
+Trust,Paired Associates,14,SR,w_naught,0.0378005415928051,659.8723551739268,converged,5
+Trust,Paired Associates,14,SR,w_sr,0.305703268838167,659.8723551739268,converged,5
+Trust,Paired Associates,14,SR,sr_gamma,1.338439859094502e-7,659.8723551739268,converged,5
+Trust,Paired Associates,15,Mem.,w_naught,8.507587463746937e-4,800.2532958567349,converged,9
+Trust,Paired Associates,15,Mem.,w_mem,0.21857021711544453,800.2532958567349,converged,9
+Trust,Paired Associates,15,Mem. + SR,w_naught,-2.33637988835196e-5,790.5004827266433,converged,1
+Trust,Paired Associates,15,Mem. + SR,w_mem,-1.6756257321932515,790.5004827266433,converged,1
+Trust,Paired Associates,15,Mem. + SR,w_sr,2.0707435512786176,790.5004827266433,converged,1
+Trust,Paired Associates,15,Mem. + SR,sr_gamma,0.00361174833393403,790.5004827266433,converged,1
+Trust,Paired Associates,15,SR,w_naught,-0.00514519112113025,795.4466345580871,converged,11
+Trust,Paired Associates,15,SR,w_sr,0.45151709015301034,795.4466345580871,converged,11
+Trust,Paired Associates,15,SR,sr_gamma,0.5330157133227064,795.4466345580871,converged,11
+Trust,Paired Associates,17,Mem.,w_naught,0.04775418497551078,678.3112747465339,converged,20
+Trust,Paired Associates,17,Mem.,w_mem,0.06144318351632177,678.3112747465339,converged,20
+Trust,Paired Associates,17,Mem. + SR,w_naught,0.04544012782133544,665.2604405195013,converged,16
+Trust,Paired Associates,17,Mem. + SR,w_mem,-1.6499621044723145,665.2604405195013,converged,16
+Trust,Paired Associates,17,Mem. + SR,w_sr,1.9060308681022116,665.2604405195013,converged,16
+Trust,Paired Associates,17,Mem. + SR,sr_gamma,0.022285958760127667,665.2604405195013,converged,16
+Trust,Paired Associates,17,SR,w_naught,0.04554923640664554,676.481482064397,converged,13
+Trust,Paired Associates,17,SR,w_sr,0.1365232032107208,676.481482064397,converged,13
+Trust,Paired Associates,17,SR,sr_gamma,0.5217336892311522,676.481482064397,converged,13
+Trust,Paired Associates,18,Mem.,w_naught,0.07407309685756716,411.9357395189783,converged,20
+Trust,Paired Associates,18,Mem.,w_mem,0.14064412495456527,411.9357395189783,converged,20
+Trust,Paired Associates,18,Mem. + SR,w_naught,0.07140544018584039,410.88022934493904,converged,14
+Trust,Paired Associates,18,Mem. + SR,w_mem,0.03697969044470026,410.88022934493904,converged,14
+Trust,Paired Associates,18,Mem. + SR,w_sr,0.20141471810734823,410.88022934493904,converged,14
+Trust,Paired Associates,18,Mem. + SR,sr_gamma,0.48314568556381166,410.88022934493904,converged,14
+Trust,Paired Associates,18,SR,w_naught,0.0712673717763115,410.9207978230186,converged,8
+Trust,Paired Associates,18,SR,w_sr,0.23849570230401895,410.9207978230186,converged,8
+Trust,Paired Associates,18,SR,sr_gamma,0.3953141795710534,410.9207978230186,converged,8
+Trust,Paired Associates,19,Mem.,w_naught,0.03387912547076888,251.11950198603063,converged,8
+Trust,Paired Associates,19,Mem.,w_mem,0.07868927418224342,251.11950198603063,converged,8
+Trust,Paired Associates,19,Mem. + SR,w_naught,0.03889000810957686,236.50736258396657,converged,15
+Trust,Paired Associates,19,Mem. + SR,w_mem,1.4240484900913093,236.50736258396657,converged,15
+Trust,Paired Associates,19,Mem. + SR,w_sr,-1.572850324024483,236.50736258396657,converged,15
+Trust,Paired Associates,19,Mem. + SR,sr_gamma,0.07395100622183787,236.50736258396657,converged,15
+Trust,Paired Associates,19,SR,w_naught,0.03411308298726943,252.23718790150335,converged,9
+Trust,Paired Associates,19,SR,w_sr,0.08204478875626466,252.23718790150335,converged,9
+Trust,Paired Associates,19,SR,sr_gamma,6.417662818161017e-8,252.23718790150335,converged,9
+Trust,Paired Associates,20,Mem.,w_naught,-0.08853882828718071,1330.104292702785,converged,12
+Trust,Paired Associates,20,Mem.,w_mem,0.118714193793219,1330.104292702785,converged,12
+Trust,Paired Associates,20,Mem. + SR,w_naught,-0.11523673530310764,1252.438135892933,converged,16
+Trust,Paired Associates,20,Mem. + SR,w_mem,-0.4486745139574976,1252.438135892933,converged,16
+Trust,Paired Associates,20,Mem. + SR,w_sr,1.728453855815434,1252.438135892933,converged,16
+Trust,Paired Associates,20,Mem. + SR,sr_gamma,0.6832093661391909,1252.438135892933,converged,16
+Trust,Paired Associates,20,SR,w_naught,-0.10494110311862478,1284.494400732118,converged,9
+Trust,Paired Associates,20,SR,w_sr,4.209938169012235,1284.494400732118,converged,9
+Trust,Paired Associates,20,SR,sr_gamma,0.9667801390206746,1284.494400732118,converged,9
+Trust,Paired Associates,21,Mem.,w_naught,-0.04372017773601415,1286.00565390571,converged,8
+Trust,Paired Associates,21,Mem.,w_mem,0.19966812028698627,1286.00565390571,converged,8
+Trust,Paired Associates,21,Mem. + SR,w_naught,-0.05266582221401318,1255.248351381621,converged,13
+Trust,Paired Associates,21,Mem. + SR,w_mem,-1.8067001825492413,1255.248351381621,converged,13
+Trust,Paired Associates,21,Mem. + SR,w_sr,2.3784576327133133,1255.248351381621,converged,13
+Trust,Paired Associates,21,Mem. + SR,sr_gamma,0.08557744835241607,1255.248351381621,converged,13
+Trust,Paired Associates,21,SR,w_naught,-0.0543199415411866,1267.526931587948,converged,7
+Trust,Paired Associates,21,SR,w_sr,0.8533063533856133,1267.526931587948,converged,7
+Trust,Paired Associates,21,SR,sr_gamma,0.7870838638469918,1267.526931587948,converged,7
+Trust,Paired Associates,22,Mem.,w_naught,-0.07920347930386794,579.5747494086672,converged,4
+Trust,Paired Associates,22,Mem.,w_mem,1.1743573239598932,579.5747494086672,converged,4
+Trust,Paired Associates,22,Mem. + SR,w_naught,-0.13290701914895192,322.9224604046727,converged,11
+Trust,Paired Associates,22,Mem. + SR,w_mem,0.118074411379073,322.9224604046727,converged,11
+Trust,Paired Associates,22,Mem. + SR,w_sr,5.752972834099175,322.9224604046727,converged,11
+Trust,Paired Associates,22,Mem. + SR,sr_gamma,0.8515024496043404,322.9224604046727,converged,11
+Trust,Paired Associates,22,SR,w_naught,-0.1331921891624499,323.3284384432489,converged,8
+Trust,Paired Associates,22,SR,w_sr,4.944863737691232,323.3284384432489,converged,8
+Trust,Paired Associates,22,SR,sr_gamma,0.8108016266704559,323.3284384432489,converged,8
+Trust,Paired Associates,23,Mem.,w_naught,-0.1660410194601908,913.3512594792048,converged,3
+Trust,Paired Associates,23,Mem.,w_mem,0.6060802899998234,913.3512594792048,converged,3
+Trust,Paired Associates,23,Mem. + SR,w_naught,-0.18421326230771495,894.4279195754765,converged,15
+Trust,Paired Associates,23,Mem. + SR,w_mem,0.3503216732343483,894.4279195754765,converged,15
+Trust,Paired Associates,23,Mem. + SR,w_sr,3.741197338169358,894.4279195754765,converged,15
+Trust,Paired Associates,23,Mem. + SR,sr_gamma,0.9437341358968026,894.4279195754765,converged,15
+Trust,Paired Associates,23,SR,w_naught,-0.18095230791719907,903.283666607753,converged,11
+Trust,Paired Associates,23,SR,w_sr,1.0490497623109531,903.283666607753,converged,11
+Trust,Paired Associates,23,SR,sr_gamma,0.4053015285901576,903.283666607753,converged,11
+Trust,Paired Associates,24,Mem.,w_naught,-0.09612001939947912,570.6410226578432,converged,13
+Trust,Paired Associates,24,Mem.,w_mem,0.43378948022973846,570.6410226578432,converged,13
+Trust,Paired Associates,24,Mem. + SR,w_naught,-0.09704031651404998,570.4694303451523,converged,6
+Trust,Paired Associates,24,Mem. + SR,w_mem,0.3561517260163153,570.4694303451523,converged,6
+Trust,Paired Associates,24,Mem. + SR,w_sr,0.10812477798148716,570.4694303451523,converged,6
+Trust,Paired Associates,24,Mem. + SR,sr_gamma,0.2414657790039495,570.4694303451523,converged,6
+Trust,Paired Associates,24,SR,w_naught,-0.09692738620638051,571.4234795058034,converged,9
+Trust,Paired Associates,24,SR,w_sr,0.4856674182525691,571.4234795058034,converged,9
+Trust,Paired Associates,24,SR,sr_gamma,0.03729800189105714,571.4234795058034,converged,9
+Trust,Paired Associates,25,Mem.,w_naught,0.06303180500013256,762.555715374635,converged,19
+Trust,Paired Associates,25,Mem.,w_mem,0.5707671912775116,762.555715374635,converged,19
+Trust,Paired Associates,25,Mem. + SR,w_naught,0.06305270202506837,734.2498693043322,converged,15
+Trust,Paired Associates,25,Mem. + SR,w_mem,-10.24357575763079,734.2498693043322,converged,15
+Trust,Paired Associates,25,Mem. + SR,w_sr,11.768686398159817,734.2498693043322,converged,15
+Trust,Paired Associates,25,Mem. + SR,sr_gamma,4.677404111829298e-6,734.2498693043322,converged,15
+Trust,Paired Associates,25,SR,w_naught,0.06299108530133997,760.4108350501024,converged,24
+Trust,Paired Associates,25,SR,w_sr,0.5933647746741315,760.4108350501024,converged,24
+Trust,Paired Associates,25,SR,sr_gamma,3.3189940367266275e-8,760.4108350501024,converged,24
+Trust,Paired Associates,26,Mem.,w_naught,-0.11100747649466104,802.0868568636299,converged,24
+Trust,Paired Associates,26,Mem.,w_mem,0.6529929014405218,802.0868568636299,converged,24
+Trust,Paired Associates,26,Mem. + SR,w_naught,-0.11040444408808306,801.733418879088,converged,17
+Trust,Paired Associates,26,Mem. + SR,w_mem,0.968107872663033,801.733418879088,converged,17
+Trust,Paired Associates,26,Mem. + SR,w_sr,-0.3513710581414232,801.733418879088,converged,17
+Trust,Paired Associates,26,Mem. + SR,sr_gamma,0.035468103144239496,801.733418879088,converged,17
+Trust,Paired Associates,26,SR,w_naught,-0.11109837981734752,804.7426540092391,converged,12
+Trust,Paired Associates,26,SR,w_sr,0.7046219955368578,804.7426540092391,converged,12
+Trust,Paired Associates,26,SR,sr_gamma,1.8526921080518106e-7,804.7426540092391,converged,12
+Trust,Paired Associates,27,Mem.,w_naught,-0.01577698612632854,485.4242660016436,converged,20
+Trust,Paired Associates,27,Mem.,w_mem,0.57623704945122,485.4242660016436,converged,20
+Trust,Paired Associates,27,Mem. + SR,w_naught,-0.03231133356487845,448.87004740878734,converged,19
+Trust,Paired Associates,27,Mem. + SR,w_mem,0.26513406543967893,448.87004740878734,converged,19
+Trust,Paired Associates,27,Mem. + SR,w_sr,3.4542957835720833,448.87004740878734,converged,19
+Trust,Paired Associates,27,Mem. + SR,sr_gamma,0.9318670456681825,448.87004740878734,converged,19
+Trust,Paired Associates,27,SR,w_naught,-0.03183699470437259,455.06795222555934,converged,25
+Trust,Paired Associates,27,SR,w_sr,1.2097012148859585,455.06795222555934,converged,25
+Trust,Paired Associates,27,SR,sr_gamma,0.5678935477857958,455.06795222555934,converged,25
+Trust,Paired Associates,28,Mem.,w_naught,-0.24383610540264145,860.2038207090268,converged,2
+Trust,Paired Associates,28,Mem.,w_mem,0.8510357338898404,860.2038207090268,converged,2
+Trust,Paired Associates,28,Mem. + SR,w_naught,-0.49394271480819063,735.4671806281586,converged,13
+Trust,Paired Associates,28,Mem. + SR,w_mem,-0.17075498601227962,735.4671806281586,converged,13
+Trust,Paired Associates,28,Mem. + SR,w_sr,9.027099959620376,735.4671806281586,converged,13
+Trust,Paired Associates,28,Mem. + SR,sr_gamma,0.8639101467291234,735.4671806281586,converged,13
+Trust,Paired Associates,28,SR,w_naught,-0.4575585171127036,737.2589060812647,converged,9
+Trust,Paired Associates,28,SR,w_sr,9.939902877019383,737.2589060812647,converged,9
+Trust,Paired Associates,28,SR,sr_gamma,0.8992889046322479,737.2589060812647,converged,9
+Trust,Paired Associates,29,Mem.,w_naught,-0.2130217180789239,1328.654205490252,converged,18
+Trust,Paired Associates,29,Mem.,w_mem,0.7257290528153082,1328.654205490252,converged,18
+Trust,Paired Associates,29,Mem. + SR,w_naught,-0.27094828850621666,1265.7647745057598,converged,5
+Trust,Paired Associates,29,Mem. + SR,w_mem,0.1906679440462047,1265.7647745057598,converged,5
+Trust,Paired Associates,29,Mem. + SR,w_sr,6.2980685762872834,1265.7647745057598,converged,5
+Trust,Paired Associates,29,Mem. + SR,sr_gamma,0.9246211804965606,1265.7647745057598,converged,5
+Trust,Paired Associates,29,SR,w_naught,-0.27920305606246104,1270.5793226641542,converged,25
+Trust,Paired Associates,29,SR,w_sr,3.528659177223418,1270.5793226641542,converged,25
+Trust,Paired Associates,29,SR,sr_gamma,0.8075230800753265,1270.5793226641542,converged,25
+Trust,Paired Associates,30,Mem.,w_naught,-0.1528902210669671,1302.3559383392176,converged,13
+Trust,Paired Associates,30,Mem.,w_mem,0.5192759559480983,1302.3559383392176,converged,13
+Trust,Paired Associates,30,Mem. + SR,w_naught,-0.12317050864926447,1237.9955806954,converged,19
+Trust,Paired Associates,30,Mem. + SR,w_mem,1.130082029709477,1237.9955806954,converged,19
+Trust,Paired Associates,30,Mem. + SR,w_sr,-3.654500950526052,1237.9955806954,converged,19
+Trust,Paired Associates,30,Mem. + SR,sr_gamma,0.8592247623258488,1237.9955806954,converged,19
+Trust,Paired Associates,30,SR,w_naught,-0.15322384569951264,1304.4163365154277,converged,19
+Trust,Paired Associates,30,SR,w_sr,0.5631843408801903,1304.4163365154277,converged,19
+Trust,Paired Associates,30,SR,sr_gamma,1.878809778280274e-8,1304.4163365154277,converged,19
