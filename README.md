@@ -103,3 +103,12 @@ cd ~/Documents/GitHub/multistep-relational-abstraction/code/06-sehl
 source ./sehl.sh
 ```
 
+
+## Workflow 7: Reanalyze Krackhardt dataset
+
+Test whether the SR can explain the data from Krackhardt 1987.
+
+```bash
+cd ~/Documents/GitHub/multistep-relational-abstraction/code/07-krackhardt
+source ./krackhardt.sh
+```

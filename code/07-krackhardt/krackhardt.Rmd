@@ -1,0 +1,877 @@
+---
+title: "Reanalyze Krackhardt 1987"
+output:
+  html_document:
+    code_download: true
+    code_folding: hide
+    toc: true
+    toc_float:
+      collapsed: true
+---
+
+In his 1987 paper (Cognitive Social Structures), Krackhardt includes data from a 21-member network of managers (all male) at a tech manufacturing company. These data include not only egocentric reports (these are the people *I* go to for advice), but also allocentric reports (I think John often asks Bill for advice). We can try testing whether multistep relational abstraction explains the subjects' allocentric beliefs in this dataset.
+
+# Setup
+
+```{r setup}
+# Set a random seed for reproducibility
+set.seed(sum(utf8ToInt("krackhardt")))
+
+library(tidyverse)
+library(here)
+library(tidygraph)
+library(ggraph)
+library(patchwork)
+library(lme4)
+library(lmerTest)
+library(broom.mixed)
+
+kable <- knitr::kable
+vif <- car::vif
+
+knitting <- knitr::is_html_output()
+
+if (knitting) {
+  # Create directories for saving stuff
+  if (!dir.exists(here("outputs"))) {
+    dir.create(here("outputs"))
+  }
+  
+  if (!dir.exists(here("outputs", "07-krackhardt"))) {
+    dir.create(here("outputs", "07-krackhardt"))
+  }
+}
+
+# Pull in some modeling tools
+source(here("code", "utils", "representation_utils.R"))
+source(here("code", "utils", "network_utils.R"))
+
+gg <- list(
+  theme_bw(),
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 13),
+    plot.subtitle = element_text(hjust = 0.5, size = 11),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.spacing = unit(0.75, "lines"),
+    legend.box.spacing = unit(0.5, "lines"),
+    legend.margin = margin(c(0, 0, 0, 0), unit = "lines")
+  )
+)
+
+plot_representation <- function(rep_df, relation_value, n_breaks = 3) {
+  plot_df <- rep_df %>%
+    filter(from != to) %>%
+    group_by(from, to) %>%
+    summarise(value = mean({{relation_value}}), .groups = "drop")
+  
+  midpoint <- mean(plot_df$value)
+  
+  plot_df %>%
+    # Plot
+    mutate(
+      across(c(from, to), factor),
+      from = fct_rev(from)
+    ) %>%
+    ggplot(aes(x=to, y=from, fill=value)) +
+    gg +
+    geom_tile() +
+    coord_fixed() +
+    scale_fill_gradient2(
+      name = NULL,
+      low = "#b2182b",
+      mid = "white",
+      high = "#2166ac",
+      na.value = "white",
+      midpoint = midpoint,
+      n.breaks = n_breaks
+    ) +
+    theme(legend.position = "bottom")
+}
+
+check_significance <- function(tidy_stats) {
+  tidy_stats %>%
+    mutate(
+      significance = case_when(
+        p.value < 0.001 ~ "***",
+        p.value < 0.01 ~ "**",
+        p.value < 0.05 ~ "*",
+        p.value < 0.1 ~ ".",
+        TRUE ~ ""
+      )
+    )
+}
+```
+
+These data are included in Krackhardt 1987, Appendix A. Each allocentric CSV contains an adjacency matrix, so we'll need to do a little work to get them into a tidy-friendly format.
+
+The "egocentric" network is defined in the way that social networks are most often defined: based on each subject's answer to the question, "Who are you connected to?" Oftentimes, this question is phrased to measure friendships (e.g., "Who are you friends with?"). In this particular dataset, the question is something closer to "Who do you ask for advice?"
+
+The "allocentric" cognitive maps measure each subject's answer to the questions, "Does X ask Y for advice?" as well as, "Does X ask you for advice?". Here's the rationale for the latter. If this were a study about friendships instead of advice-giving, we would likely consider the question, "Does X consider you a friend?" to rely more heavily on inference. Moreover, in cases of disagreement (X says Y asks him for advice; Y doesn't agree), the "ground truth" egocentric network would then hinge on the researcher's decision to use an intersection vs union rule to resolve disagreements. By alternatively defining the egocentric network based solely on the responses that subjects would have greatest introspective access to (their own advice-seeking behavior), we sidestep these issues.
+
+```{r clean-data}
+krackhardt_raw <- here("data", "krackhardt") %>%
+  fs::dir_ls(regexp = "krackhardt_tech_managers_sub[[:digit:]]{2}\\.csv") %>%
+  map_dfr(
+    .f = ~read_csv(.x, col_names = FALSE, show_col_types = FALSE),
+    .id = "filename"
+  ) %>%
+  mutate(
+    sub_id = str_extract(filename, "sub[[:digit:]]{2}"),
+    sub_id = str_remove(sub_id, "sub"),
+    sub_id = as.numeric(sub_id)
+  ) %>%
+  select(-filename) %>%
+  group_by(sub_id) %>%
+  mutate(from = row_number()) %>%
+  ungroup() %>%
+  pivot_longer(
+    cols = -c(sub_id, from),
+    names_to = "to",
+    values_to = "edge"
+  ) %>%
+  mutate(
+    to = str_remove(to, "X"),
+    to = as.integer(to)
+  )
+
+krackhardt_egocentric <- krackhardt_raw %>%
+  filter(sub_id == from, from != to) %>%
+  select(-sub_id)
+
+krackhardt_allocentric <- krackhardt_raw %>%
+  filter(sub_id != from, from != to)
+```
+
+# Plot data
+
+Okay, let's try and get a sense for what the "egocentric" network looks like.
+
+```{r network-graph}
+krackhardt_g <- krackhardt_egocentric %>%
+  filter(edge == 1) %>%
+  select(-edge) %>% 
+  tbl_graph(edges = .) %>%
+  mutate(name = row_number())
+
+plot_network_graph <- krackhardt_g %>%
+  # To clean up some of the overplotting
+  activate("edges") %>%
+  mutate(mutual = edge_is_mutual()) %>%
+  filter((from < to) | (mutual == FALSE)) %>%
+  # Plot the "ground truth" network
+  ggraph(layout = "stress") +
+  geom_edge_link(
+    aes(
+      start_cap = label_rect(node1.name),
+      end_cap = label_rect(node2.name),
+      color = mutual
+    ),
+    arrow = arrow(length = unit(2, "mm"))
+  ) +
+  geom_node_label(aes(label = name)) +
+  scale_edge_color_viridis(
+    discrete = TRUE, begin = 0.2, end = 0.75, option = "magma",
+    name = "Mutual Edge"
+  ) +
+  theme(
+    panel.background = element_blank(),
+    panel.border = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5, size = 13),
+    legend.position = "bottom"
+  )
+
+plot_network_graph
+```
+
+We can also plot this as a matrix instead of a graph, which will ease comparison with the cognitive strategies we'll consider next.
+
+```{r network-adjacency}
+plot_network_adj <- krackhardt_egocentric %>%
+  mutate(
+    across(c(from, to), factor),
+    from = fct_rev(from)
+  ) %>%
+  filter(from != to) %>%
+  ggplot(aes(x=to, y=from, fill=edge)) +
+  ggtitle("True Network Structure") +
+  gg +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = NULL,
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    na.value = "white",
+    midpoint = 0.5,
+    limits = c(0, 1),
+  ) +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  )
+
+plot_network_adj
+```
+
+How does this compare to subjects' mental representation of the network?
+
+```{r plot-representation}
+plot_choice <- krackhardt_allocentric %>%
+  plot_representation(relation_value = edge) +
+  ggtitle("Network Representation") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_network_adj | plot_choice
+```
+
+In the original paper, Krackhardt makes the following note: "There are some centers of focus for advice, notably 2 and 21 (both are vice presidents) ... In [the subjectively represented network], 21 loses his prominence as a major recipient of nominations: instead, 18, 14, and 7 (the president) appear to be more central." To get a quantitative sense for this in our data, we can try calculating the "represented" degree centrality by summing over the matrix columns, then comparing that against the true degree centrality.
+
+We can see that the same number of managers go to subjects 18 and 21 for advice (15 each), but that subject 18 is perceived as being much more "popular" (averaged across subjects, 11.95 managers go to him for advice) than subject 21 (averaged across subjects, 8.38 managers go to him for advice). A similar phenomenon happens with subjects 1 and 7, where subject 1 is perceived as being much less popular than subject 7, despite their having the same "true" popularity.
+
+```{r centrality-differences-1}
+centrality_differences <- krackhardt_g %>%
+  mutate(
+    Degree = centrality_degree(mode = "in"),
+    Betweenness = centrality_betweenness(directed = TRUE)
+  ) %>%
+  as_tibble() %>%
+  # Add represented in-degree; standardize sum by number of network members
+  left_join(
+    krackhardt_allocentric %>%
+      group_by(node = to) %>%
+      summarise(represent_in = sum(edge)/21, .groups = "drop"),
+    by = c("name"="node")
+  ) %>%
+  select(name, represent_in, everything()) %>%
+  arrange(desc(Degree), desc(represent_in))
+
+centrality_differences %>%
+  select(name, Degree, represent_in) %>%
+  kable()
+```
+
+Is it possible that subjects' network representations might be reflecting some other centrality metric? In the original paper, Krackhardt notes that betweenness seems to have some predictive power. For the 18-21 and 1-7 test cases, we see that betweenness centrality does make the "correct" prediction about which network member is represented as being more important. But, we should note that betweenness doesn't do the greatest job predicting perceived popularity across the board; its greatest predictive power is in explaining the popularity discrepancy for the most popular managers.
+
+```{r centrality-differences-2}
+centrality_differences %>%
+  kable()
+
+centrality_differences %>%
+  pivot_longer(cols = Degree:Betweenness, names_to = "metric") %>%
+  ggplot(aes(x=value, y=represent_in)) +
+  facet_wrap(~metric, scales = "free_x") +
+  geom_smooth(method = "lm", se = FALSE) +
+  geom_label(aes(label = name))
+```
+
+# Representation strategies
+
+We know that an individual's embedding within a network dictates what interactions and/or relationships they're able to observe. Therefore, when building predicted cognitive maps, we should use a different set of interactions to inform each subject's predicted representations. Of course, we have no idea what individual subjects' observations actually are. So we'll need to come up with a compact and reasonable set of assumptions about what observations were most likely available to individual network members.
+
+1. We'll assume (trivially) that people can observe interactions between themselves and their immediate advisors/advisees.
+2. We'll also assume that people are generally able to observe interactions between advisors-of-advisors (or advisees-of-advisees), either through firsthand observation or secondhand chatter.
+3. Though of course it's plausible that people might observe more distant interactions, we'll assume this happens with enough infrequency that we can ignore those interactions for the sake of modeling.
+
+```{r define-observations}
+# Start with all one-step egocentric observations
+obs_edgelist <- expand_grid(
+  sub_id = 1:21,
+  krackhardt_egocentric
+) %>%
+  # Convert adjlist into edgelist
+  filter(edge == 1) %>%
+  select(-edge) %>%
+  # For a given node, we want to know who their "advisors-of-advisors" are,
+  # or equivalently, "advisees-of-advisees"
+  left_join(
+    krackhardt_g %>%
+      mutate(neighbors = local_members(order = 1, mode = "all")) %>%
+      as_tibble(),
+    by = c("sub_id" = "name")
+  ) %>%
+  # We assume that nodes are able to observe (directly or through chatter)
+  # advice-giving interactions from their advisors and advisors-of-advisors
+  rowwise() %>%
+  filter((from %in% neighbors) | (to %in% neighbors)) %>%
+  ungroup() %>%
+  select(-neighbors) %>%
+  # Make pretty
+  arrange(sub_id, from)
+
+obs_adjlist <- expand_grid(
+  sub_id = 1:21, from = sub_id, to = sub_id
+) %>%
+  left_join(
+    obs_edgelist %>% mutate(edge = 1),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  mutate(edge = if_else(is.na(edge), 0, edge))
+```
+
+If people were using triad or community schemas/heuristics to inform representation, what would this look like? Using literally the exact same tools that we used to analyze the butterfly network, let's create some predicted representations.
+
+At the group-level... these are frankly terrible predictions. Note that if a particular subject is predicted to ask all other managers for advice, the row associated with that subject will be filled with a value close to 1/20=0.05. So we can see that the triad completion strategy predicts that most managers are connected, and the community detection strategy predicts that literally all managers are connected. Neither comes even a little bit close to the actual allocentric network representation.
+
+```{r schema-experts}
+schema_experts <- obs_adjlist %>%
+  # Memorization
+  group_by(sub_id, from) %>%
+  mutate(
+    mem_value = edge / sum(edge),
+    mem_value = if_else(is.nan(mem_value), 0, mem_value)
+  ) %>%
+  ungroup() %>%
+  # Now triads
+  left_join(
+    obs_adjlist %>%
+      group_by(sub_id) %>%
+      nest() %>%
+      mutate(triad = map(data, ~build_rep_triad(.x, "edge"))) %>%
+      unnest(triad) %>%
+      ungroup() %>%
+      select(-c(data, transition_scaling)) %>%
+      mutate(triad_value = if_else(is.nan(triad_value), 0, triad_value)),
+    by = c("sub_id", "from", "to")
+  ) %>%
+  # Finally communities
+  left_join(
+    obs_adjlist %>%
+      group_by(sub_id) %>%
+      nest() %>%
+      mutate(comm = map(data, ~build_rep_community(.x, "edge"))) %>%
+      unnest(comm) %>%
+      ungroup() %>%
+      select(-c(data, transition_scaling)),
+    by = c("sub_id", "from", "to")
+  )
+
+plot_mem <- plot_representation(schema_experts, mem_value) +
+  ggtitle("Memorization") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_triad <- plot_representation(schema_experts, triad_value) +
+  ggtitle("Triad Completion") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_comm <- plot_representation(schema_experts, comm_value) +
+  ggtitle("Community Detection") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_schemas <- (
+  (plot_network_adj | plot_choice) / (plot_mem | plot_triad | plot_comm)
+)
+
+plot_schemas
+
+if (knitting) {
+  ggsave(
+    here("outputs", "07-krackhardt", "schemas.pdf"),
+    plot_schemas,
+    width = 12, height = 8,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
+```
+
+## Build SRs
+
+Let's say people use multistep relational abstraction to represent networks, and let's use the SR to approximate that kind of abstraction. Using the observations we generated before, let's create lots of learning "trials" to train the algorithm.
+
+```{r create-sr-obs}
+sr_observations <- obs_edgelist %>%
+  # Create simulated "learning trials" to train an asymptotic SR
+  expand_grid(rep = 1:100) %>%
+  # Randomize "order of trials" per repetition
+  group_by(sub_id, rep) %>%
+  slice_sample(prop = 1) %>%
+  ungroup()
+```
+
+And now we can use those to build SRs at different scales. We'll assume that every subject is using the same successor horizon...
+
+```{r compute-sr}
+sr <- sr_observations %>%
+  expand_grid(gamma = seq(0, 0.9, 0.1), .) %>%
+  group_by(sub_id, gamma) %>%
+  nest() %>%
+  mutate(
+    sr = map2(
+      .x = data, .y = gamma,
+      ~build_rep_sr(.x, this_alpha = 0.1, this_gamma = .y)
+    )
+  ) %>%
+  unnest(sr) %>%
+  ungroup() %>%
+  select(-data) %>%
+  mutate(gamma = gamma * 10) %>%
+  pivot_wider(
+    names_from = gamma,
+    names_prefix = "sr",
+    values_from = sr_value
+  )
+```
+
+Let's take a quick look at some of the predictions.
+
+```{r visualize-sr}
+plot_sr1 <- sr %>%
+  plot_representation(relation_value = sr1, n_breaks = 4) +
+  ggtitle("\u03B3 = 0.1") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_sr3 <- sr %>%
+  plot_representation(relation_value = sr3) +
+  ggtitle("\u03B3 = 0.3") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_sr5 <- sr %>%
+  plot_representation(relation_value = sr5) +
+  ggtitle("\u03B3 = 0.5") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_sr7 <- sr %>%
+  plot_representation(relation_value = sr7) +
+  ggtitle("\u03B3 = 0.7") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_sr9 <- sr %>%
+  plot_representation(relation_value = sr9) +
+  ggtitle("\u03B3 = 0.9") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_sr_gallery <- (
+  plot_choice + plot_sr1 + plot_sr3 + plot_sr5 + plot_sr7 + plot_sr9
+)
+
+plot_sr_gallery
+
+if (knitting) {
+  ggsave(
+    here("outputs", "07-krackhardt", "sr-gallery.pdf"),
+    plot_sr_gallery,
+    width = 12, height = 8,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
+```
+
+# Statistical tests
+
+Okay, now that we have all of the predicted strategies in hand, we'll want to perform some formal statistical tests to verify that the SR is truly doing the best at explaining subjects' network representations. Let's create a dataframe with all of the info we'll need.
+
+```{r define-test-dataset}
+test_dataset <- krackhardt_allocentric %>%
+  rename(choice = edge) %>%
+  left_join(schema_experts, by = c("sub_id", "from", "to")) %>%
+  left_join(sr, by = c("sub_id", "from", "to"))
+```
+
+We'll first want to see how well memorization and triads are doing. Note that we can't actually estimate a model for community detection, as this strategy predicts that everyone is connected to everyone... Some of the more inscrutinable output (here and in the next section) are checks for multicollinearity, via VIFs.
+
+```{r test-schemas}
+test_mem <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + (1 + mem_value | sub_id),
+    family = "binomial", data = .
+  )
+
+test_mem %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "Memorization")
+
+test_triad <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + triad_value + (1 + triad_value | sub_id),
+    family = "binomial", data = .
+  )
+
+vif(test_triad)
+
+test_triad %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "Triad completion")
+```
+
+And then we'll test all of our SRs in one go.
+
+```{r test-sr}
+test_sr0 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr0 + (1 + sr0 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr0)
+test_sr0 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.0")
+
+test_sr1 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr1 + (1 + sr1 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr1)
+test_sr1 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.1")
+
+test_sr2 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr2 + (1 + sr2 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr2)
+test_sr2 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.2")
+
+test_sr3 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr3 + (1 + sr3 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr3)
+test_sr3 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.3")
+
+test_sr4 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr4 + (1 + sr4 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr4)
+test_sr4 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.4")
+
+test_sr5 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr5 + (1 + sr5 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr5)
+test_sr5 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.5")
+
+test_sr6 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr6 + (1 + sr6 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr6)
+test_sr6 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.6")
+
+test_sr7 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr7 + (1 + sr7 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr7)
+test_sr7 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.7")
+
+test_sr8 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr8 + (1 + sr8 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr8)
+test_sr8 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.8")
+
+test_sr9 <- test_dataset %>%
+  glmer(
+    choice ~ mem_value + sr9 + (1 + sr9 | sub_id),
+    family = "binomial", data = .
+  )
+vif(test_sr9)
+test_sr9 %>%
+  tidy(conf.int = TRUE) %>%
+  check_significance() %>%
+  kable(caption = "SR gamma 0.9")
+```
+
+Of all of these models, which has the "best" fit, based on BIC?
+
+```{r goodness-of-fit}
+# Which has the best "goodness-of-fit"?
+bind_rows(
+  glance(test_mem) %>% mutate(model = "mem"),
+  glance(test_triad) %>% mutate(model = "triad"),
+  glance(test_sr0) %>% mutate(model = "sr0"),
+  glance(test_sr1) %>% mutate(model = "sr1"),
+  glance(test_sr2) %>% mutate(model = "sr2"),
+  glance(test_sr3) %>% mutate(model = "sr3"),
+  glance(test_sr4) %>% mutate(model = "sr4"),
+  glance(test_sr5) %>% mutate(model = "sr5"),
+  glance(test_sr6) %>% mutate(model = "sr6"),
+  glance(test_sr7) %>% mutate(model = "sr7"),
+  glance(test_sr8) %>% mutate(model = "sr8"),
+  glance(test_sr9) %>% mutate(model = "sr9")
+) %>%
+  select(model, everything()) %>%
+  arrange(BIC) %>%
+  kable()
+```
+
+# SR centrality
+
+We'll want to quantitatively check whether the SR predicts popularity disparities between the most popular degree-matched managers. We find, in fact, that *all* SRs predict that subject 18 is represented as being more popular than 21, and subject 7 as being more popular than 1.
+
+```{r centrality-differences-3}
+sr_centrality <- centrality_differences %>%
+  # Add SR in-degree
+  left_join(
+    sr %>%
+      group_by(sub_id, to) %>%
+      summarise(across(starts_with("sr"), sum), .groups = "drop") %>%
+      group_by(node = to) %>%
+      summarise(across(starts_with("sr"), mean)),
+    by = c("name" = "node")
+  )
+
+sr_centrality %>%
+  select(name, represent_in, Degree, sr0, sr2, sr4, sr6, sr8) %>%
+  kable()
+```
+
+Is this trivially because of the observations we provided the SR? When looking at memorization (based on the same observations), that doesn't seem to be the case.
+
+```{r centrality-differences-4}
+sr_centrality %>%
+  # Add memorization in-degree
+  left_join(
+    schema_experts %>%
+      group_by(sub_id, to) %>%
+      summarise(mem_value = sum(mem_value), .groups = "drop") %>%
+      group_by(name = to) %>%
+      summarise(mem_in = mean(mem_value)),
+    by = "name"
+  ) %>%
+  select(name, represent_in, Degree, sr8, mem_in) %>%
+  kable()
+```
+
+Finally, it seems possible that the SR might correlate with betweenness, as the two make similar predictions for the 18-21 and 1-7 test cases. We find evidence of such a relationship. It seems to be somewhat selective, as "SR centrality" doesn't correlate with degree.
+
+```{r sr-vs-betweenness}
+sr_centrality %>%
+  with(cor.test(Betweenness, sr8, method = "spearman", exact = FALSE)) %>%
+  tidy() %>% kable(caption = "Betweenness vs SR gamma 0.8")
+
+sr_centrality %>%
+  with(cor.test(Degree, sr8, method = "spearman", exact = FALSE)) %>%
+  tidy() %>% kable(caption = "In-Degree vs SR gamma 0.8")
+
+sr_centrality %>%
+  with(cor.test(Degree, Betweenness, method = "spearman", exact = FALSE)) %>%
+  tidy() %>% kable(caption = "Betweenness vs In-Degree")
+
+plot_sr_centrality_1 <- sr_centrality %>%
+  select(name, represent_in, Betweenness, sr8) %>%
+  ggplot(aes(x=sr8, y=Betweenness)) +
+  gg +
+  geom_smooth(method = "loess", se = FALSE) +
+  geom_label(aes(label = name)) +
+  xlab("SR \u03B3 = 0.8")
+
+plot_sr_centrality_2 <- sr_centrality %>%
+  mutate(Betweenness = log(Betweenness)) %>%
+  filter(Betweenness > -Inf) %>%
+  select(name, represent_in, Betweenness, sr8) %>%
+  ggplot(aes(x=sr8, y=Betweenness)) +
+  gg +
+  geom_smooth(method = "loess", se = FALSE) +
+  geom_label(aes(label = name)) +
+  xlab("SR \u03B3 = 0.8") +
+  ylab("log(Betweenness)")
+
+plot_sr_centrality_1 | plot_sr_centrality_2
+
+if (knitting) {
+  ggsave(
+    here("outputs", "07-krackhardt", "sr-centrality.pdf"),
+    plot_sr_centrality_1 | plot_sr_centrality_2,
+    width = 8, height = 4,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
+```
+
+# Figure for paper
+
+First, some visualizations of the network and relational matrices...
+
+```{r visualize-side-by-side}
+plot_sr8 <- sr %>%
+  plot_representation(relation_value = sr8) +
+  ggtitle("SR \u03B3 = 0.8") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_side_by_side <- (plot_network_adj | plot_choice | plot_sr8) +
+  plot_annotation(
+    title = "Advice Network (Krackhardt 1987)",
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 15))
+  )
+
+plot_side_by_side
+
+if (knitting) {
+  ggsave(
+    here("outputs", "07-krackhardt", "krackhardt-1987-pt1.pdf"),
+    plot_network_graph,
+    width = 8, height = 4,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+  
+  ggsave(
+    here("outputs", "07-krackhardt", "krackhardt-1987-pt2.pdf"),
+    plot_side_by_side,
+    width = 8, height = 6,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
+```
+
+Next, some visualizations of the specific contrasts between certain network members...
+
+```{r visualize-specific-contrasts}
+specific_contrasts_rep <- krackhardt_allocentric %>%
+  filter(from != to) %>%
+  filter(to %in% c(1, 7, 18, 21)) %>%
+  group_by(from, to) %>%
+  summarise(edge = mean(edge), .groups = "drop")
+
+plot_contrasts_rep <- specific_contrasts_rep %>%
+  mutate(
+    across(c(from, to), factor),
+    to = fct_rev(to)
+  ) %>%
+  ggplot(aes(x=from, y=to, fill=edge)) +
+  gg +
+  ggtitle("Network Representation") +
+  geom_tile(show.legend = FALSE) +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = NULL,
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    midpoint = krackhardt_allocentric %>%
+      filter(from != to) %>%
+      select(edge) %>%
+      deframe() %>%
+      mean(),
+    n.breaks = 3
+  ) +
+  theme(legend.position = "bottom") +
+  geom_rect(
+    mapping = aes(xmin=0.5, xmax=21.5, ymin=0.5, ymax=2.5),
+    inherit.aes = FALSE,
+    alpha = 0, color = "black", size = 1
+  ) +
+  geom_rect(
+    mapping = aes(xmin=0.5, xmax=21.5, ymin=2.5, ymax=4.5),
+    inherit.aes = FALSE,
+    alpha = 0, color = "black", size = 1
+  )
+
+specific_contrasts_sr <- sr %>%
+  filter(from != to) %>%
+  filter(to %in% c(1, 7, 18, 21)) %>%
+  group_by(from, to) %>%
+  summarise(sr8 = mean(sr8), .groups = "drop")
+
+plot_contrasts_sr <- specific_contrasts_sr %>%
+  mutate(
+    across(c(from, to), factor),
+    to = fct_rev(to)
+  ) %>%
+  ggplot(aes(x=from, y=to, fill=sr8)) +
+  gg +
+  ggtitle("SR") +
+  geom_tile(show.legend = FALSE) +
+  coord_fixed() +
+  scale_fill_gradient2(
+    name = NULL,
+    low = "#b2182b",
+    mid = "white",
+    high = "#2166ac",
+    midpoint = sr %>%
+      filter(from != to) %>%
+      select(sr8) %>%
+      deframe() %>%
+      mean(),
+    n.breaks = 3
+  ) +
+  theme(legend.position = "bottom") +
+  geom_rect(
+    mapping = aes(xmin=0.5, xmax=21.5, ymin=0.5, ymax=2.5),
+    inherit.aes = FALSE,
+    alpha = 0, color = "black", size = 1
+  ) +
+  geom_rect(
+    mapping = aes(xmin=0.5, xmax=21.5, ymin=2.5, ymax=4.5),
+    inherit.aes = FALSE,
+    alpha = 0, color = "black", size = 1
+  )
+
+plot_contrasts_rep / plot_contrasts_sr
+
+if (knitting) {
+  ggsave(
+    here("outputs", "07-krackhardt", "krackhardt-1987-pt3.pdf"),
+    plot_contrasts_rep / plot_contrasts_sr,
+    width = 8, height = 4,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
+```
+
+# Save data
+
+It was a bit of a pain getting the raw data into shape, so we'll save the cleaned versions for posterity.
+
+```{r save-data}
+if (knitting) {
+  krackhardt_egocentric %>%
+    write_csv(here("data", "krackhardt", "clean_network.csv"))
+  
+  krackhardt_allocentric %>%
+    rename(choice = edge) %>%
+    write_csv(here("data", "krackhardt", "clean_cognitive_maps.csv"))
+  
+  test_dataset %>%
+    write_csv(here("data", "krackhardt", "clean_representations.csv"))
+}
+```
+
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
+
