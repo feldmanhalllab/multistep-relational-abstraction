@@ -8,9 +8,18 @@ Written by [Jae-Young Son](https://jaeyoungson.com/).
 ## Computing environment
 
 This code was written/run under R 4.2.1, and relies on the following libraries:
-- `tidyverse 1.3.2`
-- `here 1.0.1`
-
+- General-purpose tools
+  - `tidyverse 1.3.2`
+  - `here 1.0.1`
+  - `patchwork_1.1.2`
+- Network analysis
+  - `igraph_1.3.5`
+  - `tidygraph_1.2.2`
+  - `ggraph_2.0.6`
+- Statistical analysis
+  - `lme4_1.1-31`
+  - `lmerTest_3.1-3`
+  - `broom.mixed_0.2.9.4`
 
 ## Workflow 1: Clean data
 
