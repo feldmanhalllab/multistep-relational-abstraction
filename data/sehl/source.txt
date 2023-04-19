@@ -1,0 +1,5 @@
+Citation:
+Sehl, C. G., Friedman, O., & Denison, S. (2022). The social network: How people infer relationships from mutual connections. Journal of Experimental Psychology: General. Advance online publication. https://doi.org/10.1037/xge0001330
+
+Data from:
+https://osf.io/25p6a/
