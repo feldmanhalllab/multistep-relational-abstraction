@@ -82,7 +82,7 @@ make_symmetric <- function(df, relation_value_col_name) {
       from_sorted = if_else(from < to, from, to),
       to_sorted = if_else(from < to, to, from)
     ) %>%
-    group_by(from_sorted, to_sorted) %>%
+    group_by(from_sorted, to_sorted, .add = TRUE) %>%
     mutate({{relation_value_col_name}} := mean({{relation_value_col_name}})) %>%
     ungroup() %>%
     select(-c(from_sorted, to_sorted))
@@ -367,7 +367,9 @@ hom_walk <- expand_grid(
     hom_gender_value = hom_gender_value / gender_scaling
   ) %>%
   select(sub_id, from, to, hom_race_value, hom_gender_value) %>%
+  group_by(sub_id) %>%
   make_symmetric(hom_race_value) %>%
+  group_by(sub_id) %>%
   make_symmetric(hom_gender_value)
 
 plot_representation(hom_walk, hom_race_value) +
@@ -406,7 +408,9 @@ hom_pair <- expand_grid(
     hom_gender_value = hom_gender_value / gender_scaling
   ) %>%
   select(sub_id, from, to, hom_race_value, hom_gender_value) %>%
+  group_by(sub_id) %>%
   make_symmetric(hom_race_value) %>%
+  group_by(sub_id) %>%
   make_symmetric(hom_gender_value)
 
 plot_representation(hom_pair, hom_race_value) +
@@ -489,7 +493,9 @@ feat_walk <- walk_adjlist %>%
     feat_gender_walk_compressed,
     by = c("sub_id", "from_gender_id", "to_gender_id")
   ) %>%
+  group_by(sub_id) %>%
   make_symmetric(feat_race_value) %>%
+  group_by(sub_id) %>%
   make_symmetric(feat_gender_value)
 
 plot_representation(feat_walk, feat_race_value) +
@@ -539,7 +545,9 @@ feat_pair <- pair_adjlist %>%
     feat_gender_pair_compressed,
     by = c("sub_id", "from_gender_id", "to_gender_id")
   ) %>%
+  group_by(sub_id) %>%
   make_symmetric(feat_race_value) %>%
+  group_by(sub_id) %>%
   make_symmetric(feat_gender_value)
 
 plot_representation(feat_pair, feat_race_value) +
