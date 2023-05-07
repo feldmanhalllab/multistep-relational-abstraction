@@ -7771,31 +7771,29 @@ is excessively high.</p>
 </div>
 <div id="homophily" class="section level1">
 <h1>Homophily</h1>
-<p>In the random walks dataset, we are not able to estimate random
-slopes for race-based homophily, as it results in a singular fit.</p>
 <pre class="r"><code>walk_data %&gt;%
   glmer(
-    choice ~ hom_race_value + (1 | sub_id),
+    choice ~ hom_race_value + (1 + hom_race_value | sub_id),
     family = binomial, data = .
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Random walks&quot;)</code></pre>
-<table style="width:100%;">
+<table>
 <caption>Random walks</caption>
 <colgroup>
+<col width="5%" />
+<col width="4%" />
+<col width="21%" />
+<col width="7%" />
+<col width="6%" />
+<col width="7%" />
+<col width="6%" />
+<col width="7%" />
+<col width="6%" />
 <col width="6%" />
 <col width="5%" />
-<col width="11%" />
+<col width="5%" />
 <col width="8%" />
-<col width="7%" />
-<col width="8%" />
-<col width="7%" />
-<col width="8%" />
-<col width="7%" />
-<col width="7%" />
-<col width="6%" />
-<col width="6%" />
-<col width="9%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -7819,45 +7817,75 @@ slopes for race-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-0.0723005</td>
-<td align="right">0.1316663</td>
-<td align="right">-0.5491191</td>
-<td align="right">0.5829237</td>
-<td align="right">-0.3303616</td>
-<td align="right">0.1857607</td>
-<td align="right">-3036.061</td>
-<td align="right">6078.122</td>
-<td align="right">6097.476</td>
+<td align="right">-0.0207449</td>
+<td align="right">0.0998902</td>
+<td align="right">-0.2076774</td>
+<td align="right">0.8354808</td>
+<td align="right">-0.2165260</td>
+<td align="right">0.1750362</td>
+<td align="right">-3032.595</td>
+<td align="right">6075.19</td>
+<td align="right">6107.445</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">1.0058933</td>
-<td align="right">1.4731623</td>
-<td align="right">0.6828123</td>
-<td align="right">0.4947254</td>
-<td align="right">-1.8814516</td>
-<td align="right">3.8932383</td>
-<td align="right">-3036.061</td>
-<td align="right">6078.122</td>
-<td align="right">6097.476</td>
+<td align="right">0.1118899</td>
+<td align="right">0.3345004</td>
+<td align="right">0.3344987</td>
+<td align="right">0.7380033</td>
+<td align="right">-0.5437187</td>
+<td align="right">0.7674986</td>
+<td align="right">-3032.595</td>
+<td align="right">6075.19</td>
+<td align="right">6107.445</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.7402581</td>
+<td align="right">0.7258132</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3036.061</td>
-<td align="right">6078.122</td>
-<td align="right">6097.476</td>
+<td align="right">-3032.595</td>
+<td align="right">6075.19</td>
+<td align="right">6107.445</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">cor__(Intercept).hom_race_value</td>
+<td align="right">0.1656041</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3032.595</td>
+<td align="right">6075.19</td>
+<td align="right">6107.445</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__hom_race_value</td>
+<td align="right">1.5395071</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3032.595</td>
+<td align="right">6075.19</td>
+<td align="right">6107.445</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -7908,82 +7936,82 @@ slopes for race-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-0.3945016</td>
-<td align="right">0.1605986</td>
-<td align="right">-2.4564444</td>
-<td align="right">0.0140320</td>
-<td align="right">-0.7092692</td>
-<td align="right">-0.0797341</td>
-<td align="right">-2847.948</td>
-<td align="right">5705.897</td>
-<td align="right">5737.807</td>
+<td align="right">-0.3178290</td>
+<td align="right">0.1255842</td>
+<td align="right">-2.5308046</td>
+<td align="right">0.0113801</td>
+<td align="right">-0.5639695</td>
+<td align="right">-0.0716886</td>
+<td align="right">-2835.642</td>
+<td align="right">5681.284</td>
+<td align="right">5713.195</td>
 <td align="left">*</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">1.4116144</td>
-<td align="right">1.7208983</td>
-<td align="right">0.8202776</td>
-<td align="right">0.4120579</td>
-<td align="right">-1.9612843</td>
-<td align="right">4.7845130</td>
-<td align="right">-2847.948</td>
-<td align="right">5705.897</td>
-<td align="right">5737.807</td>
+<td align="right">-0.0033133</td>
+<td align="right">0.4804397</td>
+<td align="right">-0.0068963</td>
+<td align="right">0.9944976</td>
+<td align="right">-0.9449578</td>
+<td align="right">0.9383313</td>
+<td align="right">-2835.642</td>
+<td align="right">5681.284</td>
+<td align="right">5713.195</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.7117939</td>
+<td align="right">0.6368505</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.948</td>
-<td align="right">5705.897</td>
-<td align="right">5737.807</td>
+<td align="right">-2835.642</td>
+<td align="right">5681.284</td>
+<td align="right">5713.195</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_race_value</td>
-<td align="right">-0.5921185</td>
+<td align="right">-0.4620382</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.948</td>
-<td align="right">5705.897</td>
-<td align="right">5737.807</td>
+<td align="right">-2835.642</td>
+<td align="right">5681.284</td>
+<td align="right">5713.195</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_race_value</td>
-<td align="right">5.2006901</td>
+<td align="right">2.0868190</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.948</td>
-<td align="right">5705.897</td>
-<td align="right">5737.807</td>
+<td align="right">-2835.642</td>
+<td align="right">5681.284</td>
+<td align="right">5713.195</td>
 <td align="left"></td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>walk_data %&gt;%
   glmer(
-    choice ~ hom_race_value + memorize_value + (1 | sub_id),
+    choice ~ hom_race_value + memorize_value + (1 + hom_race_value | sub_id),
     family = binomial, data = .
   ) %&gt;%
   model_to_df() %&gt;%
@@ -7991,19 +8019,19 @@ slopes for race-based homophily, as it results in a singular fit.</p>
 <table>
 <caption>Random walks</caption>
 <colgroup>
-<col width="6%" />
+<col width="5%" />
 <col width="4%" />
-<col width="11%" />
-<col width="7%" />
-<col width="6%" />
-<col width="7%" />
-<col width="6%" />
-<col width="6%" />
-<col width="7%" />
+<col width="19%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
 <col width="8%" />
 </colgroup>
 <thead>
@@ -8029,64 +8057,96 @@ slopes for race-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-0.4393634</td>
-<td align="right">0.1460775</td>
-<td align="right">-3.0077423</td>
-<td align="right">0.0026320</td>
-<td align="right">-0.725670</td>
-<td align="right">-0.1530568</td>
+<td align="right">-0.4187093</td>
+<td align="right">0.1155686</td>
+<td align="right">-3.6230371</td>
+<td align="right">0.0002912</td>
+<td align="right">-0.6452196</td>
+<td align="right">-0.1921990</td>
 <td align="right">NA</td>
-<td align="right">-2748.297</td>
-<td align="right">5504.593</td>
-<td align="right">5530.397</td>
-<td align="left">**</td>
+<td align="right">-2745.046</td>
+<td align="right">5502.093</td>
+<td align="right">5540.799</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">0.5043609</td>
-<td align="right">1.5527408</td>
-<td align="right">0.3248197</td>
-<td align="right">0.7453175</td>
-<td align="right">-2.538955</td>
-<td align="right">3.5476770</td>
-<td align="right">1.000153</td>
-<td align="right">-2748.297</td>
-<td align="right">5504.593</td>
-<td align="right">5530.397</td>
+<td align="right">0.0995071</td>
+<td align="right">0.3542349</td>
+<td align="right">0.2809072</td>
+<td align="right">0.7787816</td>
+<td align="right">-0.5947805</td>
+<td align="right">0.7937948</td>
+<td align="right">1.000007</td>
+<td align="right">-2745.046</td>
+<td align="right">5502.093</td>
+<td align="right">5540.799</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">5.2179298</td>
-<td align="right">0.2447401</td>
-<td align="right">21.3202931</td>
+<td align="right">5.2422832</td>
+<td align="right">0.2459557</td>
+<td align="right">21.3139323</td>
 <td align="right">0.0000000</td>
-<td align="right">4.738248</td>
-<td align="right">5.6976116</td>
-<td align="right">1.000153</td>
-<td align="right">-2748.297</td>
-<td align="right">5504.593</td>
-<td align="right">5530.397</td>
+<td align="right">4.7602189</td>
+<td align="right">5.7243475</td>
+<td align="right">1.000007</td>
+<td align="right">-2745.046</td>
+<td align="right">5502.093</td>
+<td align="right">5540.799</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.8486576</td>
+<td align="right">0.8396254</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2748.297</td>
-<td align="right">5504.593</td>
-<td align="right">5530.397</td>
+<td align="right">-2745.046</td>
+<td align="right">5502.093</td>
+<td align="right">5540.799</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">cor__(Intercept).hom_race_value</td>
+<td align="right">0.1021826</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2745.046</td>
+<td align="right">5502.093</td>
+<td align="right">5540.799</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__hom_race_value</td>
+<td align="right">1.6039154</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2745.046</td>
+<td align="right">5502.093</td>
+<td align="right">5540.799</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -8098,7 +8158,7 @@ slopes for race-based homophily, as it results in a singular fit.</p>
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table>
+<table style="width:100%;">
 <caption>Paired associates</caption>
 <colgroup>
 <col width="5%" />
@@ -8139,102 +8199,100 @@ slopes for race-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-0.7832706</td>
-<td align="right">0.1942087</td>
-<td align="right">-4.0331391</td>
-<td align="right">0.0000550</td>
-<td align="right">-1.163913</td>
-<td align="right">-0.4026286</td>
+<td align="right">-0.8152966</td>
+<td align="right">0.1505529</td>
+<td align="right">-5.415351</td>
+<td align="right">0.0000001</td>
+<td align="right">-1.110375</td>
+<td align="right">-0.5202184</td>
 <td align="right">NA</td>
-<td align="right">-2461.026</td>
-<td align="right">4934.052</td>
-<td align="right">4972.344</td>
+<td align="right">-2455.341</td>
+<td align="right">4922.682</td>
+<td align="right">4960.974</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">-0.6162905</td>
-<td align="right">2.1209141</td>
-<td align="right">-0.2905778</td>
-<td align="right">0.7713743</td>
-<td align="right">-4.773206</td>
-<td align="right">3.5406247</td>
-<td align="right">1.00121</td>
-<td align="right">-2461.026</td>
-<td align="right">4934.052</td>
-<td align="right">4972.344</td>
+<td align="right">-0.0695716</td>
+<td align="right">0.4760383</td>
+<td align="right">-0.146147</td>
+<td align="right">0.8838054</td>
+<td align="right">-1.002590</td>
+<td align="right">0.8634464</td>
+<td align="right">1.00004</td>
+<td align="right">-2455.341</td>
+<td align="right">4922.682</td>
+<td align="right">4960.974</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">6.1772683</td>
-<td align="right">0.2552646</td>
-<td align="right">24.1994686</td>
+<td align="right">6.1518729</td>
+<td align="right">0.2556614</td>
+<td align="right">24.062584</td>
 <td align="right">0.0000000</td>
-<td align="right">5.676959</td>
-<td align="right">6.6775777</td>
-<td align="right">1.00121</td>
-<td align="right">-2461.026</td>
-<td align="right">4934.052</td>
-<td align="right">4972.344</td>
+<td align="right">5.650786</td>
+<td align="right">6.6529599</td>
+<td align="right">1.00004</td>
+<td align="right">-2455.341</td>
+<td align="right">4922.682</td>
+<td align="right">4960.974</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.8869336</td>
+<td align="right">0.7625623</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2461.026</td>
-<td align="right">4934.052</td>
-<td align="right">4972.344</td>
+<td align="right">-2455.341</td>
+<td align="right">4922.682</td>
+<td align="right">4960.974</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_race_value</td>
-<td align="right">-0.5927203</td>
+<td align="right">-0.4460324</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2461.026</td>
-<td align="right">4934.052</td>
-<td align="right">4972.344</td>
+<td align="right">-2455.341</td>
+<td align="right">4922.682</td>
+<td align="right">4960.974</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_race_value</td>
-<td align="right">7.5490640</td>
+<td align="right">1.9374025</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2461.026</td>
-<td align="right">4934.052</td>
-<td align="right">4972.344</td>
+<td align="right">-2455.341</td>
+<td align="right">4922.682</td>
+<td align="right">4960.974</td>
 <td align="left"></td>
 </tr>
 </tbody>
 </table>
-<p>In the paired associates dataset, we are not able to estimate random
-slopes for gender-based homophily, as it results in a singular fit.</p>
 <pre class="r"><code>walk_data %&gt;%
   glmer(
     choice ~ hom_gender_value + (1 + hom_gender_value | sub_id),
@@ -8247,7 +8305,126 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <colgroup>
 <col width="5%" />
 <col width="4%" />
-<col width="21%" />
+<col width="22%" />
+<col width="7%" />
+<col width="6%" />
+<col width="7%" />
+<col width="6%" />
+<col width="7%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">effect</th>
+<th align="left">group</th>
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
+<th align="right">loglik</th>
+<th align="right">aic</th>
+<th align="right">bic</th>
+<th align="left">significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fixed</td>
+<td align="left">NA</td>
+<td align="left">(Intercept)</td>
+<td align="right">-0.1020493</td>
+<td align="right">0.1033937</td>
+<td align="right">-0.9869974</td>
+<td align="right">0.3236439</td>
+<td align="right">-0.3046973</td>
+<td align="right">0.1005986</td>
+<td align="right">-3024.119</td>
+<td align="right">6058.237</td>
+<td align="right">6090.493</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">fixed</td>
+<td align="left">NA</td>
+<td align="left">hom_gender_value</td>
+<td align="right">1.2844530</td>
+<td align="right">0.5609061</td>
+<td align="right">2.2899608</td>
+<td align="right">0.0220236</td>
+<td align="right">0.1850972</td>
+<td align="right">2.3838088</td>
+<td align="right">-3024.119</td>
+<td align="right">6058.237</td>
+<td align="right">6090.493</td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__(Intercept)</td>
+<td align="right">0.7305439</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3024.119</td>
+<td align="right">6058.237</td>
+<td align="right">6090.493</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">cor__(Intercept).hom_gender_value</td>
+<td align="right">-0.0402859</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3024.119</td>
+<td align="right">6058.237</td>
+<td align="right">6090.493</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__hom_gender_value</td>
+<td align="right">2.9565524</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-3024.119</td>
+<td align="right">6058.237</td>
+<td align="right">6090.493</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>pair_data %&gt;%
+  glmer(
+    choice ~ hom_gender_value + (1 + hom_gender_value | sub_id),
+    family = binomial, data = .
+  ) %&gt;%
+  model_to_df() %&gt;%
+  kable(caption = &quot;Paired associates&quot;)</code></pre>
+<table style="width:100%;">
+<caption>Paired associates</caption>
+<colgroup>
+<col width="5%" />
+<col width="4%" />
+<col width="22%" />
 <col width="7%" />
 <col width="6%" />
 <col width="6%" />
@@ -8281,164 +8458,75 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">0.4554313</td>
-<td align="right">0.1749994</td>
-<td align="right">2.602473</td>
-<td align="right">0.0092554</td>
-<td align="right">0.1124387</td>
-<td align="right">0.7984238</td>
-<td align="right">-3031.297</td>
-<td align="right">6072.594</td>
-<td align="right">6104.849</td>
+<td align="right">-0.4198686</td>
+<td align="right">0.1415783</td>
+<td align="right">-2.965628</td>
+<td align="right">0.0030207</td>
+<td align="right">-0.6973570</td>
+<td align="right">-0.1423802</td>
+<td align="right">-2820.498</td>
+<td align="right">5650.995</td>
+<td align="right">5682.906</td>
 <td align="left">**</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_gender_value</td>
-<td align="right">-6.6741000</td>
-<td align="right">2.1787828</td>
-<td align="right">-3.063224</td>
-<td align="right">0.0021897</td>
-<td align="right">-10.9444359</td>
-<td align="right">-2.4037642</td>
-<td align="right">-3031.297</td>
-<td align="right">6072.594</td>
-<td align="right">6104.849</td>
-<td align="left">**</td>
+<td align="right">1.3331435</td>
+<td align="right">0.8841060</td>
+<td align="right">1.507900</td>
+<td align="right">0.1315801</td>
+<td align="right">-0.3996724</td>
+<td align="right">3.0659594</td>
+<td align="right">-2820.498</td>
+<td align="right">5650.995</td>
+<td align="right">5682.906</td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.6187256</td>
+<td align="right">0.7122050</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3031.297</td>
-<td align="right">6072.594</td>
-<td align="right">6104.849</td>
+<td align="right">-2820.498</td>
+<td align="right">5650.995</td>
+<td align="right">5682.906</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_gender_value</td>
-<td align="right">1.0000000</td>
+<td align="right">-0.5451707</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3031.297</td>
-<td align="right">6072.594</td>
-<td align="right">6104.849</td>
+<td align="right">-2820.498</td>
+<td align="right">5650.995</td>
+<td align="right">5682.906</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_gender_value</td>
-<td align="right">1.7471608</td>
+<td align="right">4.1353437</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3031.297</td>
-<td align="right">6072.594</td>
-<td align="right">6104.849</td>
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>pair_data %&gt;%
-  glmer(
-    choice ~ hom_gender_value + (1 | sub_id),
-    family = binomial, data = .
-  ) %&gt;%
-  model_to_df() %&gt;%
-  kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table style="width:100%;">
-<caption>Paired associates</caption>
-<colgroup>
-<col width="6%" />
-<col width="5%" />
-<col width="12%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="7%" />
-<col width="6%" />
-<col width="6%" />
-<col width="9%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">effect</th>
-<th align="left">group</th>
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-<th align="right">conf.low</th>
-<th align="right">conf.high</th>
-<th align="right">loglik</th>
-<th align="right">aic</th>
-<th align="right">bic</th>
-<th align="left">significance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">(Intercept)</td>
-<td align="right">-0.3926331</td>
-<td align="right">0.1866201</td>
-<td align="right">-2.1039157</td>
-<td align="right">0.0353858</td>
-<td align="right">-0.7584018</td>
-<td align="right">-0.0268643</td>
-<td align="right">-2849.533</td>
-<td align="right">5705.065</td>
-<td align="right">5724.212</td>
-<td align="left">*</td>
-</tr>
-<tr class="even">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">hom_gender_value</td>
-<td align="right">1.1503518</td>
-<td align="right">2.0841752</td>
-<td align="right">0.5519458</td>
-<td align="right">0.5809855</td>
-<td align="right">-2.9345565</td>
-<td align="right">5.2352601</td>
-<td align="right">-2849.533</td>
-<td align="right">5705.065</td>
-<td align="right">5724.212</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">sd__(Intercept)</td>
-<td align="right">0.5840393</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2849.533</td>
-<td align="right">5705.065</td>
-<td align="right">5724.212</td>
+<td align="right">-2820.498</td>
+<td align="right">5650.995</td>
+<td align="right">5682.906</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -8466,7 +8554,150 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <col width="5%" />
 <col width="6%" />
 <col width="5%" />
+<col width="5%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">effect</th>
+<th align="left">group</th>
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
+<th align="right">vif</th>
+<th align="right">loglik</th>
+<th align="right">aic</th>
+<th align="right">bic</th>
+<th align="left">significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">fixed</td>
+<td align="left">NA</td>
+<td align="left">(Intercept)</td>
+<td align="right">-0.5179012</td>
+<td align="right">0.1155215</td>
+<td align="right">-4.483156</td>
+<td align="right">0.0000074</td>
+<td align="right">-0.7443192</td>
+<td align="right">-0.2914831</td>
+<td align="right">NA</td>
+<td align="right">-2738.578</td>
+<td align="right">5489.157</td>
+<td align="right">5527.863</td>
+<td align="left">***</td>
+</tr>
+<tr class="even">
+<td align="left">fixed</td>
+<td align="left">NA</td>
+<td align="left">hom_gender_value</td>
+<td align="right">1.5399976</td>
+<td align="right">0.5339141</td>
+<td align="right">2.884355</td>
+<td align="right">0.0039222</td>
+<td align="right">0.4935452</td>
+<td align="right">2.5864501</td>
+<td align="right">1.000754</td>
+<td align="right">-2738.578</td>
+<td align="right">5489.157</td>
+<td align="right">5527.863</td>
+<td align="left">**</td>
+</tr>
+<tr class="odd">
+<td align="left">fixed</td>
+<td align="left">NA</td>
+<td align="left">memorize_value</td>
+<td align="right">5.2338203</td>
+<td align="right">0.2456614</td>
+<td align="right">21.305020</td>
+<td align="right">0.0000000</td>
+<td align="right">4.7523328</td>
+<td align="right">5.7153077</td>
+<td align="right">1.000754</td>
+<td align="right">-2738.578</td>
+<td align="right">5489.157</td>
+<td align="right">5527.863</td>
+<td align="left">***</td>
+</tr>
+<tr class="even">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__(Intercept)</td>
+<td align="right">0.8129523</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2738.578</td>
+<td align="right">5489.157</td>
+<td align="right">5527.863</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">cor__(Intercept).hom_gender_value</td>
+<td align="right">0.1707364</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2738.578</td>
+<td align="right">5489.157</td>
+<td align="right">5527.863</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__hom_gender_value</td>
+<td align="right">2.3608755</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2738.578</td>
+<td align="right">5489.157</td>
+<td align="right">5527.863</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>pair_data %&gt;%
+  glmer(
+    choice ~ hom_gender_value + memorize_value +
+      (1 + hom_gender_value | sub_id),
+    family = binomial, data = .
+  ) %&gt;%
+  model_to_df() %&gt;%
+  kable(caption = &quot;Paired associates&quot;)</code></pre>
+<table>
+<caption>Paired associates</caption>
+<colgroup>
+<col width="5%" />
 <col width="4%" />
+<col width="21%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="6%" />
+<col width="4%" />
+<col width="5%" />
 <col width="8%" />
 </colgroup>
 <thead>
@@ -8492,207 +8723,96 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-0.1237570</td>
-<td align="right">0.1932126</td>
-<td align="right">-0.6405223</td>
-<td align="right">0.5218331</td>
-<td align="right">-0.5024467</td>
-<td align="right">0.2549327</td>
+<td align="right">-0.9441304</td>
+<td align="right">0.1605475</td>
+<td align="right">-5.880691</td>
+<td align="right">0.0000000</td>
+<td align="right">-1.2587978</td>
+<td align="right">-0.629463</td>
 <td align="right">NA</td>
-<td align="right">-2746.702</td>
-<td align="right">5505.404</td>
-<td align="right">5544.11</td>
-<td align="left"></td>
+<td align="right">-2443.235</td>
+<td align="right">4898.47</td>
+<td align="right">4936.762</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_gender_value</td>
-<td align="right">-4.0501065</td>
-<td align="right">2.3162608</td>
-<td align="right">-1.7485538</td>
-<td align="right">0.0803682</td>
-<td align="right">-8.5898943</td>
-<td align="right">0.4896812</td>
-<td align="right">1.001162</td>
-<td align="right">-2746.702</td>
-<td align="right">5505.404</td>
-<td align="right">5544.11</td>
+<td align="right">1.6620317</td>
+<td align="right">0.8481060</td>
+<td align="right">1.959698</td>
+<td align="right">0.0500311</td>
+<td align="right">-0.0002255</td>
+<td align="right">3.324289</td>
+<td align="right">1.000547</td>
+<td align="right">-2443.235</td>
+<td align="right">4898.47</td>
+<td align="right">4936.762</td>
 <td align="left">.</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">5.1984008</td>
-<td align="right">0.2449067</td>
-<td align="right">21.2260468</td>
+<td align="right">6.1456770</td>
+<td align="right">0.2561868</td>
+<td align="right">23.989046</td>
 <td align="right">0.0000000</td>
-<td align="right">4.7183925</td>
-<td align="right">5.6784090</td>
-<td align="right">1.001162</td>
-<td align="right">-2746.702</td>
-<td align="right">5505.404</td>
-<td align="right">5544.11</td>
+<td align="right">5.6435601</td>
+<td align="right">6.647794</td>
+<td align="right">1.000547</td>
+<td align="right">-2443.235</td>
+<td align="right">4898.47</td>
+<td align="right">4936.762</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.7467488</td>
+<td align="right">0.8012553</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2746.702</td>
-<td align="right">5505.404</td>
-<td align="right">5544.11</td>
+<td align="right">-2443.235</td>
+<td align="right">4898.47</td>
+<td align="right">4936.762</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_gender_value</td>
-<td align="right">1.0000000</td>
+<td align="right">-0.4190891</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2746.702</td>
-<td align="right">5505.404</td>
-<td align="right">5544.11</td>
+<td align="right">-2443.235</td>
+<td align="right">4898.47</td>
+<td align="right">4936.762</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_gender_value</td>
-<td align="right">1.4530606</td>
+<td align="right">3.7358276</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2746.702</td>
-<td align="right">5505.404</td>
-<td align="right">5544.11</td>
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>pair_data %&gt;%
-  glmer(
-    choice ~ hom_gender_value + memorize_value +
-      (1 | sub_id),
-    family = binomial, data = .
-  ) %&gt;%
-  model_to_df() %&gt;%
-  kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table style="width:100%;">
-<caption>Paired associates</caption>
-<colgroup>
-<col width="6%" />
-<col width="4%" />
-<col width="11%" />
-<col width="7%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="7%" />
-<col width="7%" />
-<col width="6%" />
-<col width="6%" />
-<col width="5%" />
-<col width="6%" />
-<col width="9%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">effect</th>
-<th align="left">group</th>
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-<th align="right">conf.low</th>
-<th align="right">conf.high</th>
-<th align="right">vif</th>
-<th align="right">loglik</th>
-<th align="right">aic</th>
-<th align="right">bic</th>
-<th align="left">significance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">(Intercept)</td>
-<td align="right">-1.0707347</td>
-<td align="right">0.2137677</td>
-<td align="right">-5.008871</td>
-<td align="right">0.0000005</td>
-<td align="right">-1.4897116</td>
-<td align="right">-0.6517578</td>
-<td align="right">NA</td>
-<td align="right">-2462.76</td>
-<td align="right">4933.52</td>
-<td align="right">4959.048</td>
-<td align="left">***</td>
-</tr>
-<tr class="even">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">hom_gender_value</td>
-<td align="right">3.6477619</td>
-<td align="right">2.2616137</td>
-<td align="right">1.612902</td>
-<td align="right">0.1067657</td>
-<td align="right">-0.7849195</td>
-<td align="right">8.0804432</td>
-<td align="right">1.000739</td>
-<td align="right">-2462.76</td>
-<td align="right">4933.52</td>
-<td align="right">4959.048</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">memorize_value</td>
-<td align="right">6.1453565</td>
-<td align="right">0.2532238</td>
-<td align="right">24.268476</td>
-<td align="right">0.0000000</td>
-<td align="right">5.6490469</td>
-<td align="right">6.6416661</td>
-<td align="right">1.000739</td>
-<td align="right">-2462.76</td>
-<td align="right">4933.52</td>
-<td align="right">4959.048</td>
-<td align="left">***</td>
-</tr>
-<tr class="even">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">sd__(Intercept)</td>
-<td align="right">0.7154753</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2462.76</td>
-<td align="right">4933.52</td>
-<td align="right">4959.048</td>
+<td align="right">-2443.235</td>
+<td align="right">4898.47</td>
+<td align="right">4936.762</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -8707,21 +8827,21 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Random walks&quot;)</code></pre>
-<table>
+<table style="width:100%;">
 <caption>Random walks</caption>
 <colgroup>
-<col width="6%" />
+<col width="5%" />
 <col width="4%" />
-<col width="22%" />
+<col width="21%" />
 <col width="7%" />
 <col width="6%" />
 <col width="6%" />
+<col width="6%" />
+<col width="7%" />
+<col width="7%" />
+<col width="6%" />
 <col width="5%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
 <col width="8%" />
 </colgroup>
 <thead>
@@ -8746,75 +8866,75 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-5.0498974</td>
-<td align="right">0.8002074</td>
-<td align="right">-6.310736</td>
-<td align="right">0</td>
-<td align="right">-6.618275</td>
-<td align="right">-3.48152</td>
-<td align="right">-2613.465</td>
-<td align="right">5236.931</td>
-<td align="right">5269.186</td>
+<td align="right">-0.5583299</td>
+<td align="right">0.1641850</td>
+<td align="right">-3.400614</td>
+<td align="right">0.0006723</td>
+<td align="right">-0.8801266</td>
+<td align="right">-0.2365332</td>
+<td align="right">-2980.834</td>
+<td align="right">5971.668</td>
+<td align="right">6003.923</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">18.4898168</td>
-<td align="right">2.5779395</td>
-<td align="right">7.172324</td>
-<td align="right">0</td>
-<td align="right">13.437148</td>
-<td align="right">23.54249</td>
-<td align="right">-2613.465</td>
-<td align="right">5236.931</td>
-<td align="right">5269.186</td>
+<td align="right">1.9913458</td>
+<td align="right">0.3208324</td>
+<td align="right">6.206811</td>
+<td align="right">0.0000000</td>
+<td align="right">1.3625259</td>
+<td align="right">2.6201656</td>
+<td align="right">-2980.834</td>
+<td align="right">5971.668</td>
+<td align="right">6003.923</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">5.9089460</td>
+<td align="right">1.1513996</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2613.465</td>
-<td align="right">5236.931</td>
-<td align="right">5269.186</td>
+<td align="right">-2980.834</td>
+<td align="right">5971.668</td>
+<td align="right">6003.923</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_race_value</td>
-<td align="right">-0.9964609</td>
+<td align="right">-0.8750378</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2613.465</td>
-<td align="right">5236.931</td>
-<td align="right">5269.186</td>
+<td align="right">-2980.834</td>
+<td align="right">5971.668</td>
+<td align="right">6003.923</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_race_value</td>
-<td align="right">18.7583402</td>
+<td align="right">1.7697418</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2613.465</td>
-<td align="right">5236.931</td>
-<td align="right">5269.186</td>
+<td align="right">-2980.834</td>
+<td align="right">5971.668</td>
+<td align="right">6003.923</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -8837,7 +8957,7 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <col width="6%" />
 <col width="5%" />
 <col width="6%" />
-<col width="6%" />
+<col width="7%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
@@ -8865,75 +8985,75 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-4.9401045</td>
-<td align="right">0.7443222</td>
-<td align="right">-6.637051</td>
-<td align="right">0</td>
-<td align="right">-6.398949</td>
-<td align="right">-3.48126</td>
-<td align="right">-2447.389</td>
-<td align="right">4904.778</td>
-<td align="right">4936.688</td>
+<td align="right">-0.9335185</td>
+<td align="right">0.1993292</td>
+<td align="right">-4.683300</td>
+<td align="right">2.8e-06</td>
+<td align="right">-1.324197</td>
+<td align="right">-0.5428404</td>
+<td align="right">-2779.921</td>
+<td align="right">5569.842</td>
+<td align="right">5601.752</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">16.8262516</td>
-<td align="right">2.2796420</td>
-<td align="right">7.381094</td>
-<td align="right">0</td>
-<td align="right">12.358235</td>
-<td align="right">21.29427</td>
-<td align="right">-2447.389</td>
-<td align="right">4904.778</td>
-<td align="right">4936.688</td>
+<td align="right">2.2366523</td>
+<td align="right">0.3568708</td>
+<td align="right">6.267401</td>
+<td align="right">0.0e+00</td>
+<td align="right">1.537198</td>
+<td align="right">2.9361062</td>
+<td align="right">-2779.921</td>
+<td align="right">5569.842</td>
+<td align="right">5601.752</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">3.7915514</td>
+<td align="right">0.9860690</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2447.389</td>
-<td align="right">4904.778</td>
-<td align="right">4936.688</td>
+<td align="right">-2779.921</td>
+<td align="right">5569.842</td>
+<td align="right">5601.752</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_race_value</td>
-<td align="right">-0.9948343</td>
+<td align="right">-0.9699421</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2447.389</td>
-<td align="right">4904.778</td>
-<td align="right">4936.688</td>
+<td align="right">-2779.921</td>
+<td align="right">5569.842</td>
+<td align="right">5601.752</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_race_value</td>
-<td align="right">11.4442709</td>
+<td align="right">1.4797409</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2447.389</td>
-<td align="right">4904.778</td>
-<td align="right">4936.688</td>
+<td align="right">-2779.921</td>
+<td align="right">5569.842</td>
+<td align="right">5601.752</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -8986,96 +9106,96 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-3.0802878</td>
-<td align="right">0.8245756</td>
-<td align="right">-3.735604</td>
-<td align="right">0.0001873</td>
-<td align="right">-4.696426</td>
-<td align="right">-1.464149</td>
+<td align="right">-0.5885634</td>
+<td align="right">0.1729659</td>
+<td align="right">-3.402771</td>
+<td align="right">0.0006671</td>
+<td align="right">-0.9275703</td>
+<td align="right">-0.2495564</td>
 <td align="right">NA</td>
-<td align="right">-2595.063</td>
-<td align="right">5202.127</td>
-<td align="right">5240.833</td>
+<td align="right">-2732.444</td>
+<td align="right">5476.889</td>
+<td align="right">5515.595</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">10.3050940</td>
-<td align="right">2.7955041</td>
-<td align="right">3.686310</td>
-<td align="right">0.0002275</td>
-<td align="right">4.826007</td>
-<td align="right">15.784181</td>
-<td align="right">1.272377</td>
-<td align="right">-2595.063</td>
-<td align="right">5202.127</td>
-<td align="right">5240.833</td>
-<td align="left">***</td>
+<td align="right">0.6676582</td>
+<td align="right">0.3431169</td>
+<td align="right">1.945862</td>
+<td align="right">0.0516713</td>
+<td align="right">-0.0048386</td>
+<td align="right">1.3401549</td>
+<td align="right">1.023552</td>
+<td align="right">-2732.444</td>
+<td align="right">5476.889</td>
+<td align="right">5515.595</td>
+<td align="left">.</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">2.8791153</td>
-<td align="right">0.4745975</td>
-<td align="right">6.066435</td>
+<td align="right">5.0465489</td>
+<td align="right">0.2513778</td>
+<td align="right">20.075557</td>
 <td align="right">0.0000000</td>
-<td align="right">1.948921</td>
-<td align="right">3.809309</td>
-<td align="right">1.272377</td>
-<td align="right">-2595.063</td>
-<td align="right">5202.127</td>
-<td align="right">5240.833</td>
+<td align="right">4.5538575</td>
+<td align="right">5.5392403</td>
+<td align="right">1.023552</td>
+<td align="right">-2732.444</td>
+<td align="right">5476.889</td>
+<td align="right">5515.595</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">5.6261607</td>
+<td align="right">1.2156317</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2595.063</td>
-<td align="right">5202.127</td>
-<td align="right">5240.833</td>
+<td align="right">-2732.444</td>
+<td align="right">5476.889</td>
+<td align="right">5515.595</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_race_value</td>
-<td align="right">-0.9954341</td>
+<td align="right">-0.8143186</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2595.063</td>
-<td align="right">5202.127</td>
-<td align="right">5240.833</td>
+<td align="right">-2732.444</td>
+<td align="right">5476.889</td>
+<td align="right">5515.595</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_race_value</td>
-<td align="right">17.9317379</td>
+<td align="right">1.8602031</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2595.063</td>
-<td align="right">5202.127</td>
-<td align="right">5240.833</td>
+<td align="right">-2732.444</td>
+<td align="right">5476.889</td>
+<td align="right">5515.595</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -9087,21 +9207,21 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table style="width:100%;">
+<table>
 <caption>Paired associates</caption>
 <colgroup>
 <col width="5%" />
 <col width="4%" />
-<col width="21%" />
-<col width="7%" />
+<col width="20%" />
+<col width="6%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
 <col width="5%" />
-<col width="4%" />
-<col width="3%" />
+<col width="6%" />
+<col width="5%" />
 <col width="5%" />
 <col width="8%" />
 </colgroup>
@@ -9128,96 +9248,96 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-2.2135037</td>
-<td align="right">0.7225815</td>
-<td align="right">-3.063327</td>
-<td align="right">0.0021889</td>
-<td align="right">-3.629737</td>
-<td align="right">-0.797270</td>
+<td align="right">-0.9684621</td>
+<td align="right">0.2136710</td>
+<td align="right">-4.532491</td>
+<td align="right">0.0000058</td>
+<td align="right">-1.3872496</td>
+<td align="right">-0.5496746</td>
 <td align="right">NA</td>
-<td align="right">-2384</td>
-<td align="right">4780</td>
-<td align="right">4818.292</td>
-<td align="left">**</td>
+<td align="right">-2450.992</td>
+<td align="right">4913.983</td>
+<td align="right">4952.275</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">5.3120706</td>
-<td align="right">2.3312247</td>
-<td align="right">2.278661</td>
-<td align="right">0.0226872</td>
-<td align="right">0.742954</td>
-<td align="right">9.881187</td>
-<td align="right">1.225448</td>
-<td align="right">-2384</td>
-<td align="right">4780</td>
-<td align="right">4818.292</td>
-<td align="left">*</td>
+<td align="right">0.5896863</td>
+<td align="right">0.3727370</td>
+<td align="right">1.582044</td>
+<td align="right">0.1136395</td>
+<td align="right">-0.1408648</td>
+<td align="right">1.3202374</td>
+<td align="right">1.026625</td>
+<td align="right">-2450.992</td>
+<td align="right">4913.983</td>
+<td align="right">4952.275</td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">4.7331363</td>
-<td align="right">0.4369601</td>
-<td align="right">10.831965</td>
+<td align="right">5.9183950</td>
+<td align="right">0.2609967</td>
+<td align="right">22.676129</td>
 <td align="right">0.0000000</td>
-<td align="right">3.876710</td>
-<td align="right">5.589562</td>
-<td align="right">1.225448</td>
-<td align="right">-2384</td>
-<td align="right">4780</td>
-<td align="right">4818.292</td>
+<td align="right">5.4068509</td>
+<td align="right">6.4299391</td>
+<td align="right">1.026625</td>
+<td align="right">-2450.992</td>
+<td align="right">4913.983</td>
+<td align="right">4952.275</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">3.4508994</td>
+<td align="right">1.0580089</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2384</td>
-<td align="right">4780</td>
-<td align="right">4818.292</td>
+<td align="right">-2450.992</td>
+<td align="right">4913.983</td>
+<td align="right">4952.275</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_race_value</td>
-<td align="right">-0.9908726</td>
+<td align="right">-0.9169478</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2384</td>
-<td align="right">4780</td>
-<td align="right">4818.292</td>
+<td align="right">-2450.992</td>
+<td align="right">4913.983</td>
+<td align="right">4952.275</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_race_value</td>
-<td align="right">10.4283712</td>
+<td align="right">1.4612676</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2384</td>
-<td align="right">4780</td>
-<td align="right">4818.292</td>
+<td align="right">-2450.992</td>
+<td align="right">4913.983</td>
+<td align="right">4952.275</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -9232,18 +9352,18 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <table>
 <caption>Random walks</caption>
 <colgroup>
-<col width="6%" />
-<col width="4%" />
-<col width="23%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
 <col width="5%" />
+<col width="4%" />
+<col width="22%" />
+<col width="7%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="7%" />
+<col width="7%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 <col width="8%" />
 </colgroup>
 <thead>
@@ -9268,75 +9388,75 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-8.085536</td>
-<td align="right">1.159633</td>
-<td align="right">-6.972494</td>
-<td align="right">0</td>
-<td align="right">-10.35838</td>
-<td align="right">-5.812697</td>
-<td align="right">-2869.446</td>
-<td align="right">5748.891</td>
-<td align="right">5781.146</td>
-<td align="left">***</td>
+<td align="right">-0.6712886</td>
+<td align="right">0.2060266</td>
+<td align="right">-3.258261</td>
+<td align="right">0.0011210</td>
+<td align="right">-1.0750934</td>
+<td align="right">-0.2674838</td>
+<td align="right">-3018.87</td>
+<td align="right">6047.74</td>
+<td align="right">6079.995</td>
+<td align="left">**</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">15.709588</td>
-<td align="right">2.096905</td>
-<td align="right">7.491799</td>
-<td align="right">0</td>
-<td align="right">11.59973</td>
-<td align="right">19.819446</td>
-<td align="right">-2869.446</td>
-<td align="right">5748.891</td>
-<td align="right">5781.146</td>
+<td align="right">1.2905844</td>
+<td align="right">0.3057962</td>
+<td align="right">4.220406</td>
+<td align="right">0.0000244</td>
+<td align="right">0.6912348</td>
+<td align="right">1.8899340</td>
+<td align="right">-3018.87</td>
+<td align="right">6047.74</td>
+<td align="right">6079.995</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">7.821810</td>
+<td align="right">1.1656462</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2869.446</td>
-<td align="right">5748.891</td>
-<td align="right">5781.146</td>
+<td align="right">-3018.87</td>
+<td align="right">6047.74</td>
+<td align="right">6079.995</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_gender_value</td>
-<td align="right">-0.999243</td>
+<td align="right">-0.8316465</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2869.446</td>
-<td align="right">5748.891</td>
-<td align="right">5781.146</td>
+<td align="right">-3018.87</td>
+<td align="right">6047.74</td>
+<td align="right">6079.995</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_gender_value</td>
-<td align="right">13.796272</td>
+<td align="right">1.1472577</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2869.446</td>
-<td align="right">5748.891</td>
-<td align="right">5781.146</td>
+<td align="right">-3018.87</td>
+<td align="right">6047.74</td>
+<td align="right">6079.995</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -9353,13 +9473,13 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <colgroup>
 <col width="5%" />
 <col width="4%" />
-<col width="23%" />
+<col width="22%" />
 <col width="7%" />
 <col width="6%" />
 <col width="6%" />
-<col width="5%" />
 <col width="6%" />
-<col width="6%" />
+<col width="7%" />
+<col width="7%" />
 <col width="6%" />
 <col width="5%" />
 <col width="5%" />
@@ -9387,75 +9507,75 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-12.1480694</td>
-<td align="right">1.713343</td>
-<td align="right">-7.090272</td>
-<td align="right">0</td>
-<td align="right">-15.50616</td>
-<td align="right">-8.789978</td>
-<td align="right">-2658.453</td>
-<td align="right">5326.906</td>
-<td align="right">5358.817</td>
-<td align="left">***</td>
+<td align="right">-0.9074965</td>
+<td align="right">0.4474225</td>
+<td align="right">-2.028276</td>
+<td align="right">0.0425321</td>
+<td align="right">-1.7844285</td>
+<td align="right">-0.0305644</td>
+<td align="right">-2813.724</td>
+<td align="right">5637.448</td>
+<td align="right">5669.358</td>
+<td align="left">*</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">23.2016624</td>
-<td align="right">3.180465</td>
-<td align="right">7.295053</td>
-<td align="right">0</td>
-<td align="right">16.96807</td>
-<td align="right">29.435259</td>
-<td align="right">-2658.453</td>
-<td align="right">5326.906</td>
-<td align="right">5358.817</td>
-<td align="left">***</td>
+<td align="right">1.1409792</td>
+<td align="right">0.8295229</td>
+<td align="right">1.375464</td>
+<td align="right">0.1689875</td>
+<td align="right">-0.4848558</td>
+<td align="right">2.7668143</td>
+<td align="right">-2813.724</td>
+<td align="right">5637.448</td>
+<td align="right">5669.358</td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">8.3808530</td>
+<td align="right">1.9785371</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2658.453</td>
-<td align="right">5326.906</td>
-<td align="right">5358.817</td>
+<td align="right">-2813.724</td>
+<td align="right">5637.448</td>
+<td align="right">5669.358</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_gender_value</td>
-<td align="right">-0.9988372</td>
+<td align="right">-0.9517125</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2658.453</td>
-<td align="right">5326.906</td>
-<td align="right">5358.817</td>
+<td align="right">-2813.724</td>
+<td align="right">5637.448</td>
+<td align="right">5669.358</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_gender_value</td>
-<td align="right">15.3956450</td>
+<td align="right">3.5782259</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2658.453</td>
-<td align="right">5326.906</td>
-<td align="right">5358.817</td>
+<td align="right">-2813.724</td>
+<td align="right">5637.448</td>
+<td align="right">5669.358</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -9468,7 +9588,7 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Random walks&quot;)</code></pre>
-<table>
+<table style="width:100%;">
 <caption>Random walks</caption>
 <colgroup>
 <col width="5%" />
@@ -9481,8 +9601,8 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <col width="6%" />
 <col width="6%" />
 <col width="5%" />
-<col width="6%" />
 <col width="5%" />
+<col width="4%" />
 <col width="5%" />
 <col width="8%" />
 </colgroup>
@@ -9509,96 +9629,96 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-2.097567</td>
-<td align="right">1.1890256</td>
-<td align="right">-1.764106</td>
-<td align="right">0.0777142</td>
-<td align="right">-4.4280139</td>
-<td align="right">0.2328806</td>
+<td align="right">-0.8259002</td>
+<td align="right">0.2252054</td>
+<td align="right">-3.667319</td>
+<td align="right">0.0002451</td>
+<td align="right">-1.2672948</td>
+<td align="right">-0.3845056</td>
 <td align="right">NA</td>
-<td align="right">-2699.223</td>
-<td align="right">5410.445</td>
-<td align="right">5449.151</td>
-<td align="left">.</td>
+<td align="right">-2739.39</td>
+<td align="right">5490.78</td>
+<td align="right">5529.486</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">3.281347</td>
-<td align="right">2.1787792</td>
-<td align="right">1.506048</td>
-<td align="right">0.1320547</td>
-<td align="right">-0.9889817</td>
-<td align="right">7.5516758</td>
-<td align="right">1.095978</td>
-<td align="right">-2699.223</td>
-<td align="right">5410.445</td>
-<td align="right">5449.151</td>
-<td align="left"></td>
+<td align="right">0.8233248</td>
+<td align="right">0.3298710</td>
+<td align="right">2.495899</td>
+<td align="right">0.0125638</td>
+<td align="right">0.1767895</td>
+<td align="right">1.4698602</td>
+<td align="right">1.001853</td>
+<td align="right">-2739.39</td>
+<td align="right">5490.78</td>
+<td align="right">5529.486</td>
+<td align="left">*</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">4.762117</td>
-<td align="right">0.2797977</td>
-<td align="right">17.019861</td>
+<td align="right">5.1798635</td>
+<td align="right">0.2456086</td>
+<td align="right">21.089907</td>
 <td align="right">0.0000000</td>
-<td align="right">4.2137238</td>
-<td align="right">5.3105105</td>
-<td align="right">1.095978</td>
-<td align="right">-2699.223</td>
-<td align="right">5410.445</td>
-<td align="right">5449.151</td>
+<td align="right">4.6984794</td>
+<td align="right">5.6612476</td>
+<td align="right">1.001853</td>
+<td align="right">-2739.39</td>
+<td align="right">5490.78</td>
+<td align="right">5529.486</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">7.670331</td>
+<td align="right">1.2912809</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2699.223</td>
-<td align="right">5410.445</td>
-<td align="right">5449.151</td>
+<td align="right">-2739.39</td>
+<td align="right">5490.78</td>
+<td align="right">5529.486</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_gender_value</td>
-<td align="right">-0.998427</td>
+<td align="right">-0.8152229</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2699.223</td>
-<td align="right">5410.445</td>
-<td align="right">5449.151</td>
+<td align="right">-2739.39</td>
+<td align="right">5490.78</td>
+<td align="right">5529.486</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_gender_value</td>
-<td align="right">13.503725</td>
+<td align="right">1.2376275</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2699.223</td>
-<td align="right">5410.445</td>
-<td align="right">5449.151</td>
+<td align="right">-2739.39</td>
+<td align="right">5490.78</td>
+<td align="right">5529.486</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -9611,7 +9731,7 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table>
+<table style="width:100%;">
 <caption>Paired associates</caption>
 <colgroup>
 <col width="5%" />
@@ -9652,96 +9772,96 @@ slopes for gender-based homophily, as it results in a singular fit.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-3.5951524</td>
-<td align="right">1.7639463</td>
-<td align="right">-2.03813</td>
-<td align="right">0.0415369</td>
-<td align="right">-7.052424</td>
-<td align="right">-0.1378812</td>
+<td align="right">-1.1164478</td>
+<td align="right">0.5515451</td>
+<td align="right">-2.0242185</td>
+<td align="right">0.0429477</td>
+<td align="right">-2.197456</td>
+<td align="right">-0.0354393</td>
 <td align="right">NA</td>
-<td align="right">-2424.512</td>
-<td align="right">4861.024</td>
-<td align="right">4899.316</td>
+<td align="right">-2440.167</td>
+<td align="right">4892.335</td>
+<td align="right">4930.627</td>
 <td align="left">*</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">5.4524845</td>
-<td align="right">3.3120243</td>
-<td align="right">1.64627</td>
-<td align="right">0.0997083</td>
-<td align="right">-1.038964</td>
-<td align="right">11.9439328</td>
-<td align="right">1.056951</td>
-<td align="right">-2424.512</td>
-<td align="right">4861.024</td>
-<td align="right">4899.316</td>
-<td align="left">.</td>
+<td align="right">0.5636893</td>
+<td align="right">1.0399351</td>
+<td align="right">0.5420428</td>
+<td align="right">0.5877890</td>
+<td align="right">-1.474546</td>
+<td align="right">2.6019247</td>
+<td align="right">1.000393</td>
+<td align="right">-2440.167</td>
+<td align="right">4892.335</td>
+<td align="right">4930.627</td>
+<td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">memorize_value</td>
-<td align="right">5.7068465</td>
-<td align="right">0.2902618</td>
-<td align="right">19.66103</td>
+<td align="right">6.1315109</td>
+<td align="right">0.2569919</td>
+<td align="right">23.8587711</td>
 <td align="right">0.0000000</td>
-<td align="right">5.137944</td>
-<td align="right">6.2757491</td>
-<td align="right">1.056951</td>
-<td align="right">-2424.512</td>
-<td align="right">4861.024</td>
-<td align="right">4899.316</td>
+<td align="right">5.627816</td>
+<td align="right">6.6352058</td>
+<td align="right">1.000393</td>
+<td align="right">-2440.167</td>
+<td align="right">4892.335</td>
+<td align="right">4930.627</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">8.3410299</td>
+<td align="right">2.5101287</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2424.512</td>
-<td align="right">4861.024</td>
-<td align="right">4899.316</td>
+<td align="right">-2440.167</td>
+<td align="right">4892.335</td>
+<td align="right">4930.627</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_gender_value</td>
-<td align="right">-0.9977821</td>
+<td align="right">-0.9559012</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2424.512</td>
-<td align="right">4861.024</td>
-<td align="right">4899.316</td>
+<td align="right">-2440.167</td>
+<td align="right">4892.335</td>
+<td align="right">4930.627</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_gender_value</td>
-<td align="right">15.3984291</td>
+<td align="right">4.6630110</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2424.512</td>
-<td align="right">4861.024</td>
-<td align="right">4899.316</td>
+<td align="right">-2440.167</td>
+<td align="right">4892.335</td>
+<td align="right">4930.627</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -10134,11 +10254,7 @@ community) strategies.</p>
 </tr>
 </tbody>
 </table>
-<p>How about both forms of homophily? In the paired associates dataset,
-we get a singular fit if we try to estimate random slopes for both race
-and gender homophily, driven by the negative correlation between the
-random intercept and gender homophily. We can try estimating the model
-without that random slope, just to see what happens.</p>
+<p>How about both forms of homophily?</p>
 <pre class="r"><code>walk_data %&gt;%
   glmer(
     choice ~ hom_race_value + hom_gender_value +
@@ -10157,10 +10273,10 @@ without that random slope, just to see what happens.</p>
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
-<col width="7%" />
+<col width="6%" />
 <col width="6%" />
 <col width="5%" />
-<col width="5%" />
+<col width="6%" />
 <col width="5%" />
 <col width="5%" />
 <col width="7%" />
@@ -10188,144 +10304,144 @@ without that random slope, just to see what happens.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">0.4007197</td>
-<td align="right">0.201459</td>
-<td align="right">1.9890888</td>
-<td align="right">0.0466914</td>
-<td align="right">0.0058675</td>
-<td align="right">0.795572</td>
+<td align="right">-0.1200141</td>
+<td align="right">0.1034732</td>
+<td align="right">-1.1598562</td>
+<td align="right">0.2461074</td>
+<td align="right">-0.3228178</td>
+<td align="right">0.0827897</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
-<td align="left">*</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
+<td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">0.9067858</td>
-<td align="right">1.482667</td>
-<td align="right">0.6115911</td>
-<td align="right">0.5408083</td>
-<td align="right">-1.9991878</td>
-<td align="right">3.812759</td>
-<td align="right">1.000048</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">0.2420107</td>
+<td align="right">0.3443754</td>
+<td align="right">0.7027525</td>
+<td align="right">0.4822100</td>
+<td align="right">-0.4329527</td>
+<td align="right">0.9169741</td>
+<td align="right">1.042963</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_gender_value</td>
-<td align="right">-6.6433181</td>
-<td align="right">2.178910</td>
-<td align="right">-3.0489184</td>
-<td align="right">0.0022967</td>
-<td align="right">-10.9139027</td>
-<td align="right">-2.372733</td>
-<td align="right">1.000048</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
-<td align="left">**</td>
+<td align="right">1.3440119</td>
+<td align="right">0.5751191</td>
+<td align="right">2.3369281</td>
+<td align="right">0.0194429</td>
+<td align="right">0.2167992</td>
+<td align="right">2.4712245</td>
+<td align="right">1.042963</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
+<td align="left">*</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.7161174</td>
+<td align="right">0.7151927</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_race_value</td>
-<td align="right">-0.9999994</td>
+<td align="right">0.1125566</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_gender_value</td>
-<td align="right">0.9999898</td>
+<td align="right">-0.0630680</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_race_value</td>
-<td align="right">1.5681722</td>
+<td align="right">1.6195761</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__hom_race_value.hom_gender_value</td>
-<td align="right">-0.9999888</td>
+<td align="right">0.2860357</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_gender_value</td>
-<td align="right">1.6548515</td>
+<td align="right">3.0634876</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-3030.65</td>
-<td align="right">6079.299</td>
-<td align="right">6137.359</td>
+<td align="right">-3019.459</td>
+<td align="right">6056.918</td>
+<td align="right">6114.977</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -10338,23 +10454,22 @@ without that random slope, just to see what happens.</p>
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Paired associates&quot;)</code></pre>
-<pre><code>## boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
-<table style="width:100%;">
+<table>
 <caption>Paired associates</caption>
 <colgroup>
 <col width="5%" />
 <col width="4%" />
 <col width="22%" />
 <col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
 <col width="5%" />
 <col width="6%" />
 <col width="5%" />
-<col width="4%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 <col width="7%" />
 </colgroup>
 <thead>
@@ -10380,295 +10495,149 @@ without that random slope, just to see what happens.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-0.5003841</td>
-<td align="right">0.2319775</td>
-<td align="right">-2.1570376</td>
-<td align="right">0.0310027</td>
-<td align="right">-0.9550516</td>
-<td align="right">-0.0457166</td>
+<td align="right">-0.4380289</td>
+<td align="right">0.1523898</td>
+<td align="right">-2.8743976</td>
+<td align="right">0.0040480</td>
+<td align="right">-0.7367074</td>
+<td align="right">-0.1393504</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
-<td align="left">*</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
+<td align="left">**</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">1.5053946</td>
-<td align="right">1.7346716</td>
-<td align="right">0.8678268</td>
-<td align="right">0.3854891</td>
-<td align="right">-1.8944993</td>
-<td align="right">4.9052884</td>
-<td align="right">1.010683</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">0.1217038</td>
+<td align="right">0.4805842</td>
+<td align="right">0.2532414</td>
+<td align="right">0.8000817</td>
+<td align="right">-0.8202240</td>
+<td align="right">1.0636316</td>
+<td align="right">1.005576</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_gender_value</td>
-<td align="right">1.4237250</td>
-<td align="right">2.1053331</td>
-<td align="right">0.6762469</td>
-<td align="right">0.4988839</td>
-<td align="right">-2.7026521</td>
-<td align="right">5.5501020</td>
-<td align="right">1.010683</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">1.3971362</td>
+<td align="right">0.8851654</td>
+<td align="right">1.5783900</td>
+<td align="right">0.1144760</td>
+<td align="right">-0.3377561</td>
+<td align="right">3.1320286</td>
+<td align="right">1.005576</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.7792974</td>
+<td align="right">0.7618739</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_race_value</td>
-<td align="right">-0.5923867</td>
+<td align="right">-0.3447910</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).hom_gender_value</td>
-<td align="right">-0.9938712</td>
+<td align="right">-0.5238480</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_race_value</td>
-<td align="right">5.2448730</td>
+<td align="right">2.0587928</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__hom_race_value.hom_gender_value</td>
-<td align="right">0.4996957</td>
+<td align="right">-0.1610076</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__hom_gender_value</td>
-<td align="right">0.9069083</td>
+<td align="right">4.0826151</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2847.661</td>
-<td align="right">5713.322</td>
-<td align="right">5770.76</td>
+<td align="right">-2806.854</td>
+<td align="right">5631.708</td>
+<td align="right">5689.147</td>
 <td align="left"></td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>pair_data %&gt;%
-  glmer(
-    choice ~ hom_race_value + hom_gender_value +
-      (1 + hom_race_value | sub_id),
-    family = binomial, data = .
-  ) %&gt;%
-  model_to_df() %&gt;%
-  kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table>
-<caption>Paired associates</caption>
-<colgroup>
-<col width="5%" />
-<col width="4%" />
-<col width="19%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="5%" />
-<col width="5%" />
-<col width="5%" />
-<col width="5%" />
-<col width="8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">effect</th>
-<th align="left">group</th>
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-<th align="right">conf.low</th>
-<th align="right">conf.high</th>
-<th align="right">vif</th>
-<th align="right">loglik</th>
-<th align="right">aic</th>
-<th align="right">bic</th>
-<th align="left">significance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">(Intercept)</td>
-<td align="right">-0.4952276</td>
-<td align="right">0.2234835</td>
-<td align="right">-2.2159467</td>
-<td align="right">0.0266952</td>
-<td align="right">-0.9332472</td>
-<td align="right">-0.0572079</td>
-<td align="right">NA</td>
-<td align="right">-2847.74</td>
-<td align="right">5707.481</td>
-<td align="right">5745.773</td>
-<td align="left">*</td>
-</tr>
-<tr class="even">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">hom_race_value</td>
-<td align="right">1.5003139</td>
-<td align="right">1.7287153</td>
-<td align="right">0.8678780</td>
-<td align="right">0.3854611</td>
-<td align="right">-1.8879058</td>
-<td align="right">4.8885336</td>
-<td align="right">1.005989</td>
-<td align="right">-2847.74</td>
-<td align="right">5707.481</td>
-<td align="right">5745.773</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">hom_gender_value</td>
-<td align="right">1.3554022</td>
-<td align="right">2.0919326</td>
-<td align="right">0.6479186</td>
-<td align="right">0.5170376</td>
-<td align="right">-2.7447105</td>
-<td align="right">5.4555148</td>
-<td align="right">1.005989</td>
-<td align="right">-2847.74</td>
-<td align="right">5707.481</td>
-<td align="right">5745.773</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">sd__(Intercept)</td>
-<td align="right">0.7120039</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2847.74</td>
-<td align="right">5707.481</td>
-<td align="right">5745.773</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">cor__(Intercept).hom_race_value</td>
-<td align="right">-0.5923395</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2847.74</td>
-<td align="right">5707.481</td>
-<td align="right">5745.773</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">sd__hom_race_value</td>
-<td align="right">5.2046856</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2847.74</td>
-<td align="right">5707.481</td>
-<td align="right">5745.773</td>
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
-<p>And now both forms of learning about feature-based relations. In the
-paired associates dataset, we get a model convergence failure if we try
-to estimate random slopes for both race and gender, so we’ll try
-estimating two variants with a single random-effects term.</p>
+<p>And now both forms of learning about feature-based relations.</p>
 <pre class="r"><code>walk_data %&gt;%
   glmer(
     choice ~ feat_race_value + feat_gender_value +
@@ -10684,13 +10653,13 @@ estimating two variants with a single random-effects term.</p>
 <col width="4%" />
 <col width="23%" />
 <col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
 <col width="5%" />
 <col width="6%" />
 <col width="6%" />
 <col width="5%" />
-<col width="6%" />
+<col width="5%" />
 <col width="5%" />
 <col width="5%" />
 <col width="7%" />
@@ -10718,144 +10687,144 @@ estimating two variants with a single random-effects term.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-7.8614831</td>
-<td align="right">1.256367</td>
-<td align="right">-6.257316</td>
-<td align="right">0.00e+00</td>
-<td align="right">-10.323916</td>
-<td align="right">-5.399050</td>
+<td align="right">-1.2395765</td>
+<td align="right">0.2470327</td>
+<td align="right">-5.017864</td>
+<td align="right">5.00e-07</td>
+<td align="right">-1.7237517</td>
+<td align="right">-0.7554013</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">16.1776131</td>
-<td align="right">2.278742</td>
-<td align="right">7.099362</td>
+<td align="right">1.9851185</td>
+<td align="right">0.3266482</td>
+<td align="right">6.077237</td>
 <td align="right">0.00e+00</td>
-<td align="right">11.711361</td>
-<td align="right">20.643865</td>
-<td align="right">1.154326</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">1.3448998</td>
+<td align="right">2.6253372</td>
+<td align="right">1.000004</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">6.7239483</td>
-<td align="right">1.536632</td>
-<td align="right">4.375769</td>
-<td align="right">1.21e-05</td>
-<td align="right">3.712205</td>
-<td align="right">9.735692</td>
-<td align="right">1.154326</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">1.3415034</td>
+<td align="right">0.3069457</td>
+<td align="right">4.370491</td>
+<td align="right">1.24e-05</td>
+<td align="right">0.7399008</td>
+<td align="right">1.9431059</td>
+<td align="right">1.000004</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">8.4500499</td>
+<td align="right">1.4852087</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_race_value</td>
-<td align="right">-0.9956023</td>
+<td align="right">-0.6773950</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_gender_value</td>
-<td align="right">-0.9999604</td>
+<td align="right">-0.6699788</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_race_value</td>
-<td align="right">16.1114414</td>
+<td align="right">1.8170000</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__feat_race_value.feat_gender_value</td>
-<td align="right">0.9963963</td>
+<td align="right">-0.0398657</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__feat_gender_value</td>
-<td align="right">6.3753516</td>
+<td align="right">1.1524163</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2597.341</td>
-<td align="right">5212.682</td>
-<td align="right">5270.741</td>
+<td align="right">-2961.831</td>
+<td align="right">5941.662</td>
+<td align="right">5999.721</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -10863,28 +10832,28 @@ estimating two variants with a single random-effects term.</p>
 <pre class="r"><code>pair_data %&gt;%
   glmer(
     choice ~ feat_race_value + feat_gender_value +
-      (1 + feat_race_value | sub_id),
+      (1 + feat_race_value + feat_gender_value | sub_id),
     family = binomial, data = .
   ) %&gt;%
   model_to_df() %&gt;%
-  kable(caption = &quot;Paired associates, random slope of race&quot;)</code></pre>
-<table style="width:100%;">
-<caption>Paired associates, random slope of race</caption>
+  kable(caption = &quot;Paired associates&quot;)</code></pre>
+<table>
+<caption>Paired associates</caption>
 <colgroup>
 <col width="5%" />
 <col width="4%" />
-<col width="20%" />
+<col width="23%" />
 <col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
 <col width="6%" />
 <col width="6%" />
 <col width="5%" />
 <col width="5%" />
 <col width="5%" />
 <col width="5%" />
-<col width="8%" />
+<col width="7%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -10909,239 +10878,144 @@ estimating two variants with a single random-effects term.</p>
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-7.4581291</td>
-<td align="right">1.026812</td>
-<td align="right">-7.263385</td>
-<td align="right">0.0000000</td>
-<td align="right">-9.470643</td>
-<td align="right">-5.445615</td>
+<td align="right">-1.5377239</td>
+<td align="right">0.5001506</td>
+<td align="right">-3.074522</td>
+<td align="right">0.0021084</td>
+<td align="right">-2.5180011</td>
+<td align="right">-0.5574468</td>
 <td align="right">NA</td>
-<td align="right">-2440.99</td>
-<td align="right">4893.981</td>
-<td align="right">4932.273</td>
-<td align="left">***</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
+<td align="left">**</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">15.2867354</td>
-<td align="right">2.324388</td>
-<td align="right">6.576670</td>
+<td align="right">2.2800089</td>
+<td align="right">0.3651857</td>
+<td align="right">6.243423</td>
 <td align="right">0.0000000</td>
-<td align="right">10.731018</td>
-<td align="right">19.842453</td>
-<td align="right">1.034129</td>
-<td align="right">-2440.99</td>
-<td align="right">4893.981</td>
-<td align="right">4932.273</td>
+<td align="right">1.5642581</td>
+<td align="right">2.9957597</td>
+<td align="right">1.000036</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">5.7797123</td>
-<td align="right">1.613614</td>
-<td align="right">3.581843</td>
-<td align="right">0.0003412</td>
-<td align="right">2.617087</td>
-<td align="right">8.942337</td>
-<td align="right">1.034129</td>
-<td align="right">-2440.99</td>
-<td align="right">4893.981</td>
-<td align="right">4932.273</td>
-<td align="left">***</td>
+<td align="right">1.1306808</td>
+<td align="right">0.8798585</td>
+<td align="right">1.285071</td>
+<td align="right">0.1987674</td>
+<td align="right">-0.5938102</td>
+<td align="right">2.8551719</td>
+<td align="right">1.000036</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
+<td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">3.7839223</td>
+<td align="right">2.2318115</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2440.99</td>
-<td align="right">4893.981</td>
-<td align="right">4932.273</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_race_value</td>
-<td align="right">-0.9947221</td>
+<td align="right">-0.4464172</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2440.99</td>
-<td align="right">4893.981</td>
-<td align="right">4932.273</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">sd__feat_race_value</td>
-<td align="right">11.4161289</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2440.99</td>
-<td align="right">4893.981</td>
-<td align="right">4932.273</td>
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>pair_data %&gt;%
-  glmer(
-    choice ~ feat_race_value + feat_gender_value +
-      (1 + feat_gender_value | sub_id),
-    family = binomial, data = .
-  ) %&gt;%
-  model_to_df() %&gt;%
-  kable(caption = &quot;Paired associates, random slope of gender&quot;)</code></pre>
-<table style="width:100%;">
-<caption>Paired associates, random slope of gender</caption>
-<colgroup>
-<col width="5%" />
-<col width="4%" />
-<col width="21%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="6%" />
-<col width="5%" />
-<col width="6%" />
-<col width="5%" />
-<col width="4%" />
-<col width="8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">effect</th>
-<th align="left">group</th>
-<th align="left">term</th>
-<th align="right">estimate</th>
-<th align="right">std.error</th>
-<th align="right">statistic</th>
-<th align="right">p.value</th>
-<th align="right">conf.low</th>
-<th align="right">conf.high</th>
-<th align="right">vif</th>
-<th align="right">loglik</th>
-<th align="right">aic</th>
-<th align="right">bic</th>
-<th align="left">significance</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">(Intercept)</td>
-<td align="right">-7.9763322</td>
-<td align="right">1.7702272</td>
-<td align="right">-4.505824</td>
-<td align="right">0.0000066</td>
-<td align="right">-11.445914</td>
-<td align="right">-4.506751</td>
-<td align="right">NA</td>
-<td align="right">-2494.639</td>
-<td align="right">5001.278</td>
-<td align="right">5039.57</td>
-<td align="left">***</td>
-</tr>
-<tr class="even">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">feat_race_value</td>
-<td align="right">13.2837181</td>
-<td align="right">0.7716548</td>
-<td align="right">17.214585</td>
-<td align="right">0.0000000</td>
-<td align="right">11.771302</td>
-<td align="right">14.796134</td>
-<td align="right">1.058125</td>
-<td align="right">-2494.639</td>
-<td align="right">5001.278</td>
-<td align="right">5039.57</td>
-<td align="left">***</td>
-</tr>
-<tr class="odd">
-<td align="left">fixed</td>
-<td align="left">NA</td>
-<td align="left">feat_gender_value</td>
-<td align="right">7.9924420</td>
-<td align="right">3.3681755</td>
-<td align="right">2.372929</td>
-<td align="right">0.0176476</td>
-<td align="right">1.390939</td>
-<td align="right">14.593945</td>
-<td align="right">1.058125</td>
-<td align="right">-2494.639</td>
-<td align="right">5001.278</td>
-<td align="right">5039.57</td>
-<td align="left">*</td>
-</tr>
-<tr class="even">
-<td align="left">ran_pars</td>
-<td align="left">sub_id</td>
-<td align="left">sd__(Intercept)</td>
-<td align="right">8.6200251</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">-2494.639</td>
-<td align="right">5001.278</td>
-<td align="right">5039.57</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">cor__(Intercept).feat_gender_value</td>
-<td align="right">-0.9984014</td>
+<td align="right">-0.8877710</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2494.639</td>
-<td align="right">5001.278</td>
-<td align="right">5039.57</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
+<td align="left">sd__feat_race_value</td>
+<td align="right">1.5227474</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
+<td align="left">cor__feat_race_value.feat_gender_value</td>
+<td align="right">-0.0024443</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">ran_pars</td>
+<td align="left">sub_id</td>
 <td align="left">sd__feat_gender_value</td>
-<td align="right">15.8707060</td>
+<td align="right">3.8001395</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2494.639</td>
-<td align="right">5001.278</td>
-<td align="right">5039.57</td>
+<td align="right">-2743.504</td>
+<td align="right">5505.008</td>
+<td align="right">5562.447</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -11160,7 +11034,7 @@ random intercept per subject, so it’s likely that the degrees of freedom
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Random walks&quot;)</code></pre>
-<table style="width:100%;">
+<table>
 <caption>Random walks</caption>
 <colgroup>
 <col width="6%" />
@@ -11168,7 +11042,7 @@ random intercept per subject, so it’s likely that the degrees of freedom
 <col width="12%" />
 <col width="7%" />
 <col width="6%" />
-<col width="7%" />
+<col width="6%" />
 <col width="6%" />
 <col width="7%" />
 <col width="6%" />
@@ -11201,128 +11075,128 @@ random intercept per subject, so it’s likely that the degrees of freedom
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-5.1516663</td>
-<td align="right">0.7414489</td>
-<td align="right">-6.9481071</td>
+<td align="right">-1.8633232</td>
+<td align="right">0.2001844</td>
+<td align="right">-9.308035</td>
 <td align="right">0.0000000</td>
-<td align="right">-6.6048794</td>
-<td align="right">-3.698453</td>
+<td align="right">-2.2556774</td>
+<td align="right">-1.470969</td>
 <td align="right">NA</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">triad_value</td>
-<td align="right">2.9984115</td>
-<td align="right">0.6098162</td>
-<td align="right">4.9169105</td>
-<td align="right">0.0000009</td>
-<td align="right">1.8031938</td>
-<td align="right">4.193629</td>
-<td align="right">2.690394</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
+<td align="right">5.2724392</td>
+<td align="right">0.5659953</td>
+<td align="right">9.315341</td>
+<td align="right">0.0000000</td>
+<td align="right">4.1631088</td>
+<td align="right">6.381770</td>
+<td align="right">2.404473</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">comm_value</td>
-<td align="right">2.1066717</td>
-<td align="right">0.7046058</td>
-<td align="right">2.9898586</td>
-<td align="right">0.0027911</td>
-<td align="right">0.7256697</td>
-<td align="right">3.487674</td>
-<td align="right">2.478197</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
-<td align="left">**</td>
+<td align="right">2.6130803</td>
+<td align="right">0.6807553</td>
+<td align="right">3.838501</td>
+<td align="right">0.0001238</td>
+<td align="right">1.2788243</td>
+<td align="right">3.947336</td>
+<td align="right">2.388837</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">2.4858190</td>
-<td align="right">1.6472213</td>
-<td align="right">1.5090984</td>
-<td align="right">0.1312736</td>
-<td align="right">-0.7426755</td>
-<td align="right">5.714314</td>
-<td align="right">1.072789</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
-<td align="left"></td>
+<td align="right">0.6329761</td>
+<td align="right">0.2937732</td>
+<td align="right">2.154642</td>
+<td align="right">0.0311899</td>
+<td align="right">0.0571911</td>
+<td align="right">1.208761</td>
+<td align="right">1.091946</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
+<td align="left">*</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_gender_value</td>
-<td align="right">-2.4697933</td>
-<td align="right">2.5931383</td>
-<td align="right">-0.9524341</td>
-<td align="right">0.3408769</td>
-<td align="right">-7.5522511</td>
-<td align="right">2.612664</td>
-<td align="right">1.231735</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
-<td align="left"></td>
+<td align="right">2.4953500</td>
+<td align="right">0.4777914</td>
+<td align="right">5.222677</td>
+<td align="right">0.0000002</td>
+<td align="right">1.5588962</td>
+<td align="right">3.431804</td>
+<td align="right">1.222259</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">9.9687026</td>
-<td align="right">0.8962262</td>
-<td align="right">11.1229758</td>
+<td align="right">1.3181464</td>
+<td align="right">0.2325409</td>
+<td align="right">5.668450</td>
 <td align="right">0.0000000</td>
-<td align="right">8.2121315</td>
-<td align="right">11.725274</td>
-<td align="right">1.488558</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
+<td align="right">0.8623746</td>
+<td align="right">1.773918</td>
+<td align="right">1.085117</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">4.2289420</td>
-<td align="right">1.3535663</td>
-<td align="right">3.1242961</td>
-<td align="right">0.0017823</td>
-<td align="right">1.5760008</td>
-<td align="right">6.881883</td>
-<td align="right">1.483518</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
-<td align="left">**</td>
+<td align="right">1.3200230</td>
+<td align="right">0.2564222</td>
+<td align="right">5.147850</td>
+<td align="right">0.0000003</td>
+<td align="right">0.8174447</td>
+<td align="right">1.822601</td>
+<td align="right">1.198221</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.8689512</td>
+<td align="right">0.8492630</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2702.763</td>
-<td align="right">5421.525</td>
-<td align="right">5473.134</td>
+<td align="right">-2770.176</td>
+<td align="right">5556.352</td>
+<td align="right">5607.961</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -11337,7 +11211,7 @@ random intercept per subject, so it’s likely that the degrees of freedom
   ) %&gt;%
   model_to_df() %&gt;%
   kable(caption = &quot;Paired associates&quot;)</code></pre>
-<table>
+<table style="width:100%;">
 <caption>Paired associates</caption>
 <colgroup>
 <col width="6%" />
@@ -11345,10 +11219,10 @@ random intercept per subject, so it’s likely that the degrees of freedom
 <col width="12%" />
 <col width="7%" />
 <col width="6%" />
-<col width="6%" />
-<col width="6%" />
 <col width="7%" />
 <col width="6%" />
+<col width="7%" />
+<col width="7%" />
 <col width="6%" />
 <col width="6%" />
 <col width="6%" />
@@ -11378,128 +11252,128 @@ random intercept per subject, so it’s likely that the degrees of freedom
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">(Intercept)</td>
-<td align="right">-5.8282047</td>
-<td align="right">1.0256719</td>
-<td align="right">-5.682329</td>
+<td align="right">-2.7064060</td>
+<td align="right">0.2517884</td>
+<td align="right">-10.748732</td>
 <td align="right">0.0000000</td>
-<td align="right">-7.8384846</td>
-<td align="right">-3.817925</td>
+<td align="right">-3.1999022</td>
+<td align="right">-2.2129098</td>
 <td align="right">NA</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
 <td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">triad_value</td>
-<td align="right">1.4649295</td>
-<td align="right">0.6623073</td>
-<td align="right">2.211858</td>
-<td align="right">0.0269765</td>
-<td align="right">0.1668310</td>
-<td align="right">2.763028</td>
-<td align="right">3.101992</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
-<td align="left">*</td>
+<td align="right">4.6125210</td>
+<td align="right">0.5769106</td>
+<td align="right">7.995210</td>
+<td align="right">0.0000000</td>
+<td align="right">3.4817971</td>
+<td align="right">5.7432450</td>
+<td align="right">2.507459</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
+<td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">comm_value</td>
-<td align="right">1.6745367</td>
-<td align="right">0.7188231</td>
-<td align="right">2.329553</td>
-<td align="right">0.0198298</td>
-<td align="right">0.2656693</td>
-<td align="right">3.083404</td>
-<td align="right">2.500778</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
-<td align="left">*</td>
+<td align="right">1.8035820</td>
+<td align="right">0.6964859</td>
+<td align="right">2.589545</td>
+<td align="right">0.0096103</td>
+<td align="right">0.4384947</td>
+<td align="right">3.1686694</td>
+<td align="right">2.480626</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
+<td align="left">**</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_race_value</td>
-<td align="right">0.5262029</td>
-<td align="right">1.6358977</td>
-<td align="right">0.321660</td>
-<td align="right">0.7477102</td>
-<td align="right">-2.6800976</td>
-<td align="right">3.732503</td>
-<td align="right">1.136079</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
+<td align="right">0.3514829</td>
+<td align="right">0.2922497</td>
+<td align="right">1.202680</td>
+<td align="right">0.2291001</td>
+<td align="right">-0.2213160</td>
+<td align="right">0.9242817</td>
+<td align="right">1.066112</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">hom_gender_value</td>
-<td align="right">5.4517893</td>
-<td align="right">2.5742012</td>
-<td align="right">2.117857</td>
-<td align="right">0.0341872</td>
-<td align="right">0.4064477</td>
-<td align="right">10.497131</td>
-<td align="right">1.299736</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
-<td align="left">*</td>
+<td align="right">2.9654751</td>
+<td align="right">0.5124637</td>
+<td align="right">5.786703</td>
+<td align="right">0.0000000</td>
+<td align="right">1.9610647</td>
+<td align="right">3.9698855</td>
+<td align="right">1.354846</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_race_value</td>
-<td align="right">12.1598709</td>
-<td align="right">0.8219108</td>
-<td align="right">14.794636</td>
+<td align="right">1.6741018</td>
+<td align="right">0.2278321</td>
+<td align="right">7.347963</td>
 <td align="right">0.0000000</td>
-<td align="right">10.5489553</td>
-<td align="right">13.770786</td>
-<td align="right">1.526620</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
+<td align="right">1.2275591</td>
+<td align="right">2.1206445</td>
+<td align="right">1.057486</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
 <td align="left">***</td>
 </tr>
 <tr class="odd">
 <td align="left">fixed</td>
 <td align="left">NA</td>
 <td align="left">feat_gender_value</td>
-<td align="right">3.1723282</td>
-<td align="right">1.9678447</td>
-<td align="right">1.612083</td>
-<td align="right">0.1069440</td>
-<td align="right">-0.6845766</td>
-<td align="right">7.029233</td>
-<td align="right">2.146714</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
-<td align="left"></td>
+<td align="right">2.2857481</td>
+<td align="right">0.3492002</td>
+<td align="right">6.545667</td>
+<td align="right">0.0000000</td>
+<td align="right">1.6013283</td>
+<td align="right">2.9701679</td>
+<td align="right">1.332817</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
+<td align="left">***</td>
 </tr>
 <tr class="even">
 <td align="left">ran_pars</td>
 <td align="left">sub_id</td>
 <td align="left">sd__(Intercept)</td>
-<td align="right">0.6946448</td>
+<td align="right">0.6673428</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">-2514.047</td>
-<td align="right">5044.094</td>
-<td align="right">5095.151</td>
+<td align="right">-2620.925</td>
+<td align="right">5257.851</td>
+<td align="right">5308.907</td>
 <td align="left"></td>
 </tr>
 </tbody>
@@ -11586,7 +11460,7 @@ subject.</p>
 ## [79] gargle_1.2.1        globals_0.16.2      ellipsis_0.3.2</code></pre>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQW5hbHl6ZSBidXR0ZXJmbHkgbWVtb3J5IGRhdGEiCm91dHB1dDoKICBodG1sX2RvY3VtZW50OgogICAgY29kZV9kb3dubG9hZDogdHJ1ZQogICAgY29kZV9mb2xkaW5nOiBoaWRlCiAgICB0b2M6IHRydWUKICAgIHRvY19mbG9hdDoKICAgICAgY29sbGFwc2VkOiB0cnVlCi0tLQoKIyBTZXR1cAoKYGBge3Igc2V0dXB9CiMgRm9yIHJlcHJvZHVjaWJpbGl0eS4uLgpzZXQuc2VlZChzdW0odXRmOFRvSW50KCJwZXJjaGFuY2UgdG8gZHJlYW0iKSkpCgpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShoZXJlKQpsaWJyYXJ5KGxtZXJUZXN0KQpsaWJyYXJ5KGJyb29tLm1peGVkKQoKa2FibGUgPC0ga25pdHI6OmthYmxlCnZpZiA8LSBjYXI6OnZpZgoKY2hlY2tfc2lnbmlmaWNhbmNlIDwtIGZ1bmN0aW9uKHRpZHlfc3RhdHMpIHsKICB0aWR5X3N0YXRzICU+JQogICAgbXV0YXRlKAogICAgICBzaWduaWZpY2FuY2UgPSBjYXNlX3doZW4oCiAgICAgICAgcC52YWx1ZSA8IDAuMDAxIH4gIioqKiIsCiAgICAgICAgcC52YWx1ZSA8IDAuMDEgfiAiKioiLAogICAgICAgIHAudmFsdWUgPCAwLjA1IH4gIioiLAogICAgICAgIHAudmFsdWUgPCAwLjEgfiAiLiIsCiAgICAgICAgVFJVRSB+ICIiCiAgICAgICkKICAgICkKfQoKbW9kZWxfdG9fZGYgPC0gZnVuY3Rpb24obW9kZWwpIHsKICBpZiAobmNvbChjb2VmKG1vZGVsKSRzdWJfaWQpID4gMikgewogICAgb3V0IDwtIHRpZHkobW9kZWwsIGNvbmYuaW50ID0gVFJVRSkgJT4lCiAgICAgIGxlZnRfam9pbigKICAgICAgICBlbmZyYW1lKHZpZihtb2RlbCksIG5hbWUgPSAidGVybSIsIHZhbHVlID0gInZpZiIpLCBieSA9ICJ0ZXJtIgogICAgICApICU+JQogICAgICBiaW5kX2NvbHMoZ2xhbmNlKG1vZGVsKSAlPiUgc2VsZWN0KGxvZ2xpayA9IGxvZ0xpaywgYWljID0gQUlDLCBiaWMgPSBCSUMpKQogIH0gZWxzZSB7CiAgICBvdXQgPC0gYmluZF9jb2xzKAogICAgICB0aWR5KG1vZGVsLCBjb25mLmludCA9IFRSVUUpLAogICAgICBnbGFuY2UobW9kZWwpICU+JSBzZWxlY3QobG9nbGlrID0gbG9nTGlrLCBhaWMgPSBBSUMsIGJpYyA9IEJJQykKICAgICkKICB9CiAgCiAgcmV0dXJuKG91dCAlPiUgY2hlY2tfc2lnbmlmaWNhbmNlKCkpCn0KCmdnIDwtIGxpc3QoCiAgdGhlbWVfYncoKSwKICB0aGVtZSgKICAgIHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjUsIHNpemUgPSAxMyksCiAgICBwbG90LnN1YnRpdGxlID0gZWxlbWVudF90ZXh0KGhqdXN0ID0gMC41LCBzaXplID0gMTEpLAogICAgcGFuZWwuZ3JpZC5tYWpvciA9IGVsZW1lbnRfYmxhbmsoKSwKICAgIHBhbmVsLmdyaWQubWlub3IgPSBlbGVtZW50X2JsYW5rKCksCiAgICBwYW5lbC5zcGFjaW5nID0gdW5pdCgwLjc1LCAibGluZXMiKSwKICAgIGxlZ2VuZC5ib3guc3BhY2luZyA9IHVuaXQoMC41LCAibGluZXMiKSwKICAgIGxlZ2VuZC5tYXJnaW4gPSBtYXJnaW4oYygwLCAwLCAwLCAwKSwgdW5pdCA9ICJsaW5lcyIpCiAgKQopCmBgYAoKCiMgTG9hZCBkYXRhCgpJbiBvbmUgc3R1ZHksIHN1YmplY3RzIGNvbXBsZXRlZCBhICJyYW5kb20gd2Fsa3MiIGxlYXJuaW5nIHRhc2suIEluIHRoZSBvdGhlciwgc3ViamVjdHMgY29tcGxldGVkIGEgInBhaXJlZCBhc3NvY2lhdGVzIiBsZWFybmluZyB0YXNrLgoKYGBge3IgbG9hZC1kYXRhfQp3YWxrX2RhdGEgPC0gaGVyZSgiZGF0YSIsICJidXR0ZXJmbHktYmVoYXZpb3IiLCAid2Fsa19tZW0uY3N2IikgJT4lCiAgcmVhZF9jc3Yoc2hvd19jb2xfdHlwZXMgPSBGQUxTRSkgJT4lCiAgc2VsZWN0KHN1Yl9pZCwgZnJvbSwgdG8sIGVkZ2UsIGNob2ljZSkgJT4lCiAgIyBBZGQgbmV0d29yayBleHBlcnRzIChzYW1lIGZvciBhbGwgc3ViamVjdHMpCiAgbGVmdF9qb2luKAogICAgcmVhZF9jc3YoCiAgICAgIGhlcmUoImRhdGEiLCAiYnV0dGVyZmx5LWZpeGVkLXByZWRpY3Rpb25zIiwgIm5ldHdvcmtfZXhwZXJ0cy5jc3YiKSwKICAgICAgc2hvd19jb2xfdHlwZXMgPSBGQUxTRQogICAgKQogICkgJT4lCiAgIyBBZGQgZmVhdHVyZSBleHBlcnRzIChkaWZmZXJlbnQgZm9yIGVhY2ggc3ViamVjdCkKICBsZWZ0X2pvaW4oCiAgICByZWFkX2NzdigKICAgICAgaGVyZSgiZGF0YSIsICJidXR0ZXJmbHktZml4ZWQtcHJlZGljdGlvbnMiLCAiZmVhdHVyZV9leHBlcnRzX3dhbGsuY3N2IgogICAgICApLAogICAgICBzaG93X2NvbF90eXBlcyA9IEZBTFNFCiAgICApCiAgKQoKcGFpcl9kYXRhIDwtIGhlcmUoImRhdGEiLCAiYnV0dGVyZmx5LWJlaGF2aW9yIiwgInBhaXJfbWVtLmNzdiIpICU+JQogIHJlYWRfY3N2KHNob3dfY29sX3R5cGVzID0gRkFMU0UpICU+JQogIHNlbGVjdChzdWJfaWQsIGZyb20sIHRvLCBlZGdlLCBjaG9pY2UpICU+JQogICMgQWRkIG5ldHdvcmsgZXhwZXJ0cyAoc2FtZSBmb3IgYWxsIHN1YmplY3RzKQogIGxlZnRfam9pbigKICAgIHJlYWRfY3N2KAogICAgICBoZXJlKCJkYXRhIiwgImJ1dHRlcmZseS1maXhlZC1wcmVkaWN0aW9ucyIsICJuZXR3b3JrX2V4cGVydHMuY3N2IiksCiAgICAgIHNob3dfY29sX3R5cGVzID0gRkFMU0UKICAgICkKICApICU+JQogICMgQWRkIGZlYXR1cmUgZXhwZXJ0cyAoZGlmZmVyZW50IGZvciBlYWNoIHN1YmplY3QpCiAgbGVmdF9qb2luKAogICAgcmVhZF9jc3YoCiAgICAgIGhlcmUoImRhdGEiLCAiYnV0dGVyZmx5LWZpeGVkLXByZWRpY3Rpb25zIiwgImZlYXR1cmVfZXhwZXJ0c19wYWlyLmNzdiIKICAgICAgKSwKICAgICAgc2hvd19jb2xfdHlwZXMgPSBGQUxTRQogICAgKQogICkKYGBgCgoKIyBNZW1vcml6YXRpb24KCmBgYHtyIG1lbW9yaXphdGlvbi1vbmx5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBtZW1vcml6ZV92YWx1ZSArICgxICsgbWVtb3JpemVfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IG1lbW9yaXplX3ZhbHVlICsgKDEgKyBtZW1vcml6ZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKCiMgVHJpYWQgc2NoZW1hCgpCYXNlZCBvbiBob3cgd2UndmUgb3BlcmF0aW9uYWxpemVkIHRoZSB0cmlhZCBzY2hlbWEsIGl0IGFscmVhZHkgY292ZXJzIHRydWUgZnJpZW5kc2hpcHMuIFNvIHdlJ2xsIGZpcnN0IHRyeSBhIG1vZGVsIHRoYXQgb25seSBpbmNsdWRlcyB0aGUgdHJpYWQgc3RyYXRlZ3kuCgpgYGB7ciB0cmlhZC1vbmx5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiB0cmlhZF92YWx1ZSArICgxICsgdHJpYWRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgKDEgKyB0cmlhZF92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKV2UgbWlnaHQgYWxzbyBiZSBpbnRlcmVzdGVkIGluIHNlZWluZyB3aGV0aGVyIHRoZSB0cmlhZCBzY2hlbWEgaG9sZHMgdXAgYWZ0ZXIgY29udHJvbGxpbmcgZm9yIG1lbW9yaXphdGlvbi4gTm90ZSB0aGF0IHRoZSByYW5kb20gZWZmZWN0cyBzdHJ1Y3R1cmUgb25seSBpbmNsdWRlcyBhIHJhbmRvbSBzbG9wZSBmb3IgdHJpYWRzIChub3QgbWVtb3JpemF0aW9uKSBiZWNhdXNlIHRoZSBtb2RlbCBvdGhlcndpc2UgZmFpbHMgdG8gY29udmVyZ2UuIFNpbmNlIHRyaWFkcyBhbmQgbWVtb3JpemF0aW9uIGFyZSAodW5hdm9pZGFibHkpIGNvcnJlbGF0ZWQgc3RyYXRlZ2llcywgd2UnbGwgY2hlY2sgdGhlIHZhcmlhbmNlIGluZmxhdGlvbiBmYWN0b3IgKFZJRikgdG8gc2VlIHdoZXRoZXIgd2Ugc2hvdWxkIGJlIGNvbmNlcm5lZCBhYm91dCBtdWx0aWNvbGxpbmVhcml0eS4KCmBgYHtyIHRyaWFkLW1lbX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gdHJpYWRfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgdHJpYWRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHRyaWFkX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgoKIyBDb21tdW5pdHkgc2NoZW1hCgpUaGUgY29tbXVuaXR5IHNjaGVtYSBhbHNvIGluY2x1ZGVzIHRydWUgZnJpZW5kc2hpcHMsIHNvIHdlJ2xsIHRyeSBhIG1vZGVsIHRoYXQgb25seSBpbmNsdWRlcyB0aGF0IHN0cmF0ZWd5LgoKYGBge3IgY29tbS1vbmx5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBjb21tX3ZhbHVlICsgKDEgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBjb21tX3ZhbHVlICsgKDEgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgpBbmQgbm93IGFmdGVyIGNvbnRyb2xsaW5nIGZvciBtZW1vcml6YXRpb24uCgpgYGB7ciBjb21tLW1lbX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gY29tbV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBjb21tX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIGNvbW1fdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCgojIFN1Y2Nlc3NvciBSZXByZXNlbnRhdGlvbgoKVGhlIFNSIGhhcyBhIHBhcmFtZXRlciBnYW1tYSAoJFxnYW1tYSQpIHRoYXQgY29udHJvbHMgaG93IG1hbnkgc3RlcHMgZ2V0IGludGVncmF0ZWQgb3Zlci4gWmVybyBpcyBlc3NlbnRpYWxseSBwdXJlIG1lbW9yaXphdGlvbjsgYXMgJFxnYW1tYSQgYXBwcm9hY2hlcyBvbmUsIHRoZSBTUiBpbnRlZ3JhdGVzIG92ZXIgYSBncmVhdGVyIG51bWJlciBvZiBzdGVwcy4gRXNwZWNpYWxseSBhdCBsb3dlciB2YWx1ZXMgb2YgJFxnYW1tYSQsIHRoZXJlJ3MgcmVhc29uIHRvIHN1c3BlY3QgdGhhdCBtdWx0aWNvbGxpbmVhcml0eSB3aXRoIG1lbW9yaXphdGlvbiB3aWxsIGJlY29tZSBhbiBpc3N1ZS4gU28sIHdlJ2xsIG5lZWQgdG8ga2VlcCBhbiBleWUgb3V0IGZvciB0aGlzLCBhbmQgYXZvaWQgaW50ZXJwcmV0aW5nIGVzdGltYXRlcyB3aGVuIFZJRiBpcyBleGNlc3NpdmVseSBoaWdoLgoKIyMgR2FtbWEgPSAwLjEKCmBgYHtyIHNyLWdhbW1hMX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWExX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTFfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMV92YWx1ZSArICgxICsgc3JfZ2FtbWExX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTFfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTFfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCiMjIEdhbW1hID0gMC4yCgpgYGB7ciBzci1nYW1tYTJ9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMl92YWx1ZSArICgxICsgc3JfZ2FtbWEyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTJfdmFsdWUgKyAoMSArIHNyX2dhbW1hMl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWEyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWEyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgojIyBHYW1tYSA9IDAuMwoKYGBge3Igc3ItZ2FtbWEzfQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTNfdmFsdWUgKyAoMSArIHNyX2dhbW1hM192YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWEzX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTNfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWEzX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hM192YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWEzX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hM192YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKIyMgR2FtbWEgPSAwLjQKCmBgYHtyIHNyLWdhbW1hNH0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE0X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNF92YWx1ZSArICgxICsgc3JfZ2FtbWE0X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNF92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNF92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCiMjIEdhbW1hID0gMC41CgpgYGB7ciBzci1nYW1tYTV9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNV92YWx1ZSArICgxICsgc3JfZ2FtbWE1X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTVfdmFsdWUgKyAoMSArIHNyX2dhbW1hNV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTVfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE1X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTVfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE1X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgojIyBHYW1tYSA9IDAuNgoKYGBge3Igc3ItZ2FtbWE2fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTZfdmFsdWUgKyAoMSArIHNyX2dhbW1hNl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE2X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTZfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE2X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hNl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE2X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hNl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKIyMgR2FtbWEgPSAwLjcKCmBgYHtyIHNyLWdhbW1hN30Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE3X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTdfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hN192YWx1ZSArICgxICsgc3JfZ2FtbWE3X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hN192YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTdfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hN192YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTdfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCiMjIEdhbW1hID0gMC44CgpgYGB7ciBzci1nYW1tYTh9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hOF92YWx1ZSArICgxICsgc3JfZ2FtbWE4X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYThfdmFsdWUgKyAoMSArIHNyX2dhbW1hOF92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYThfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE4X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYThfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE4X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgojIyBHYW1tYSA9IDAuOQoKYGBge3Igc3ItZ2FtbWE5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTlfdmFsdWUgKyAoMSArIHNyX2dhbW1hOV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE5X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTlfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE5X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hOV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE5X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hOV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKCiMgSG9tb3BoaWx5CgpJbiB0aGUgcmFuZG9tIHdhbGtzIGRhdGFzZXQsIHdlIGFyZSBub3QgYWJsZSB0byBlc3RpbWF0ZSByYW5kb20gc2xvcGVzIGZvciByYWNlLWJhc2VkIGhvbW9waGlseSwgYXMgaXQgcmVzdWx0cyBpbiBhIHNpbmd1bGFyIGZpdC4KCmBgYHtyIHJhY2UtaG9tfQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fcmFjZV92YWx1ZSArICgxIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fcmFjZV92YWx1ZSArICgxICsgaG9tX3JhY2VfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX3JhY2VfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fcmFjZV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBob21fcmFjZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKSW4gdGhlIHBhaXJlZCBhc3NvY2lhdGVzIGRhdGFzZXQsIHdlIGFyZSBub3QgYWJsZSB0byBlc3RpbWF0ZSByYW5kb20gc2xvcGVzIGZvciBnZW5kZXItYmFzZWQgaG9tb3BoaWx5LCBhcyBpdCByZXN1bHRzIGluIGEgc2luZ3VsYXIgZml0LgoKYGBge3IgZ2VuZGVyLWhvbX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX2dlbmRlcl92YWx1ZSArICgxICsgaG9tX2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX2dlbmRlcl92YWx1ZSArICgxIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGhvbV9nZW5kZXJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArCiAgICAgICgxICsgaG9tX2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX2dlbmRlcl92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsKICAgICAgKDEgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCgojIEZlYXR1cmUgcmVsYXRpb25zCgpgYGB7ciByYWNlLWZlYXR9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGZlYXRfcmFjZV92YWx1ZSArICgxICsgZmVhdF9yYWNlX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X3JhY2VfdmFsdWUgKyAoMSArIGZlYXRfcmFjZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X3JhY2VfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgZmVhdF9yYWNlX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X3JhY2VfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgZmVhdF9yYWNlX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgpgYGB7ciBnZW5kZXItZmVhdH0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9nZW5kZXJfdmFsdWUgKyAoMSArIGZlYXRfZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X2dlbmRlcl92YWx1ZSArICgxICsgZmVhdF9nZW5kZXJfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9nZW5kZXJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArCiAgICAgICgxICsgZmVhdF9nZW5kZXJfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGZlYXRfZ2VuZGVyX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKwogICAgICAoMSArIGZlYXRfZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgoKIyBTdHJhdGVneSBjb21iaW5hdGlvbnMKCldlIGNhbiB0cnkgc2VlaW5nIGlmIHRoZSBTUiBtaWdodCBiZSBvdXRwZXJmb3JtZWQgYnkgc29tZSBjb21iaW5hdGlvbiBvZiBvdGhlciBzdHJhdGVnaWVzLiBXZSdsbCBzdGFydCB3aXRoIGFsbCBvZiB0aGUgInN0cnVjdHVyYWwiICh0cmlhZCBhbmQgY29tbXVuaXR5KSBzdHJhdGVnaWVzLgoKYGBge3IgYWxsLXN0cnVjdHVyYWx9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgY29tbV92YWx1ZSArCiAgICAgICgxICsgdHJpYWRfdmFsdWUgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiB0cmlhZF92YWx1ZSArIGNvbW1fdmFsdWUgKwogICAgICAoMSArIHRyaWFkX3ZhbHVlICsgY29tbV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKSG93IGFib3V0IGJvdGggZm9ybXMgb2YgaG9tb3BoaWx5PyBJbiB0aGUgcGFpcmVkIGFzc29jaWF0ZXMgZGF0YXNldCwgd2UgZ2V0IGEgc2luZ3VsYXIgZml0IGlmIHdlIHRyeSB0byBlc3RpbWF0ZSByYW5kb20gc2xvcGVzIGZvciBib3RoIHJhY2UgYW5kIGdlbmRlciBob21vcGhpbHksIGRyaXZlbiBieSB0aGUgbmVnYXRpdmUgY29ycmVsYXRpb24gYmV0d2VlbiB0aGUgcmFuZG9tIGludGVyY2VwdCBhbmQgZ2VuZGVyIGhvbW9waGlseS4gV2UgY2FuIHRyeSBlc3RpbWF0aW5nIHRoZSBtb2RlbCB3aXRob3V0IHRoYXQgcmFuZG9tIHNsb3BlLCBqdXN0IHRvIHNlZSB3aGF0IGhhcHBlbnMuCgpgYGB7ciBhbGwtaG9tfQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fcmFjZV92YWx1ZSArIGhvbV9nZW5kZXJfdmFsdWUgKwogICAgICAoMSArIGhvbV9yYWNlX3ZhbHVlICsgaG9tX2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX3JhY2VfdmFsdWUgKyBob21fZ2VuZGVyX3ZhbHVlICsKICAgICAgKDEgKyBob21fcmFjZV92YWx1ZSArIGhvbV9nZW5kZXJfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX3JhY2VfdmFsdWUgKyBob21fZ2VuZGVyX3ZhbHVlICsKICAgICAgKDEgKyBob21fcmFjZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKQW5kIG5vdyBib3RoIGZvcm1zIG9mIGxlYXJuaW5nIGFib3V0IGZlYXR1cmUtYmFzZWQgcmVsYXRpb25zLiBJbiB0aGUgcGFpcmVkIGFzc29jaWF0ZXMgZGF0YXNldCwgd2UgZ2V0IGEgbW9kZWwgY29udmVyZ2VuY2UgZmFpbHVyZSBpZiB3ZSB0cnkgdG8gZXN0aW1hdGUgcmFuZG9tIHNsb3BlcyBmb3IgYm90aCByYWNlIGFuZCBnZW5kZXIsIHNvIHdlJ2xsIHRyeSBlc3RpbWF0aW5nIHR3byB2YXJpYW50cyB3aXRoIGEgc2luZ2xlIHJhbmRvbS1lZmZlY3RzIHRlcm0uCgpgYGB7ciBhbGwtZmVhdH0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9yYWNlX3ZhbHVlICsgZmVhdF9nZW5kZXJfdmFsdWUgKwogICAgICAoMSArIGZlYXRfcmFjZV92YWx1ZSArIGZlYXRfZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X3JhY2VfdmFsdWUgKyBmZWF0X2dlbmRlcl92YWx1ZSArCiAgICAgICgxICsgZmVhdF9yYWNlX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzLCByYW5kb20gc2xvcGUgb2YgcmFjZSIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X3JhY2VfdmFsdWUgKyBmZWF0X2dlbmRlcl92YWx1ZSArCiAgICAgICgxICsgZmVhdF9nZW5kZXJfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMsIHJhbmRvbSBzbG9wZSBvZiBnZW5kZXIiKQpgYGAKCkFuZCBub3cgd2UnbGwganVzdCBnbyBmb3IgYnJva2U6IHdlJ2xsIHRyeSBldmVyeSBzaW5nbGUgc3RyYXRlZ3kgKGV4Y2VwdCBtZW1vcml6YXRpb24pIGluIHRoZSBzYW1lIG1vZGVsLiBIZXJlLCB3ZSdyZSBvbmx5IGVzdGltYXRpbmcgYSByYW5kb20gaW50ZXJjZXB0IHBlciBzdWJqZWN0LCBzbyBpdCdzIGxpa2VseSB0aGF0IHRoZSBkZWdyZWVzIG9mIGZyZWVkb20gKGkuZS4sIHVzZWQgdG8gY29tcHV0ZSBwLXZhbHVlcykgYXJlIGZhciB0b28gbGVuaWVudC4KCmBgYHtyIGV2ZXJ5dGhpbmctZXZlcnl3aGVyZS1hbGwtYXQtb25jZX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gdHJpYWRfdmFsdWUgKyBjb21tX3ZhbHVlICsKICAgICAgaG9tX3JhY2VfdmFsdWUgKyBob21fZ2VuZGVyX3ZhbHVlICsKICAgICAgZmVhdF9yYWNlX3ZhbHVlICsgZmVhdF9nZW5kZXJfdmFsdWUgKwogICAgICAoMSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gdHJpYWRfdmFsdWUgKyBjb21tX3ZhbHVlICsKICAgICAgaG9tX3JhY2VfdmFsdWUgKyBob21fZ2VuZGVyX3ZhbHVlICsKICAgICAgZmVhdF9yYWNlX3ZhbHVlICsgZmVhdF9nZW5kZXJfdmFsdWUgKwogICAgICAoMSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKCiMgV2hhdCdzIG5leHQ/CgpUaGVzZSBzdGF0aXN0aWNhbCBtb2RlbHMgZ2l2ZSB1cyBhIGdvb2Qgc2Vuc2UgZm9yIHdoYXQgY29nbml0aXZlIHN0cmF0ZWdpZXMgcGVvcGxlIG1pZ2h0IGJlIHVzaW5nIHRvIHNoYXBlIG1lbnRhbCByZXByZXNlbnRhdGlvbiBvZiBzb2NpYWwgbmV0d29yayBzdHJ1Y3R1cmUuIFRoZXkgYXJlIGxpbWl0ZWQsIGhvd2V2ZXIsIGJ5IGEgZmV3IGltcG9ydGFudCBjb25zaWRlcmF0aW9ucy4KCkZpcnN0LCB0aGUgcHVycG9zZSBvZiBtaXhlZC1lZmZlY3RzIG1vZGVscyBpcyB0byBleHRyYWN0IG91dCB3aGF0IGlzICJjb21tb24iIG9yICJzaGFyZWQiIGFjcm9zcyBpbmRpdmlkdWFsczsgdGhhdCB3aGljaCBtYWtlcyBhbiBpbmRpdmlkdWFsIHVuaXF1ZSBpcyB0aGVvcmV0aWNhbGx5IGNhcHR1cmVkIGJ5IHRoZSByYW5kb20gZWZmZWN0cywgYnV0IHRoZXNlIGVzdGltYXRlcyBhcmUgbm90IGluZGVwZW5kZW50IGR1ZSB0byBzaHJpbmthZ2UgKGkuZS4sIHBhcnRpYWwgcG9vbGluZykuIFRoaXMgbWFrZXMgaXQgaGFyZGVyIHRvIHNheSB0aGluZ3MgYWJvdXQgaW5kaXZpZHVhbCBkaWZmZXJlbmNlcyAoZS5nLiwgdG8gYXNzb2NpYXRlIGluZGl2aWR1YWwgZGlmZmVyZW5jZXMgd2l0aCBvdGhlciB2YXJpYWJsZXMgb2YgaW50ZXJlc3QpLCBhbmQgd2UgKmRvKiBleHBlY3QgaW5kaXZpZHVhbCBkaWZmZXJlbmNlcyB0byBwbGF5IGFuIGltcG9ydGFudCByb2xlIGluIHNoYXBpbmcgcGVvcGxlJ3MgY29nbml0aW9uLgoKU2Vjb25kLCB0aGUgc3RhdGlzdGljYWwgbW9kZWxpbmcgZnJhbWV3b3JrIGZvcmNlcyB1cyB0byBjb25zaWRlciBvbmx5IGRpc2NyZXRlIHZhcmlhbnRzIG9mIHRoZSBTUiB3aGVuIGdhbW1hIGlzIGZpeGVkIHRvIHNvbWUgcHJlLXNwZWNpZmllZCB2YWx1ZS4gSG93ZXZlciwgd2Uga25vdyB0aGF0IGRpZmZlcmVudCBwZW9wbGUgYXJlIGxpa2VseSB0byBpbnRlZ3JhdGUgb3ZlciBhIGRpZmZlcmVudCBudW1iZXIgb2YgY29ubmVjdGlvbnMsIGFuZCBzbyB3ZSdkIGxpa2UgdG8gYmUgYWJsZSB0byBzcGVjaWZ5IGEgY29tcHV0YXRpb25hbCBtb2RlbCBhbGxvd2luZyB1cyB0byBlc3RpbWF0ZSB0aGlzIGFzIGEgZnJlZSAoZnVsbHkgY29udGludW91cyEpIHBhcmFtZXRlci4gVGhpcyB3b3VsZCBhbGxvdyB1cyB0byAoZS5nLikgdGVzdCB3aGV0aGVyIHRoZSBmb3JtYXQgb2YgbGVhcm5pbmcgKHJhbmRvbSB3YWxrcyB2cyBwYWlyZWQgYXNzb2NpYXRlcykgaGFzIGFuIGVmZmVjdCBvbiB0aGUgbnVtYmVyIG9mIGNvbm5lY3Rpb25zIHBlb3BsZSBpbnRlZ3JhdGUgb3ZlciB3aGVuIHJlcHJlc2VudGluZyB0aGUgbmV0d29yay4KClNvIHRvIGFkZHJlc3MgdGhlc2UgbGltaXRhdGlvbnMsIHdlJ2xsIG5leHQgd2FudCB0byBlc3RpbWF0ZSBzb21lIGNvbXB1dGF0aW9uYWwgbW9kZWxzIHRoYXQgZXhwbGljaXRseSBtb2RlbCB0aGUgU1IncyBnYW1tYSBwYXJhbWV0ZXIsIHBlciBzdWJqZWN0LgoKCiMgU2Vzc2lvbiBpbmZvCgpgYGB7ciBzZXNzaW9uLWluZm99CnNlc3Npb25JbmZvKCkKYGBgCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQW5hbHl6ZSBidXR0ZXJmbHkgbWVtb3J5IGRhdGEiCm91dHB1dDoKICBodG1sX2RvY3VtZW50OgogICAgY29kZV9kb3dubG9hZDogdHJ1ZQogICAgY29kZV9mb2xkaW5nOiBoaWRlCiAgICB0b2M6IHRydWUKICAgIHRvY19mbG9hdDoKICAgICAgY29sbGFwc2VkOiB0cnVlCi0tLQoKIyBTZXR1cAoKYGBge3Igc2V0dXB9CiMgRm9yIHJlcHJvZHVjaWJpbGl0eS4uLgpzZXQuc2VlZChzdW0odXRmOFRvSW50KCJwZXJjaGFuY2UgdG8gZHJlYW0iKSkpCgpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShoZXJlKQpsaWJyYXJ5KGxtZXJUZXN0KQpsaWJyYXJ5KGJyb29tLm1peGVkKQoKa2FibGUgPC0ga25pdHI6OmthYmxlCnZpZiA8LSBjYXI6OnZpZgoKY2hlY2tfc2lnbmlmaWNhbmNlIDwtIGZ1bmN0aW9uKHRpZHlfc3RhdHMpIHsKICB0aWR5X3N0YXRzICU+JQogICAgbXV0YXRlKAogICAgICBzaWduaWZpY2FuY2UgPSBjYXNlX3doZW4oCiAgICAgICAgcC52YWx1ZSA8IDAuMDAxIH4gIioqKiIsCiAgICAgICAgcC52YWx1ZSA8IDAuMDEgfiAiKioiLAogICAgICAgIHAudmFsdWUgPCAwLjA1IH4gIioiLAogICAgICAgIHAudmFsdWUgPCAwLjEgfiAiLiIsCiAgICAgICAgVFJVRSB+ICIiCiAgICAgICkKICAgICkKfQoKbW9kZWxfdG9fZGYgPC0gZnVuY3Rpb24obW9kZWwpIHsKICBpZiAobmNvbChjb2VmKG1vZGVsKSRzdWJfaWQpID4gMikgewogICAgb3V0IDwtIHRpZHkobW9kZWwsIGNvbmYuaW50ID0gVFJVRSkgJT4lCiAgICAgIGxlZnRfam9pbigKICAgICAgICBlbmZyYW1lKHZpZihtb2RlbCksIG5hbWUgPSAidGVybSIsIHZhbHVlID0gInZpZiIpLCBieSA9ICJ0ZXJtIgogICAgICApICU+JQogICAgICBiaW5kX2NvbHMoZ2xhbmNlKG1vZGVsKSAlPiUgc2VsZWN0KGxvZ2xpayA9IGxvZ0xpaywgYWljID0gQUlDLCBiaWMgPSBCSUMpKQogIH0gZWxzZSB7CiAgICBvdXQgPC0gYmluZF9jb2xzKAogICAgICB0aWR5KG1vZGVsLCBjb25mLmludCA9IFRSVUUpLAogICAgICBnbGFuY2UobW9kZWwpICU+JSBzZWxlY3QobG9nbGlrID0gbG9nTGlrLCBhaWMgPSBBSUMsIGJpYyA9IEJJQykKICAgICkKICB9CiAgCiAgcmV0dXJuKG91dCAlPiUgY2hlY2tfc2lnbmlmaWNhbmNlKCkpCn0KCmdnIDwtIGxpc3QoCiAgdGhlbWVfYncoKSwKICB0aGVtZSgKICAgIHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQoaGp1c3QgPSAwLjUsIHNpemUgPSAxMyksCiAgICBwbG90LnN1YnRpdGxlID0gZWxlbWVudF90ZXh0KGhqdXN0ID0gMC41LCBzaXplID0gMTEpLAogICAgcGFuZWwuZ3JpZC5tYWpvciA9IGVsZW1lbnRfYmxhbmsoKSwKICAgIHBhbmVsLmdyaWQubWlub3IgPSBlbGVtZW50X2JsYW5rKCksCiAgICBwYW5lbC5zcGFjaW5nID0gdW5pdCgwLjc1LCAibGluZXMiKSwKICAgIGxlZ2VuZC5ib3guc3BhY2luZyA9IHVuaXQoMC41LCAibGluZXMiKSwKICAgIGxlZ2VuZC5tYXJnaW4gPSBtYXJnaW4oYygwLCAwLCAwLCAwKSwgdW5pdCA9ICJsaW5lcyIpCiAgKQopCmBgYAoKCiMgTG9hZCBkYXRhCgpJbiBvbmUgc3R1ZHksIHN1YmplY3RzIGNvbXBsZXRlZCBhICJyYW5kb20gd2Fsa3MiIGxlYXJuaW5nIHRhc2suIEluIHRoZSBvdGhlciwgc3ViamVjdHMgY29tcGxldGVkIGEgInBhaXJlZCBhc3NvY2lhdGVzIiBsZWFybmluZyB0YXNrLgoKYGBge3IgbG9hZC1kYXRhfQp3YWxrX2RhdGEgPC0gaGVyZSgiZGF0YSIsICJidXR0ZXJmbHktYmVoYXZpb3IiLCAid2Fsa19tZW0uY3N2IikgJT4lCiAgcmVhZF9jc3Yoc2hvd19jb2xfdHlwZXMgPSBGQUxTRSkgJT4lCiAgc2VsZWN0KHN1Yl9pZCwgZnJvbSwgdG8sIGVkZ2UsIGNob2ljZSkgJT4lCiAgIyBBZGQgbmV0d29yayBleHBlcnRzIChzYW1lIGZvciBhbGwgc3ViamVjdHMpCiAgbGVmdF9qb2luKAogICAgcmVhZF9jc3YoCiAgICAgIGhlcmUoImRhdGEiLCAiYnV0dGVyZmx5LWZpeGVkLXByZWRpY3Rpb25zIiwgIm5ldHdvcmtfZXhwZXJ0cy5jc3YiKSwKICAgICAgc2hvd19jb2xfdHlwZXMgPSBGQUxTRQogICAgKQogICkgJT4lCiAgIyBBZGQgZmVhdHVyZSBleHBlcnRzIChkaWZmZXJlbnQgZm9yIGVhY2ggc3ViamVjdCkKICBsZWZ0X2pvaW4oCiAgICByZWFkX2NzdigKICAgICAgaGVyZSgiZGF0YSIsICJidXR0ZXJmbHktZml4ZWQtcHJlZGljdGlvbnMiLCAiZmVhdHVyZV9leHBlcnRzX3dhbGsuY3N2IgogICAgICApLAogICAgICBzaG93X2NvbF90eXBlcyA9IEZBTFNFCiAgICApCiAgKQoKcGFpcl9kYXRhIDwtIGhlcmUoImRhdGEiLCAiYnV0dGVyZmx5LWJlaGF2aW9yIiwgInBhaXJfbWVtLmNzdiIpICU+JQogIHJlYWRfY3N2KHNob3dfY29sX3R5cGVzID0gRkFMU0UpICU+JQogIHNlbGVjdChzdWJfaWQsIGZyb20sIHRvLCBlZGdlLCBjaG9pY2UpICU+JQogICMgQWRkIG5ldHdvcmsgZXhwZXJ0cyAoc2FtZSBmb3IgYWxsIHN1YmplY3RzKQogIGxlZnRfam9pbigKICAgIHJlYWRfY3N2KAogICAgICBoZXJlKCJkYXRhIiwgImJ1dHRlcmZseS1maXhlZC1wcmVkaWN0aW9ucyIsICJuZXR3b3JrX2V4cGVydHMuY3N2IiksCiAgICAgIHNob3dfY29sX3R5cGVzID0gRkFMU0UKICAgICkKICApICU+JQogICMgQWRkIGZlYXR1cmUgZXhwZXJ0cyAoZGlmZmVyZW50IGZvciBlYWNoIHN1YmplY3QpCiAgbGVmdF9qb2luKAogICAgcmVhZF9jc3YoCiAgICAgIGhlcmUoImRhdGEiLCAiYnV0dGVyZmx5LWZpeGVkLXByZWRpY3Rpb25zIiwgImZlYXR1cmVfZXhwZXJ0c19wYWlyLmNzdiIKICAgICAgKSwKICAgICAgc2hvd19jb2xfdHlwZXMgPSBGQUxTRQogICAgKQogICkKYGBgCgoKIyBNZW1vcml6YXRpb24KCmBgYHtyIG1lbW9yaXphdGlvbi1vbmx5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBtZW1vcml6ZV92YWx1ZSArICgxICsgbWVtb3JpemVfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IG1lbW9yaXplX3ZhbHVlICsgKDEgKyBtZW1vcml6ZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKCiMgVHJpYWQgc2NoZW1hCgpCYXNlZCBvbiBob3cgd2UndmUgb3BlcmF0aW9uYWxpemVkIHRoZSB0cmlhZCBzY2hlbWEsIGl0IGFscmVhZHkgY292ZXJzIHRydWUgZnJpZW5kc2hpcHMuIFNvIHdlJ2xsIGZpcnN0IHRyeSBhIG1vZGVsIHRoYXQgb25seSBpbmNsdWRlcyB0aGUgdHJpYWQgc3RyYXRlZ3kuCgpgYGB7ciB0cmlhZC1vbmx5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiB0cmlhZF92YWx1ZSArICgxICsgdHJpYWRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgKDEgKyB0cmlhZF92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKV2UgbWlnaHQgYWxzbyBiZSBpbnRlcmVzdGVkIGluIHNlZWluZyB3aGV0aGVyIHRoZSB0cmlhZCBzY2hlbWEgaG9sZHMgdXAgYWZ0ZXIgY29udHJvbGxpbmcgZm9yIG1lbW9yaXphdGlvbi4gTm90ZSB0aGF0IHRoZSByYW5kb20gZWZmZWN0cyBzdHJ1Y3R1cmUgb25seSBpbmNsdWRlcyBhIHJhbmRvbSBzbG9wZSBmb3IgdHJpYWRzIChub3QgbWVtb3JpemF0aW9uKSBiZWNhdXNlIHRoZSBtb2RlbCBvdGhlcndpc2UgZmFpbHMgdG8gY29udmVyZ2UuIFNpbmNlIHRyaWFkcyBhbmQgbWVtb3JpemF0aW9uIGFyZSAodW5hdm9pZGFibHkpIGNvcnJlbGF0ZWQgc3RyYXRlZ2llcywgd2UnbGwgY2hlY2sgdGhlIHZhcmlhbmNlIGluZmxhdGlvbiBmYWN0b3IgKFZJRikgdG8gc2VlIHdoZXRoZXIgd2Ugc2hvdWxkIGJlIGNvbmNlcm5lZCBhYm91dCBtdWx0aWNvbGxpbmVhcml0eS4KCmBgYHtyIHRyaWFkLW1lbX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gdHJpYWRfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgdHJpYWRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHRyaWFkX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgoKIyBDb21tdW5pdHkgc2NoZW1hCgpUaGUgY29tbXVuaXR5IHNjaGVtYSBhbHNvIGluY2x1ZGVzIHRydWUgZnJpZW5kc2hpcHMsIHNvIHdlJ2xsIHRyeSBhIG1vZGVsIHRoYXQgb25seSBpbmNsdWRlcyB0aGF0IHN0cmF0ZWd5LgoKYGBge3IgY29tbS1vbmx5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBjb21tX3ZhbHVlICsgKDEgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBjb21tX3ZhbHVlICsgKDEgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgpBbmQgbm93IGFmdGVyIGNvbnRyb2xsaW5nIGZvciBtZW1vcml6YXRpb24uCgpgYGB7ciBjb21tLW1lbX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gY29tbV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBjb21tX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBjb21tX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIGNvbW1fdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCgojIFN1Y2Nlc3NvciBSZXByZXNlbnRhdGlvbgoKVGhlIFNSIGhhcyBhIHBhcmFtZXRlciBnYW1tYSAoJFxnYW1tYSQpIHRoYXQgY29udHJvbHMgaG93IG1hbnkgc3RlcHMgZ2V0IGludGVncmF0ZWQgb3Zlci4gWmVybyBpcyBlc3NlbnRpYWxseSBwdXJlIG1lbW9yaXphdGlvbjsgYXMgJFxnYW1tYSQgYXBwcm9hY2hlcyBvbmUsIHRoZSBTUiBpbnRlZ3JhdGVzIG92ZXIgYSBncmVhdGVyIG51bWJlciBvZiBzdGVwcy4gRXNwZWNpYWxseSBhdCBsb3dlciB2YWx1ZXMgb2YgJFxnYW1tYSQsIHRoZXJlJ3MgcmVhc29uIHRvIHN1c3BlY3QgdGhhdCBtdWx0aWNvbGxpbmVhcml0eSB3aXRoIG1lbW9yaXphdGlvbiB3aWxsIGJlY29tZSBhbiBpc3N1ZS4gU28sIHdlJ2xsIG5lZWQgdG8ga2VlcCBhbiBleWUgb3V0IGZvciB0aGlzLCBhbmQgYXZvaWQgaW50ZXJwcmV0aW5nIGVzdGltYXRlcyB3aGVuIFZJRiBpcyBleGNlc3NpdmVseSBoaWdoLgoKIyMgR2FtbWEgPSAwLjEKCmBgYHtyIHNyLWdhbW1hMX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWExX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTFfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMV92YWx1ZSArICgxICsgc3JfZ2FtbWExX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTFfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMV92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTFfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCiMjIEdhbW1hID0gMC4yCgpgYGB7ciBzci1nYW1tYTJ9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hMl92YWx1ZSArICgxICsgc3JfZ2FtbWEyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTJfdmFsdWUgKyAoMSArIHNyX2dhbW1hMl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWEyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWEyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgojIyBHYW1tYSA9IDAuMwoKYGBge3Igc3ItZ2FtbWEzfQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTNfdmFsdWUgKyAoMSArIHNyX2dhbW1hM192YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWEzX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTNfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWEzX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hM192YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWEzX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hM192YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKIyMgR2FtbWEgPSAwLjQKCmBgYHtyIHNyLWdhbW1hNH0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE0X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNF92YWx1ZSArICgxICsgc3JfZ2FtbWE0X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNF92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNF92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTRfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCiMjIEdhbW1hID0gMC41CgpgYGB7ciBzci1nYW1tYTV9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hNV92YWx1ZSArICgxICsgc3JfZ2FtbWE1X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTVfdmFsdWUgKyAoMSArIHNyX2dhbW1hNV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTVfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE1X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTVfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE1X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgojIyBHYW1tYSA9IDAuNgoKYGBge3Igc3ItZ2FtbWE2fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTZfdmFsdWUgKyAoMSArIHNyX2dhbW1hNl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE2X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTZfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE2X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hNl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE2X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hNl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKIyMgR2FtbWEgPSAwLjcKCmBgYHtyIHNyLWdhbW1hN30Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE3X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTdfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hN192YWx1ZSArICgxICsgc3JfZ2FtbWE3X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hN192YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTdfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hN192YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsgKDEgKyBzcl9nYW1tYTdfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCiMjIEdhbW1hID0gMC44CgpgYGB7ciBzci1nYW1tYTh9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHNyX2dhbW1hOF92YWx1ZSArICgxICsgc3JfZ2FtbWE4X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYThfdmFsdWUgKyAoMSArIHNyX2dhbW1hOF92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCgp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYThfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE4X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYThfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgc3JfZ2FtbWE4X3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgojIyBHYW1tYSA9IDAuOQoKYGBge3Igc3ItZ2FtbWE5fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBzcl9nYW1tYTlfdmFsdWUgKyAoMSArIHNyX2dhbW1hOV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE5X3ZhbHVlICsgKDEgKyBzcl9nYW1tYTlfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE5X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hOV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gc3JfZ2FtbWE5X3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIHNyX2dhbW1hOV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKCiMgSG9tb3BoaWx5CgpgYGB7ciByYWNlLWhvbX0Kd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX3JhY2VfdmFsdWUgKyAoMSArIGhvbV9yYWNlX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fcmFjZV92YWx1ZSArICgxICsgaG9tX3JhY2VfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX3JhY2VfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArICgxICsgaG9tX3JhY2VfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGhvbV9yYWNlX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIGhvbV9yYWNlX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgpgYGB7ciBnZW5kZXItaG9tfQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fZ2VuZGVyX3ZhbHVlICsgKDEgKyBob21fZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fZ2VuZGVyX3ZhbHVlICsgKDEgKyBob21fZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGhvbV9nZW5kZXJfdmFsdWUgKyBtZW1vcml6ZV92YWx1ZSArCiAgICAgICgxICsgaG9tX2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gaG9tX2dlbmRlcl92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsKICAgICAgKDEgKyBob21fZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgoKIyBGZWF0dXJlIHJlbGF0aW9ucwoKYGBge3IgcmFjZS1mZWF0fQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X3JhY2VfdmFsdWUgKyAoMSArIGZlYXRfcmFjZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9yYWNlX3ZhbHVlICsgKDEgKyBmZWF0X3JhY2VfdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQoKd2Fsa19kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9yYWNlX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIGZlYXRfcmFjZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9yYWNlX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKyAoMSArIGZlYXRfcmFjZV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKYGBge3IgZ2VuZGVyLWZlYXR9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGZlYXRfZ2VuZGVyX3ZhbHVlICsgKDEgKyBmZWF0X2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9nZW5kZXJfdmFsdWUgKyAoMSArIGZlYXRfZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKCndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGZlYXRfZ2VuZGVyX3ZhbHVlICsgbWVtb3JpemVfdmFsdWUgKwogICAgICAoMSArIGZlYXRfZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBmZWF0X2dlbmRlcl92YWx1ZSArIG1lbW9yaXplX3ZhbHVlICsKICAgICAgKDEgKyBmZWF0X2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKCiMgU3RyYXRlZ3kgY29tYmluYXRpb25zCgpXZSBjYW4gdHJ5IHNlZWluZyBpZiB0aGUgU1IgbWlnaHQgYmUgb3V0cGVyZm9ybWVkIGJ5IHNvbWUgY29tYmluYXRpb24gb2Ygb3RoZXIgc3RyYXRlZ2llcy4gV2UnbGwgc3RhcnQgd2l0aCBhbGwgb2YgdGhlICJzdHJ1Y3R1cmFsIiAodHJpYWQgYW5kIGNvbW11bml0eSkgc3RyYXRlZ2llcy4KCmBgYHtyIGFsbC1zdHJ1Y3R1cmFsfQp3YWxrX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiB0cmlhZF92YWx1ZSArIGNvbW1fdmFsdWUgKwogICAgICAoMSArIHRyaWFkX3ZhbHVlICsgY29tbV92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gdHJpYWRfdmFsdWUgKyBjb21tX3ZhbHVlICsKICAgICAgKDEgKyB0cmlhZF92YWx1ZSArIGNvbW1fdmFsdWUgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCkhvdyBhYm91dCBib3RoIGZvcm1zIG9mIGhvbW9waGlseT8KCmBgYHtyIGFsbC1ob219CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGhvbV9yYWNlX3ZhbHVlICsgaG9tX2dlbmRlcl92YWx1ZSArCiAgICAgICgxICsgaG9tX3JhY2VfdmFsdWUgKyBob21fZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlJhbmRvbSB3YWxrcyIpCgpwYWlyX2RhdGEgJT4lCiAgZ2xtZXIoCiAgICBjaG9pY2UgfiBob21fcmFjZV92YWx1ZSArIGhvbV9nZW5kZXJfdmFsdWUgKwogICAgICAoMSArIGhvbV9yYWNlX3ZhbHVlICsgaG9tX2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJQYWlyZWQgYXNzb2NpYXRlcyIpCmBgYAoKQW5kIG5vdyBib3RoIGZvcm1zIG9mIGxlYXJuaW5nIGFib3V0IGZlYXR1cmUtYmFzZWQgcmVsYXRpb25zLgoKYGBge3IgYWxsLWZlYXR9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IGZlYXRfcmFjZV92YWx1ZSArIGZlYXRfZ2VuZGVyX3ZhbHVlICsKICAgICAgKDEgKyBmZWF0X3JhY2VfdmFsdWUgKyBmZWF0X2dlbmRlcl92YWx1ZSB8IHN1Yl9pZCksCiAgICBmYW1pbHkgPSBiaW5vbWlhbCwgZGF0YSA9IC4KICApICU+JQogIG1vZGVsX3RvX2RmKCkgJT4lCiAga2FibGUoY2FwdGlvbiA9ICJSYW5kb20gd2Fsa3MiKQoKcGFpcl9kYXRhICU+JQogIGdsbWVyKAogICAgY2hvaWNlIH4gZmVhdF9yYWNlX3ZhbHVlICsgZmVhdF9nZW5kZXJfdmFsdWUgKwogICAgICAoMSArIGZlYXRfcmFjZV92YWx1ZSArIGZlYXRfZ2VuZGVyX3ZhbHVlIHwgc3ViX2lkKSwKICAgIGZhbWlseSA9IGJpbm9taWFsLCBkYXRhID0gLgogICkgJT4lCiAgbW9kZWxfdG9fZGYoKSAlPiUKICBrYWJsZShjYXB0aW9uID0gIlBhaXJlZCBhc3NvY2lhdGVzIikKYGBgCgpBbmQgbm93IHdlJ2xsIGp1c3QgZ28gZm9yIGJyb2tlOiB3ZSdsbCB0cnkgZXZlcnkgc2luZ2xlIHN0cmF0ZWd5IChleGNlcHQgbWVtb3JpemF0aW9uKSBpbiB0aGUgc2FtZSBtb2RlbC4gSGVyZSwgd2UncmUgb25seSBlc3RpbWF0aW5nIGEgcmFuZG9tIGludGVyY2VwdCBwZXIgc3ViamVjdCwgc28gaXQncyBsaWtlbHkgdGhhdCB0aGUgZGVncmVlcyBvZiBmcmVlZG9tIChpLmUuLCB1c2VkIHRvIGNvbXB1dGUgcC12YWx1ZXMpIGFyZSBmYXIgdG9vIGxlbmllbnQuCgpgYGB7ciBldmVyeXRoaW5nLWV2ZXJ5d2hlcmUtYWxsLWF0LW9uY2V9CndhbGtfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgY29tbV92YWx1ZSArCiAgICAgIGhvbV9yYWNlX3ZhbHVlICsgaG9tX2dlbmRlcl92YWx1ZSArCiAgICAgIGZlYXRfcmFjZV92YWx1ZSArIGZlYXRfZ2VuZGVyX3ZhbHVlICsKICAgICAgKDEgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUmFuZG9tIHdhbGtzIikKCnBhaXJfZGF0YSAlPiUKICBnbG1lcigKICAgIGNob2ljZSB+IHRyaWFkX3ZhbHVlICsgY29tbV92YWx1ZSArCiAgICAgIGhvbV9yYWNlX3ZhbHVlICsgaG9tX2dlbmRlcl92YWx1ZSArCiAgICAgIGZlYXRfcmFjZV92YWx1ZSArIGZlYXRfZ2VuZGVyX3ZhbHVlICsKICAgICAgKDEgfCBzdWJfaWQpLAogICAgZmFtaWx5ID0gYmlub21pYWwsIGRhdGEgPSAuCiAgKSAlPiUKICBtb2RlbF90b19kZigpICU+JQogIGthYmxlKGNhcHRpb24gPSAiUGFpcmVkIGFzc29jaWF0ZXMiKQpgYGAKCgojIFdoYXQncyBuZXh0PwoKVGhlc2Ugc3RhdGlzdGljYWwgbW9kZWxzIGdpdmUgdXMgYSBnb29kIHNlbnNlIGZvciB3aGF0IGNvZ25pdGl2ZSBzdHJhdGVnaWVzIHBlb3BsZSBtaWdodCBiZSB1c2luZyB0byBzaGFwZSBtZW50YWwgcmVwcmVzZW50YXRpb24gb2Ygc29jaWFsIG5ldHdvcmsgc3RydWN0dXJlLiBUaGV5IGFyZSBsaW1pdGVkLCBob3dldmVyLCBieSBhIGZldyBpbXBvcnRhbnQgY29uc2lkZXJhdGlvbnMuCgpGaXJzdCwgdGhlIHB1cnBvc2Ugb2YgbWl4ZWQtZWZmZWN0cyBtb2RlbHMgaXMgdG8gZXh0cmFjdCBvdXQgd2hhdCBpcyAiY29tbW9uIiBvciAic2hhcmVkIiBhY3Jvc3MgaW5kaXZpZHVhbHM7IHRoYXQgd2hpY2ggbWFrZXMgYW4gaW5kaXZpZHVhbCB1bmlxdWUgaXMgdGhlb3JldGljYWxseSBjYXB0dXJlZCBieSB0aGUgcmFuZG9tIGVmZmVjdHMsIGJ1dCB0aGVzZSBlc3RpbWF0ZXMgYXJlIG5vdCBpbmRlcGVuZGVudCBkdWUgdG8gc2hyaW5rYWdlIChpLmUuLCBwYXJ0aWFsIHBvb2xpbmcpLiBUaGlzIG1ha2VzIGl0IGhhcmRlciB0byBzYXkgdGhpbmdzIGFib3V0IGluZGl2aWR1YWwgZGlmZmVyZW5jZXMgKGUuZy4sIHRvIGFzc29jaWF0ZSBpbmRpdmlkdWFsIGRpZmZlcmVuY2VzIHdpdGggb3RoZXIgdmFyaWFibGVzIG9mIGludGVyZXN0KSwgYW5kIHdlICpkbyogZXhwZWN0IGluZGl2aWR1YWwgZGlmZmVyZW5jZXMgdG8gcGxheSBhbiBpbXBvcnRhbnQgcm9sZSBpbiBzaGFwaW5nIHBlb3BsZSdzIGNvZ25pdGlvbi4KClNlY29uZCwgdGhlIHN0YXRpc3RpY2FsIG1vZGVsaW5nIGZyYW1ld29yayBmb3JjZXMgdXMgdG8gY29uc2lkZXIgb25seSBkaXNjcmV0ZSB2YXJpYW50cyBvZiB0aGUgU1Igd2hlbiBnYW1tYSBpcyBmaXhlZCB0byBzb21lIHByZS1zcGVjaWZpZWQgdmFsdWUuIEhvd2V2ZXIsIHdlIGtub3cgdGhhdCBkaWZmZXJlbnQgcGVvcGxlIGFyZSBsaWtlbHkgdG8gaW50ZWdyYXRlIG92ZXIgYSBkaWZmZXJlbnQgbnVtYmVyIG9mIGNvbm5lY3Rpb25zLCBhbmQgc28gd2UnZCBsaWtlIHRvIGJlIGFibGUgdG8gc3BlY2lmeSBhIGNvbXB1dGF0aW9uYWwgbW9kZWwgYWxsb3dpbmcgdXMgdG8gZXN0aW1hdGUgdGhpcyBhcyBhIGZyZWUgKGZ1bGx5IGNvbnRpbnVvdXMhKSBwYXJhbWV0ZXIuIFRoaXMgd291bGQgYWxsb3cgdXMgdG8gKGUuZy4pIHRlc3Qgd2hldGhlciB0aGUgZm9ybWF0IG9mIGxlYXJuaW5nIChyYW5kb20gd2Fsa3MgdnMgcGFpcmVkIGFzc29jaWF0ZXMpIGhhcyBhbiBlZmZlY3Qgb24gdGhlIG51bWJlciBvZiBjb25uZWN0aW9ucyBwZW9wbGUgaW50ZWdyYXRlIG92ZXIgd2hlbiByZXByZXNlbnRpbmcgdGhlIG5ldHdvcmsuCgpTbyB0byBhZGRyZXNzIHRoZXNlIGxpbWl0YXRpb25zLCB3ZSdsbCBuZXh0IHdhbnQgdG8gZXN0aW1hdGUgc29tZSBjb21wdXRhdGlvbmFsIG1vZGVscyB0aGF0IGV4cGxpY2l0bHkgbW9kZWwgdGhlIFNSJ3MgZ2FtbWEgcGFyYW1ldGVyLCBwZXIgc3ViamVjdC4KCgojIFNlc3Npb24gaW5mbwoKYGBge3Igc2Vzc2lvbi1pbmZvfQpzZXNzaW9uSW5mbygpCmBgYAoK</div>
 
 
 </div>

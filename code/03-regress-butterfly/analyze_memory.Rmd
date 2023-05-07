@@ -551,12 +551,10 @@ pair_data %>%
 
 # Homophily
 
-In the random walks dataset, we are not able to estimate random slopes for race-based homophily, as it results in a singular fit.
-
 ```{r race-hom}
 walk_data %>%
   glmer(
-    choice ~ hom_race_value + (1 | sub_id),
+    choice ~ hom_race_value + (1 + hom_race_value | sub_id),
     family = binomial, data = .
   ) %>%
   model_to_df() %>%
@@ -572,7 +570,7 @@ pair_data %>%
 
 walk_data %>%
   glmer(
-    choice ~ hom_race_value + memorize_value + (1 | sub_id),
+    choice ~ hom_race_value + memorize_value + (1 + hom_race_value | sub_id),
     family = binomial, data = .
   ) %>%
   model_to_df() %>%
@@ -587,8 +585,6 @@ pair_data %>%
   kable(caption = "Paired associates")
 ```
 
-In the paired associates dataset, we are not able to estimate random slopes for gender-based homophily, as it results in a singular fit.
-
 ```{r gender-hom}
 walk_data %>%
   glmer(
@@ -600,7 +596,7 @@ walk_data %>%
 
 pair_data %>%
   glmer(
-    choice ~ hom_gender_value + (1 | sub_id),
+    choice ~ hom_gender_value + (1 + hom_gender_value | sub_id),
     family = binomial, data = .
   ) %>%
   model_to_df() %>%
@@ -618,7 +614,7 @@ walk_data %>%
 pair_data %>%
   glmer(
     choice ~ hom_gender_value + memorize_value +
-      (1 | sub_id),
+      (1 + hom_gender_value | sub_id),
     family = binomial, data = .
   ) %>%
   model_to_df() %>%
@@ -723,7 +719,7 @@ pair_data %>%
   kable(caption = "Paired associates")
 ```
 
-How about both forms of homophily? In the paired associates dataset, we get a singular fit if we try to estimate random slopes for both race and gender homophily, driven by the negative correlation between the random intercept and gender homophily. We can try estimating the model without that random slope, just to see what happens.
+How about both forms of homophily?
 
 ```{r all-hom}
 walk_data %>%
@@ -743,18 +739,9 @@ pair_data %>%
   ) %>%
   model_to_df() %>%
   kable(caption = "Paired associates")
-
-pair_data %>%
-  glmer(
-    choice ~ hom_race_value + hom_gender_value +
-      (1 + hom_race_value | sub_id),
-    family = binomial, data = .
-  ) %>%
-  model_to_df() %>%
-  kable(caption = "Paired associates")
 ```
 
-And now both forms of learning about feature-based relations. In the paired associates dataset, we get a model convergence failure if we try to estimate random slopes for both race and gender, so we'll try estimating two variants with a single random-effects term.
+And now both forms of learning about feature-based relations.
 
 ```{r all-feat}
 walk_data %>%
@@ -769,20 +756,11 @@ walk_data %>%
 pair_data %>%
   glmer(
     choice ~ feat_race_value + feat_gender_value +
-      (1 + feat_race_value | sub_id),
+      (1 + feat_race_value + feat_gender_value | sub_id),
     family = binomial, data = .
   ) %>%
   model_to_df() %>%
-  kable(caption = "Paired associates, random slope of race")
-
-pair_data %>%
-  glmer(
-    choice ~ feat_race_value + feat_gender_value +
-      (1 + feat_gender_value | sub_id),
-    family = binomial, data = .
-  ) %>%
-  model_to_df() %>%
-  kable(caption = "Paired associates, random slope of gender")
+  kable(caption = "Paired associates")
 ```
 
 And now we'll just go for broke: we'll try every single strategy (except memorization) in the same model. Here, we're only estimating a random intercept per subject, so it's likely that the degrees of freedom (i.e., used to compute p-values) are far too lenient.
