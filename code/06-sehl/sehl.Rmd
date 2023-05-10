@@ -17,6 +17,10 @@ In Sehl, Friedman, & Denison 2022, the authors find that people are more likely 
 library(tidyverse)
 library(here)
 library(patchwork)
+library(tidygraph)
+library(ggraph)
+
+kable <- knitr::kable
 
 knitting <- knitr::is_html_output()
 
@@ -74,7 +78,7 @@ plot_exp3 <- sehl_exp3 %>%
   summarise(judgment = mean(response), .groups = "drop") %>%
   ggplot(aes(x=mutual_prop, y=judgment, fill=n_friends)) +
   gg +
-  ggtitle("Experiment 3 Behavior") +
+  ggtitle("Empirical Behavior (Experiment 3)") +
   geom_col(color = "black", position = position_dodge()) +
   geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
   scale_x_discrete(name = "Proportion of Mutual Friends") +
@@ -92,7 +96,7 @@ plot_exp3
 First, we need to recreate the networks used in the study.
 
 ```{r create-networks}
-sehl_blank <- expand_grid(from = 1:24, to = from)
+sehl_blank <- expand_grid(from = 1:26, to = from)
 
 sehl_individual6_mutual1 <- sehl_blank %>%
   mutate(
@@ -212,6 +216,35 @@ sehl_networks <- bind_rows(
 )
 ```
 
+Just to get a visual sense, let's plot a sample network. Subjects were asked to guess whether Red and Blue are friends, given their mutual friends (yellows) and exclusive friends (greys). In this example, Red and Blue have 12 friends each, 6 of whom are mutual.
+
+```{r plot-sample-network}
+plot_sample_network <- sehl_individual12_mutual6 %>%
+  filter(edge == 1) %>%
+  filter(from < to) %>%
+  select(from, to) %>%
+  tbl_graph(edges = ., directed = FALSE) %>%
+  mutate(
+    name = row_number(),
+    color_group = case_when(
+      name == 1 ~ "a",
+      name == 2 ~ "b",
+      name %in% 3:8 ~ "c",
+      TRUE ~ "d"
+    )
+  ) %>%
+  ggraph(layout = "stress") +
+  theme_graph() +
+  geom_edge_link() +
+  geom_node_point(
+    shape = 21,
+    aes(fill = color_group), show.legend = FALSE, size = 6
+  ) +
+  scale_fill_manual(values = c("#d73027", "#4575b4", "#ffffbf", "grey20"))
+
+plot_sample_network
+```
+
 Now we can use those to simulate SRs at a different gammas. Instead of training an SR via reinforcement learning, we're using an analytical version. We do this because subjects in this study did no learning; they simply observed a single "slice" through the network, then made judgments. The use of an analytical SR is more mechanistically descriptive of this kind of representation.
 
 ```{r func-sim-sr}
@@ -229,7 +262,7 @@ compute_sr <- function(df, sr_gamma) {
     as.matrix()
   
   # 24 = number of nodes in network
-  sr <- solve(diag(24) - (sr_gamma * trans_matrix)) %>%
+  sr <- solve(diag(26) - (sr_gamma * trans_matrix)) %>%
     data.frame() %>%
     mutate(from = row_number()) %>%
     pivot_longer(-from, names_to = "to") %>%
@@ -297,9 +330,17 @@ sehl_sr_sim %>%
     name = "Proportion of Mutual Friends",
     labels = ~str_wrap(.x, width = 5)
   ) +
-  scale_y_continuous(name = "SR Value") +
+  scale_y_continuous(name = "SR Probability") +
   scale_fill_manual(name = "Target", values = c("grey90", "grey50")) +
   theme(legend.position = "bottom")
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "simulated-sr-probs.pdf"),
+    width = 6, height = 8,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
 ```
 
 How might this translate into behavior? It's a little bit tricky translating this into Likert scale ratings, so as a proxy, let's just try to model the probability of inferring friendship between Sam and Dani. We assume an agent does this by comparing the Sam-to-Dani SR value against the Sam-to-known-friend / Dani-to-known friend SR value (in this study setup, they're exactly the same), then making a binary "yes/no" judgment about whether Sam and Dani are friends. Mathematically, we'll model this using a softmax comparing the SR values.
@@ -335,7 +376,10 @@ sehl_sr_sim %>%
   ) +
   geom_col(color = "black", position = position_dodge()) +
   geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
-  scale_x_discrete(name = "Proportion of Mutual Friends") +
+  scale_x_discrete(
+    name = "Proportion of Mutual Friends",
+    labels = ~str_wrap(.x, width = 5)
+  ) +
   scale_y_continuous(
     name = "p(Infer Friendship)",
     # Trick to relabel axis so that true-0 is labeled as 0.5=50%
@@ -345,6 +389,14 @@ sehl_sr_sim %>%
     name = "# Total Friends", values = c("#2c7bb6", "#fdae61")
   ) +
   theme(legend.position = "bottom")
+
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "simulated-choices.pdf"),
+    width = 14, height = 8,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
 ```
 
 # Fit SR
@@ -440,6 +492,7 @@ set.seed(sum(utf8ToInt("sehl")))
 
 # Run the optimizer a few times under different starting parameters
 for (j in 1:5) {
+  print(str_c("Starting run ", j))
   tryCatch(
     expr = {
       this_run <- run_optim(
@@ -473,7 +526,7 @@ params <- best_optim_run(out, "dataframe") %>%
   select(param_name, param_value) %>%
   pivot_wider(names_from = param_name, values_from = param_value)
 
-params
+params %>% kable()
 ```
 
 # Visualize for paper
@@ -514,14 +567,16 @@ plot_sr_values <- sim_sr_values %>%
   # Plot
   ggplot(aes(x=mutual_prop, y=value, fill=target)) +
   gg +
-  ggtitle(str_c("Experiment 3 SR, \u03B3 = ", round(params$sr_gamma, 2))) +
+  ggtitle(
+    str_c("Successor Representation, \u03B3 = ", round(params$sr_gamma, 2))
+  ) +
   facet_grid(cols = vars(n_friends)) +
   geom_col(color = "black", position = position_dodge()) +
   scale_x_discrete(
     name = "Proportion of Mutual Friends",
     labels = ~str_wrap(.x, width = 5)
   ) +
-  scale_y_continuous(name = "SR Value") +
+  scale_y_continuous(name = "SR Probability") +
   scale_fill_manual(name = "Target:", values = c("grey90", "grey50")) +
   theme(legend.position = "bottom")
 
@@ -542,7 +597,7 @@ plot_choice <- sim_sr_values %>%
   select(mutual_prop, n_friends, p_infer) %>%
   ggplot(aes(x=mutual_prop, y=p_infer, fill=n_friends)) +
   gg +
-  ggtitle("Experiment 3 Simulated") +
+  ggtitle("Simulated Behavior (Experiment 3)") +
   geom_col(color = "black", position = position_dodge()) +
   geom_hline(yintercept = 0, linetype = "dashed", size = 1) +
   scale_x_discrete(name = "Proportion of Mutual Friends") +
@@ -556,7 +611,7 @@ plot_choice <- sim_sr_values %>%
   ) +
   theme(legend.position = "bottom")
 
-figure_for_paper <- (plot_exp3 | plot_sr_values | plot_choice) +
+figure_for_paper <- (plot_spacer() | plot_sample_network) / (plot_exp3 | plot_choice | plot_sr_values) +
   plot_annotation(
     title = str_c(
       "Inferring Relations from Mutual Friends ",
@@ -569,14 +624,18 @@ figure_for_paper <- (plot_exp3 | plot_sr_values | plot_choice) +
     legend.position = "bottom"
   )
 
+plot_sr_values
+plot_choice
 figure_for_paper
 
-ggsave(
-  here("outputs", workflow_name, "sehl-2022.pdf"),
-  figure_for_paper,
-  width = 12, height = 4,
-  device = cairo_pdf, units = "in", dpi = 300
-)
+if (knitting) {
+  ggsave(
+    here("outputs", workflow_name, "sehl-2022.pdf"),
+    figure_for_paper,
+    width = 12, height = 8,
+    device = cairo_pdf, units = "in", dpi = 300
+  )
+}
 ```
 
 
