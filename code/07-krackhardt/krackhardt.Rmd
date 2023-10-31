@@ -1139,7 +1139,7 @@ sr_centrality_corr <- sr_centrality %>%
   select(-data)
 
 sr_centrality_corr %>%
-  mutate(spearman = tanh(spearman)) %>%
+  mutate(spearman = atanh(spearman)) %>%
   select(spearman) %>%
   deframe() %>%
   t.test() %>%
@@ -1402,7 +1402,7 @@ sr_centrality_corr_leadership <- sr_centrality_leadership %>%
   select(-data)
 
 sr_centrality_corr_leadership %>%
-  mutate(spearman = tanh(spearman)) %>%
+  mutate(spearman = atanh(spearman)) %>%
   select(spearman) %>%
   deframe() %>%
   t.test() %>%
